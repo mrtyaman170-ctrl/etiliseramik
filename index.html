@@ -176,6 +176,18 @@
   .qr-machine-actions button{width:100%}
 }
 
+
+.home-action-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qr-home-button{border:1px solid #111;background:#111;color:#fff;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
+.qr-home-card{display:flex;align-items:center;gap:16px;padding:18px 20px;margin:0 0 18px;border-radius:16px;background:linear-gradient(135deg,#fff7d1,#fff);border:1px solid #f0d56b;box-shadow:0 5px 18px rgba(0,0,0,.05)}
+.qr-home-symbol{width:54px;height:54px;display:grid;place-items:center;border-radius:14px;background:#f5b800;color:#111;font-size:30px;font-weight:900;flex:0 0 auto}
+.qr-home-card div:nth-child(2){display:flex;flex-direction:column;gap:5px;flex:1}
+.qr-home-card b{font-size:17px}.qr-home-card span{font-size:13px;color:var(--m)}
+@media(max-width:680px){
+ .home-action-buttons{width:100%}.home-action-buttons button{flex:1}
+ .qr-home-card{align-items:flex-start;flex-wrap:wrap}.qr-home-card button{width:100%}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div><script>
 const K="etilismart_faults_v5";
 
@@ -196,6 +208,16 @@ const STRUCTURE={
 
 const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
+
+const MACHINE_QR_REGISTRY={
+  "F2A-H1-MAS-SD-001":{
+    factory:"2. Fabrika A Blok",
+    line:"1. Hat",
+    department:"Masse Bölümü",
+    machine:"Spray Dryer",
+    machineCode:"F2A-H1-MAS-SD-001"
+  }
+};
 
 const SUBJECTS={
   "Elektrik":["Motor termik attı","Sigorta açtı","Kontaktör çekmiyor","Sensör beslemesi yok","Kablo bağlantısı gevşek","Sürücü alarmı","Faz hatası","Etiket yazıcı enerjisiz"],
@@ -546,7 +568,16 @@ function dashboard(){
         <h1>Operatör Paneli</h1>
         <p>Arıza kaydı açabilir ve yalnızca mevcut vardiyadaki aktif arızaları görebilirsiniz.</p>
       </div>
-      <button class="primary operator-new-btn" data-p="new">+ Arıza Kaydı Aç</button>
+      <div class="home-action-buttons">
+        <button type="button" class="qr-home-button" id="openQrScanner">▣ QR Kod Tara</button>
+        <button class="primary operator-new-btn" data-p="new">+ Arıza Kaydı Aç</button>
+      </div>
+    </div>
+
+    <div class="qr-home-card">
+      <div class="qr-home-symbol">▣</div>
+      <div><b>Makine QR Kodunu Tara</b><span>Makine bilgilerini görüntüle ve doğrudan arıza kaydı oluştur.</span></div>
+      <button type="button" class="primary" id="openQrScannerCard">Kamerayı Aç</button>
     </div>
 
     <div class="grid operator-grid">
@@ -585,7 +616,10 @@ function dashboard(){
       <p>${isManagementRole()?"Aktif arızalar, vardiya durumu, grafikler ve bakım trendleri":"Yalnızca aktif arızalar ve mevcut vardiyada oluşan kayıtlar gösteriliyor."}</p>
       ${departmentBadge}
     </div>
-    <button class="primary" data-p="new">+ Yeni Arıza</button>
+    <div class="home-action-buttons">
+      <button type="button" class="qr-home-button" id="openQrScanner">▣ QR Kod Tara</button>
+      <button class="primary" data-p="new">+ Yeni Arıza</button>
+    </div>
   </div>
 
   <div class="card dashboard-filter">
@@ -770,20 +804,33 @@ function stopQrScanner(){
 }
 function applyQrPayload(raw){
   try{
-    const data=JSON.parse(raw);
-    if(data.app!=="ETILISMART"||!["new-fault","machine-info"].includes(data.action))throw new Error("Geçersiz QR");
+    const clean=String(raw||"").trim();
+    let data=null;
+
+    if(MACHINE_QR_REGISTRY[clean]){
+      data=MACHINE_QR_REGISTRY[clean];
+    }else{
+      const parsed=JSON.parse(clean);
+      if(parsed.app!=="ETILISMART"||!["new-fault","machine-info"].includes(parsed.action)){
+        throw new Error("Geçersiz QR");
+      }
+      data=parsed;
+    }
+
+    if(!data.factory||!data.line||!data.machine)throw new Error("Eksik makine bilgisi");
     stopQrScanner();
     s.qrModal={
       mode:"machine-info",
-      factory:data.factory||"",
-      line:data.line||"",
-      department:data.department||findMachineDepartment(data.machine||""),
-      machine:data.machine||""
+      machineCode:data.machineCode||clean,
+      factory:data.factory,
+      line:data.line,
+      department:data.department||findMachineDepartment(data.machine),
+      machine:data.machine
     };
     render();
   }catch(e){
     const msg=document.getElementById("qrMessage");
-    if(msg)msg.textContent="Bu QR kod ETİLİSMART makine kodu değil.";
+    if(msg)msg.textContent="QR kod tanınmadı. Geçerli bir ETİLİSMART makine kodu okutun.";
   }
 }
 function openFaultFormFromQr(){
@@ -852,6 +899,7 @@ function qrModal(){
         <div class="info-card"><span>Fabrika</span><b>${esc(q.factory||"-")}</b></div>
         <div class="info-card"><span>Hat</span><b>${esc(q.line||"-")}</b></div>
         <div class="info-card"><span>Bölüm</span><b>${esc(q.department||"-")}</b></div>
+        <div class="info-card"><span>Makine Kodu</span><b>${esc(q.machineCode||"-")}</b></div>
         <div class="info-card"><span>Aktif Arıza</span><b>${active.length}</b></div>
       </div>
       <div class="qr-last-fault">
@@ -1045,6 +1093,8 @@ function bind(){
 
   const openQr=document.getElementById("openQrScanner");
   if(openQr)openQr.onclick=openQrScanner;
+  const openQrCard=document.getElementById("openQrScannerCard");
+  if(openQrCard)openQrCard.onclick=openQrScanner;
   document.querySelectorAll(".machine-qr-button").forEach(b=>b.onclick=()=>openQrGenerator(b.dataset.qrFactory,b.dataset.qrLine,b.dataset.qrMachine));
   document.querySelectorAll(".qr-close").forEach(b=>b.onclick=closeQrModal);
   document.querySelectorAll(".qr-backdrop").forEach(bg=>bg.onclick=e=>{if(e.target===bg)closeQrModal()});
