@@ -159,6 +159,23 @@
   .qr-modal{position:absolute;left:0;top:0;width:100%;box-shadow:none}
   .qr-close,#printQr,.qr-help p{display:none!important}
 }
+
+.qr-machine-hero{display:flex;gap:16px;align-items:center;padding:18px;border-radius:16px;background:var(--soft,#f7f7f7);margin-bottom:16px}
+.qr-machine-icon{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:var(--yellow,#f5b800);font-size:30px;color:#111}
+.qr-machine-hero h3{margin:8px 0 4px;font-size:22px}.qr-machine-hero p{margin:0;color:var(--m)}
+.qr-machine-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qr-machine-grid .info-card{padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.qr-machine-grid .info-card span{display:block;color:var(--m);font-size:12px;margin-bottom:7px}
+.qr-machine-grid .info-card b{font-size:15px}
+.qr-last-fault{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:14px}
+.qr-last-fault h4{margin:0 0 10px}.qr-last-fault p{margin:5px 0;color:var(--m)}.qr-last-fault p b{color:var(--text,#111)}
+.qr-machine-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+@media(max-width:680px){
+  .qr-machine-grid{grid-template-columns:repeat(2,1fr)}
+  .qr-machine-actions{flex-direction:column-reverse}
+  .qr-machine-actions button{width:100%}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div><script>
 const K="etilismart_faults_v5";
 
@@ -695,7 +712,7 @@ function machineQrPayload(factory,line,department,machine){
   return JSON.stringify({
     app:"ETILISMART",
     version:1,
-    action:"new-fault",
+    action:"machine-info",
     factory,
     line,
     department,
@@ -754,29 +771,43 @@ function stopQrScanner(){
 function applyQrPayload(raw){
   try{
     const data=JSON.parse(raw);
-    if(data.app!=="ETILISMART"||data.action!=="new-fault")throw new Error("Geçersiz QR");
-    s.page="new";
-    s.qrModal=null;
+    if(data.app!=="ETILISMART"||!["new-fault","machine-info"].includes(data.action))throw new Error("Geçersiz QR");
+    stopQrScanner();
+    s.qrModal={
+      mode:"machine-info",
+      factory:data.factory||"",
+      line:data.line||"",
+      department:data.department||findMachineDepartment(data.machine||""),
+      machine:data.machine||""
+    };
     render();
-    setTimeout(()=>{
-      const factory=document.getElementById("factory");
-      const line=document.getElementById("line");
-      const department=document.getElementById("department");
-      const machine=document.getElementById("machine");
-      if(!factory||!line||!department||!machine)return;
-      factory.value=data.factory||"";
-      factory.dispatchEvent(new Event("change"));
-      line.value=data.line||"";
-      department.value=data.department||"";
-      department.dispatchEvent(new Event("change"));
-      machine.value=data.machine||"";
-      const info=document.getElementById("qrFilledInfo");
-      if(info)info.textContent=`QR okundu: ${data.factory} · ${data.line} · ${data.machine}`;
-    },20);
   }catch(e){
     const msg=document.getElementById("qrMessage");
     if(msg)msg.textContent="Bu QR kod ETİLİSMART makine kodu değil.";
   }
+}
+function openFaultFormFromQr(){
+  if(!s.qrModal||s.qrModal.mode!=="machine-info")return;
+  const data={...s.qrModal};
+  s.page="new";
+  s.qrModal=null;
+  render();
+  setTimeout(()=>{
+    const factory=document.getElementById("factory");
+    const line=document.getElementById("line");
+    const department=document.getElementById("department");
+    const machine=document.getElementById("machine");
+    if(!factory||!line||!department||!machine)return;
+    factory.value=data.factory||"";
+    factory.dispatchEvent(new Event("change"));
+    line.value=data.line||"";
+    department.value=data.department||"";
+    department.dispatchEvent(new Event("change"));
+    machine.value=data.machine||"";
+    const info=document.getElementById("qrFilledInfo");
+    if(info)info.textContent=`Makine seçildi: ${data.factory} · ${data.line} · ${data.machine}`;
+    document.getElementById("type")?.focus();
+  },30);
 }
 async function renderMachineQr(){
   const target=document.getElementById("machineQr");
@@ -796,6 +827,43 @@ async function renderMachineQr(){
 }
 function qrModal(){
   if(!s.qrModal)return "";
+  if(s.qrModal.mode==="machine-info"){
+    const q=s.qrModal;
+    const faults=s.faults
+      .filter(x=>x.factory===q.factory&&x.line===q.line&&x.machine===q.machine)
+      .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    const active=faults.filter(x=>x.status!=="done");
+    const state=machineState(q.factory,q.line,q.machine);
+    const last=faults[0];
+    return `<div class="modal-backdrop qr-backdrop"><div class="modal qr-modal machine-qr-info">
+      <div class="modal-head">
+        <div><h2>${esc(q.machine)}</h2><p>QR ile makine bilgisi açıldı</p></div>
+        <button class="qr-close">×</button>
+      </div>
+      <div class="qr-machine-hero">
+        <div class="qr-machine-icon">⚙</div>
+        <div>
+          <span class="status ${state.cls==="running"?"done":state.cls==="stopped"?"open":"progress"}">${esc(state.text)}</span>
+          <h3>${esc(q.machine)}</h3>
+          <p>${esc(q.factory)} · ${esc(q.line)}</p>
+        </div>
+      </div>
+      <div class="qr-machine-grid">
+        <div class="info-card"><span>Fabrika</span><b>${esc(q.factory||"-")}</b></div>
+        <div class="info-card"><span>Hat</span><b>${esc(q.line||"-")}</b></div>
+        <div class="info-card"><span>Bölüm</span><b>${esc(q.department||"-")}</b></div>
+        <div class="info-card"><span>Aktif Arıza</span><b>${active.length}</b></div>
+      </div>
+      <div class="qr-last-fault">
+        <h4>Son Arıza Kaydı</h4>
+        ${last?`<p><b>${esc(last.subject)}</b></p><p>${fmtDate(last.createdAt)} · ${statusLabel(last.status)}</p>`:"<p>Bu makine için daha önce arıza kaydı bulunmuyor.</p>"}
+      </div>
+      <div class="qr-machine-actions">
+        <button type="button" class="secondary qr-close">Kapat</button>
+        <button type="button" class="primary" id="createFaultFromQr">+ Arıza Kaydı Oluştur</button>
+      </div>
+    </div></div>`;
+  }
   if(s.qrModal.mode==="generate"){
     return `<div class="modal-backdrop qr-backdrop"><div class="modal qr-modal">
       <div class="modal-head"><div><h2>Makine QR Kodu</h2><p>${esc(s.qrModal.factory)} · ${esc(s.qrModal.line)} · ${esc(s.qrModal.machine)}</p></div><button class="qr-close">×</button></div>
@@ -803,7 +871,7 @@ function qrModal(){
         <div id="machineQr" class="qr-code-box"></div>
         <div class="qr-help">
           <h3>Nasıl kullanılır?</h3>
-          <p>Bu QR kodu makinenin üzerine yapıştırın. Operatör arıza kaydı ekranında kodu okuttuğunda fabrika, hat, bölüm ve makine alanları otomatik dolar.</p>
+          <p>Bu QR kodu makinenin üzerine yapıştırın. Kod okutulduğunda önce makine bilgileri açılır; kullanıcı buradan arıza kaydı oluşturabilir.</p>
           <button type="button" class="primary" id="printQr">QR Kodunu Yazdır</button>
         </div>
       </div>
@@ -982,6 +1050,8 @@ function bind(){
   document.querySelectorAll(".qr-backdrop").forEach(bg=>bg.onclick=e=>{if(e.target===bg)closeQrModal()});
   const applyManual=document.getElementById("applyQrManual");
   if(applyManual)applyManual.onclick=()=>applyQrPayload(document.getElementById("qrManualText").value.trim());
+  const createFaultFromQr=document.getElementById("createFaultFromQr");
+  if(createFaultFromQr)createFaultFromQr.onclick=openFaultFormFromQr;
   const printQr=document.getElementById("printQr");
   if(printQr)printQr.onclick=()=>window.print();
 
