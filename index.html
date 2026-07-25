@@ -159,7 +159,7 @@
   .qr-modal{position:absolute;left:0;top:0;width:100%;box-shadow:none}
   .qr-close,#printQr,.qr-help p{display:none!important}
 }
-</style></head><body><div id="app"></div><script>
+</style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div><script>
 const K="etilismart_faults_v5";
 
 const FACTORIES={
@@ -240,11 +240,28 @@ function generateHistory(){
 function safeJson(text,fallback){
   try{return JSON.parse(text)}catch(e){return fallback}
 }
+function storageGet(storage,key,fallback){
+  try{
+    const value=storage.getItem(key);
+    return value===null?fallback:value;
+  }catch(e){
+    return fallback;
+  }
+}
+function storageSet(storage,key,value){
+  try{storage.setItem(key,value);return true}catch(e){return false}
+}
+function storageRemove(storage,key){
+  try{storage.removeItem(key)}catch(e){}
+}
+function storageClear(storage){
+  try{storage.clear()}catch(e){}
+}
 let s={
-  login:sessionStorage.getItem("eslogin")==="1",
-  user:safeJson(sessionStorage.getItem("esuser")||"null",null),
+  login:storageGet(sessionStorage,"eslogin","0")==="1",
+  user:safeJson(storageGet(sessionStorage,"esuser","null"),null),
   page:"dashboard",
-  faults:safeJson(localStorage.getItem(K)||"null",null)||generateHistory(),
+  faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
   dashboardFactory:"Tümü",
   reportFactory:"Tümü",
   reportStart:"",
@@ -263,7 +280,7 @@ let s={
   qrScanner:null
 };
 
-function save(){localStorage.setItem(K,JSON.stringify(s.faults))}
+function save(){storageSet(localStorage,K,JSON.stringify(s.faults))}
 function isOperator(){
   return s.user?.role==="Operatör";
 }
@@ -828,11 +845,11 @@ function bind(){
     s.dashboardFactory=s.user.role==="Fabrika Müdürü"?s.user.factory:"Tümü";
     s.reportFactory=s.dashboardFactory;
     s.login=true;
-    sessionStorage.setItem("eslogin","1");
-    sessionStorage.setItem("esuser",JSON.stringify(s.user));
+    storageSet(sessionStorage,"eslogin","1");
+    storageSet(sessionStorage,"esuser",JSON.stringify(s.user));
     render();
   };
-  const out=document.getElementById("out");if(out)out.onclick=()=>{sessionStorage.clear();s.login=false;render()};
+  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);s.login=false;s.user=null;render()};
   const df=document.getElementById("dashboardFactory");if(df)df.onchange=()=>{s.dashboardFactory=df.value;render()};
   document.querySelectorAll(".chart-unit").forEach(el=>el.onchange=()=>{
     const id=el.dataset.chart;
@@ -869,10 +886,11 @@ function bind(){
   if(printQr)printQr.onclick=()=>window.print();
 
 }
-setInterval(updateClockAndDurations,1000);
-try{
-  render();
-}catch(error){
+function startEtiliSmart(){
+  setInterval(updateClockAndDurations,1000);
+  try{
+    render();
+  }catch(error){
   console.error(error);
   const app=document.getElementById("app");
   if(app)app.innerHTML=`<div style="max-width:720px;margin:60px auto;padding:24px;font-family:Arial,sans-serif;background:#fff;border:1px solid #ddd;border-radius:16px">
@@ -881,11 +899,20 @@ try{
     <button id="resetEtiliSmart" style="border:0;border-radius:10px;padding:11px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>
     <pre style="white-space:pre-wrap;color:#a00">${String(error.message||error)}</pre>
   </div>`;
-  document.getElementById("resetEtiliSmart")?.addEventListener("click",()=>{
-    localStorage.removeItem(K);
-    sessionStorage.removeItem("eslogin");
-    sessionStorage.removeItem("esuser");
-    location.reload();
-  });
+  const resetButton=document.getElementById("resetEtiliSmart");
+  if(resetButton){
+    resetButton.addEventListener("click",function(){
+      storageRemove(localStorage,K);
+      storageRemove(sessionStorage,"eslogin");
+      storageRemove(sessionStorage,"esuser");
+      location.reload();
+    });
+  }
+  }
+}
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",startEtiliSmart);
+}else{
+  startEtiliSmart();
 }
 </script></body></html>
