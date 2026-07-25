@@ -159,7 +159,7 @@
   .qr-modal{position:absolute;left:0;top:0;width:100%;box-shadow:none}
   .qr-close,#printQr,.qr-help p{display:none!important}
 }
-</style></head><body><div id="app"></div><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script><script>
+</style></head><body><div id="app"></div><script>
 const K="etilismart_faults_v5";
 
 const FACTORIES={
@@ -237,11 +237,14 @@ function generateHistory(){
   return arr;
 }
 
+function safeJson(text,fallback){
+  try{return JSON.parse(text)}catch(e){return fallback}
+}
 let s={
   login:sessionStorage.getItem("eslogin")==="1",
-  user:JSON.parse(sessionStorage.getItem("esuser")||"null"),
+  user:safeJson(sessionStorage.getItem("esuser")||"null",null),
   page:"dashboard",
-  faults:JSON.parse(localStorage.getItem(K)||"null")||generateHistory(),
+  faults:safeJson(localStorage.getItem(K)||"null",null)||generateHistory(),
   dashboardFactory:"Tümü",
   reportFactory:"Tümü",
   reportStart:"",
@@ -535,6 +538,42 @@ function dashboard(){
   </div>`;
 }
 
+
+const qrLibraryState={generator:null,scanner:null};
+function loadExternalScript(src){
+  return new Promise((resolve,reject)=>{
+    const existing=[...document.scripts].find(x=>x.src===src);
+    if(existing){
+      if(existing.dataset.loaded==="1")return resolve();
+      existing.addEventListener("load",resolve,{once:true});
+      existing.addEventListener("error",reject,{once:true});
+      return;
+    }
+    const script=document.createElement("script");
+    script.src=src;
+    script.async=true;
+    script.onload=()=>{script.dataset.loaded="1";resolve()};
+    script.onerror=()=>reject(new Error("Kütüphane yüklenemedi"));
+    document.head.appendChild(script);
+  });
+}
+async function ensureQrGenerator(){
+  if(typeof QRCode!=="undefined")return true;
+  if(!qrLibraryState.generator){
+    qrLibraryState.generator=loadExternalScript("https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js");
+  }
+  try{await qrLibraryState.generator;return typeof QRCode!=="undefined"}
+  catch(e){qrLibraryState.generator=null;return false}
+}
+async function ensureQrScanner(){
+  if(typeof Html5Qrcode!=="undefined")return true;
+  if(!qrLibraryState.scanner){
+    qrLibraryState.scanner=loadExternalScript("https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js");
+  }
+  try{await qrLibraryState.scanner;return typeof Html5Qrcode!=="undefined"}
+  catch(e){qrLibraryState.scanner=null;return false}
+}
+
 function machineQrPayload(factory,line,department,machine){
   return JSON.stringify({
     app:"ETILISMART",
@@ -564,12 +603,13 @@ function closeQrModal(){
   s.qrModal=null;
   render();
 }
-function startQrScanner(){
+async function startQrScanner(){
   const reader=document.getElementById("qr-reader");
   if(!reader)return;
-  if(typeof Html5Qrcode==="undefined"){
+  const scannerReady=await ensureQrScanner();
+  if(!scannerReady){
     const msg=document.getElementById("qrMessage");
-    if(msg)msg.textContent="QR tarama kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edin.";
+    if(msg)msg.textContent="QR tarama özelliği yüklenemedi. İnternet bağlantısını kontrol edin; uygulamanın diğer bölümleri çalışmaya devam eder.";
     return;
   }
   stopQrScanner();
@@ -621,12 +661,13 @@ function applyQrPayload(raw){
     if(msg)msg.textContent="Bu QR kod ETİLİSMART makine kodu değil.";
   }
 }
-function renderMachineQr(){
+async function renderMachineQr(){
   const target=document.getElementById("machineQr");
   if(!target||!s.qrModal||s.qrModal.mode!=="generate")return;
   target.innerHTML="";
-  if(typeof QRCode==="undefined"){
-    target.textContent="QR oluşturma kütüphanesi yüklenemedi.";
+  const generatorReady=await ensureQrGenerator();
+  if(!generatorReady){
+    target.textContent="QR oluşturma özelliği yüklenemedi. İnternet bağlantısını kontrol edin.";
     return;
   }
   new QRCode(target,{
@@ -829,5 +870,22 @@ function bind(){
 
 }
 setInterval(updateClockAndDurations,1000);
-render();
+try{
+  render();
+}catch(error){
+  console.error(error);
+  const app=document.getElementById("app");
+  if(app)app.innerHTML=`<div style="max-width:720px;margin:60px auto;padding:24px;font-family:Arial,sans-serif;background:#fff;border:1px solid #ddd;border-radius:16px">
+    <h2 style="margin-top:0">ETİLİSMART açılırken bir hata oluştu</h2>
+    <p>Tarayıcıdaki eski kayıtları temizleyip sayfayı yenileyin.</p>
+    <button id="resetEtiliSmart" style="border:0;border-radius:10px;padding:11px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>
+    <pre style="white-space:pre-wrap;color:#a00">${String(error.message||error)}</pre>
+  </div>`;
+  document.getElementById("resetEtiliSmart")?.addEventListener("click",()=>{
+    localStorage.removeItem(K);
+    sessionStorage.removeItem("eslogin");
+    sessionStorage.removeItem("esuser");
+    location.reload();
+  });
+}
 </script></body></html>
