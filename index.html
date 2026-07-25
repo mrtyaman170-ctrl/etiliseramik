@@ -188,6 +188,157 @@
  .qr-home-card{align-items:flex-start;flex-wrap:wrap}.qr-home-card button{width:100%}
 }
 
+
+/* Yönetici mobil görünümü */
+.top-user{display:flex;align-items:center;gap:8px}
+.top-user-role{font-size:12px;color:#c9cdd2}
+.mobile-bottom-nav{display:none}
+
+@media(max-width:900px){
+  body{padding-bottom:76px}
+  .top{
+    height:58px;
+    padding:0 12px;
+    position:sticky;
+    top:0;
+    z-index:50;
+    box-shadow:0 3px 14px rgba(0,0,0,.18)
+  }
+  .brand{font-size:17px}
+  .top-user{gap:7px;min-width:0}
+  .top-user-name{display:none}
+  .top-user-role{
+    display:block;
+    max-width:118px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:#fff;
+    font-size:11px
+  }
+  .top .secondary{padding:7px 9px;font-size:11px;border-color:#444;background:#24282d;color:#fff}
+  .layout{min-height:calc(100vh - 58px)}
+  main{padding:14px 12px 22px}
+  .head{margin-bottom:14px;gap:10px}
+  .head h1{font-size:23px;line-height:1.15}
+  .head p{font-size:13px}
+  .head>.primary,.head>.home-action-buttons{width:100%}
+  .home-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .home-action-buttons button{width:100%;padding:11px 8px;font-size:13px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .card{padding:14px;border-radius:13px;box-shadow:0 4px 14px rgba(0,0,0,.045)}
+  .value{font-size:25px}
+  .label{font-size:12px}
+  .section{margin-top:14px}
+  .dashboard-filter{max-width:none;margin-bottom:12px}
+  .qr-home-card{margin-bottom:12px;padding:14px;gap:12px}
+  .qr-home-symbol{width:46px;height:46px;font-size:24px}
+  .qr-home-card b{font-size:15px}
+  .qr-home-card span{font-size:12px;line-height:1.4}
+  .clock-block{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .clock-block>*:last-child{grid-column:1/-1}
+  .report-filter,.layoutfilters{grid-template-columns:1fr!important;gap:10px!important}
+  .chart-grid,.charts-grid,.machine-info-grid,.machine-kpis{grid-template-columns:1fr!important}
+  .plant-map{overflow:hidden}
+  .dept-block{padding:12px!important}
+  .flow-row{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .machine-card{min-width:135px;max-width:135px}
+  .modal-backdrop{padding:0!important;align-items:flex-end!important}
+  .modal{
+    width:100%!important;
+    max-width:none!important;
+    max-height:92vh!important;
+    border-radius:20px 20px 0 0!important;
+    padding:16px!important;
+    overflow:auto
+  }
+  .modal-head h2{font-size:20px}
+  .tabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .tabs button{flex:0 0 auto}
+  .qr-machine-grid{grid-template-columns:1fr 1fr}
+  .actions{position:sticky;bottom:0;background:#fff;padding-top:10px}
+  .actions button{flex:1}
+  .mobile-bottom-nav{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    height:68px;
+    display:flex;
+    align-items:stretch;
+    background:#fff;
+    border-top:1px solid var(--l);
+    box-shadow:0 -5px 18px rgba(0,0,0,.10);
+    z-index:90;
+    padding-bottom:env(safe-area-inset-bottom)
+  }
+  .mobile-bottom-nav button{
+    flex:1;
+    min-width:0;
+    border:0;
+    background:#fff;
+    color:#777;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    padding:5px 2px
+  }
+  .mobile-bottom-nav button span{font-size:20px;line-height:1}
+  .mobile-bottom-nav button small{font-size:10px;white-space:nowrap}
+  .mobile-bottom-nav button.active{color:#111;background:#fff8df;font-weight:800}
+}
+
+@media(max-width:620px){
+  .formgrid{grid-template-columns:1fr}
+  input,select,textarea{font-size:16px} /* iPhone otomatik yakınlaştırmayı engeller */
+  .table-wrap{padding:0;background:transparent;border:0;box-shadow:none;overflow:visible}
+  .table-wrap table,.table-wrap tbody,.table-wrap tr,.table-wrap td{display:block;width:100%}
+  .table-wrap thead{display:none}
+  .table-wrap tr{
+    background:#fff;
+    border:1px solid var(--l);
+    border-radius:14px;
+    margin-bottom:10px;
+    padding:7px 12px;
+    box-shadow:0 4px 13px rgba(0,0,0,.045)
+  }
+  .table-wrap td{
+    min-height:36px;
+    padding:9px 0 9px 42%;
+    border-bottom:1px dashed #e7e9ec;
+    position:relative;
+    text-align:left;
+    overflow-wrap:anywhere
+  }
+  .table-wrap td:last-child{border-bottom:0}
+  .table-wrap td::before{
+    content:attr(data-label);
+    position:absolute;
+    left:0;
+    top:10px;
+    width:38%;
+    color:var(--m);
+    font-size:11px;
+    font-weight:700
+  }
+  .table-wrap .sel{width:100%;padding:9px}
+  .status{display:inline-block}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid .card{min-width:0}
+  .value{font-size:22px}
+  .head .primary{width:100%}
+  .report-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .report-cards .card:last-child{grid-column:1/-1}
+}
+
+@media(max-width:380px){
+  main{padding-left:9px;padding-right:9px}
+  .grid{gap:7px}
+  .card{padding:11px}
+  .value{font-size:20px}
+  .mobile-bottom-nav button small{font-size:9px}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div><script>
 const K="etilismart_faults_v5";
 
@@ -401,15 +552,15 @@ function table(items,editable=false){
   return `<div class="card table-wrap"><table>
     <thead><tr><th>Tarih</th><th>Fabrika / Hat</th><th>Bölüm / Makine</th><th>Arıza</th><th>Durum</th><th>Süre</th>${editable?"<th>İşlem</th>":""}</tr></thead>
     <tbody>${items.map(f=>`<tr>
-      <td>${fmtDate(f.createdAt)}</td>
-      <td><b>${esc(f.factory)}</b><small>${esc(f.line)}</small></td>
-      <td><b>${esc(f.department)}</b><small>${esc(f.machine)}</small></td>
-      <td><b>${esc(f.subject)}</b><small>${esc(f.type)}${f.stopped?" · Üretim durdu":""}</small></td>
-      <td><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span></td>
-      <td><span class="duration" data-id="${f.id}">${durationText(f)}</span></td>
-      ${editable?`<td><select class="sel" data-id="${f.id}">
-        <option value="open" ${f.status==="open"?"selected":""}>Açık</option>
-        <option value="progress" ${f.status==="progress"?"selected":""}>Müdahale Ediliyor</option>
+      <td data-label="Tarih">${fmtDate(f.createdAt)}</td>
+      <td data-label="Fabrika / Hat"><b>${esc(f.factory)}</b><br><small>${esc(f.line)}</small></td>
+      <td data-label="Bölüm / Makine"><b>${esc(f.department)}</b><br><small>${esc(f.machine)}</small></td>
+      <td data-label="Arıza"><b>${esc(f.subject)}</b>${f.description?`<br><small>${esc(f.description)}</small>`:""}${f.stopped?'<br><span class="stop-tag">Üretim durdu</span>':""}</td>
+      <td data-label="Durum"><span class="status ${f.status}">${statusLabel(f.status)}</span></td>
+      <td data-label="Süre"><span class="duration" data-id="${f.id}">${durationText(f)}</span></td>
+      ${editable?`<td data-label="İşlem"><select class="sel" data-id="${f.id}">
+        <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
+        <option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option>
         <option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option>
       </select></td>`:""}
     </tr>`).join("")}</tbody>
@@ -1022,9 +1173,20 @@ function page(){
   if(s.page==="report")return roleHasCharts()?reportPage():dashboard();
   return dashboard();
 }
+function mobileNav(){
+  const items=isOperator()
+    ?[["dashboard","⌂","Ana Sayfa"],["new","+","Arıza Aç"]]
+    :[["dashboard","⌂","Panel"],["new","+","Arıza Aç"],["faults","≡","Arızalar"],...(roleHasCharts()?[["report","▥","Rapor"]]:[]),["layout","⌘","Hatlar"]];
+  return `<nav class="mobile-bottom-nav">${items.map(([page,icon,label])=>`
+    <button type="button" data-p="${page}" class="${s.page===page?"active":""}">
+      <span>${icon}</span><small>${label}</small>
+    </button>`).join("")}</nav>`;
+}
 function app(){
-  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span></div><div>${esc(s.user?.name||"")} · ${esc(s.user?.role||"")} <button id="out" class="secondary">Çıkış</button></div></div>
-  <div class="layout"><aside>${isOperator()?`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}`:`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}${nav("faults","Arıza Kayıtları")}${roleHasCharts()?nav("report","Geçmiş Arıza Raporu"):""}${nav("layout","Hat Yerleşim Planı")}`}</aside><main>${page()}</main></div>${machineModal()}${qrModal()}`;
+  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span></div>
+    <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
+  </div>
+  <div class="layout"><aside>${isOperator()?`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}`:`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}${nav("faults","Arıza Kayıtları")}${roleHasCharts()?nav("report","Geçmiş Arıza Raporu"):""}${nav("layout","Hat Yerleşim Planı")}`}</aside><main>${page()}</main></div>${mobileNav()}${machineModal()}${qrModal()}`;
 }
 function login(){
   return `<div class="login"><div class="loginbox"><div class="logo">ES</div><h1>ETİLİSMART</h1><p>Dijital Bakım Yönetim Sistemi</p><div class="notice">Demo şifresi: <strong>1234</strong></div>
