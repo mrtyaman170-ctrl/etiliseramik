@@ -1833,6 +1833,43 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 @media(max-width:1250px){.rich-timebar{grid-template-columns:1fr 1fr 1fr}.rich-timebar .pro-time-divider{display:none}.dashboard-insight-grid{grid-template-columns:1fr 1fr}.dashboard-maintenance-log-list{grid-template-columns:1fr 1fr}}
 @media(max-width:800px){.dashboard-insight-grid,.dashboard-maintenance-log-list{grid-template-columns:1fr}.maintenance-log-people{grid-template-columns:1fr 1fr}.maintenance-log-person-list article{grid-template-columns:1fr}.fault-handover-form{grid-template-columns:1fr}.fault-handover-history article{grid-template-columns:1fr}.material-editor-form,.maintenance-log-form{grid-template-columns:1fr}.material-editor-form .wide,.maintenance-log-form .wide{grid-column:auto}}
 
+
+/* Talep ve iş emri detay / düzenleme */
+.work-card-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}
+.work-card-side .work-detail-button{padding:7px 9px;font-size:7.5px}
+.work-detail-modal{width:min(1040px,96vw);max-height:93vh;overflow:auto}
+.work-detail-kind{display:block;margin-bottom:4px;font-size:7px;font-weight:900;letter-spacing:.8px;color:#3e78a3}
+.work-detail-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}
+.work-detail-summary article{padding:11px;border:1px solid #e0e6ea;border-radius:12px;background:#f8fafb}
+.work-detail-summary small,.work-detail-summary b{display:block}
+.work-detail-summary small{font-size:7px;font-weight:900;color:#7c8994}
+.work-detail-summary b{margin-top:5px;font-size:9px;color:#2e3e4b}
+.work-detail-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px;border:1px solid #e0e6ea;border-radius:14px;background:#fbfcfd}
+.work-detail-form .field{margin:0}
+.work-detail-form input,.work-detail-form select,.work-detail-form textarea{width:100%}
+.work-detail-form input:disabled,.work-detail-form select:disabled,.work-detail-form textarea:disabled{background:#eef1f3;color:#66737d;opacity:1}
+.work-detail-title-field{grid-column:span 2}
+.work-detail-description-field{grid-column:1/-1}
+.work-detail-save-row{grid-column:1/-1;display:flex;justify-content:flex-end}
+.work-detail-audit,.work-detail-materials{margin-top:14px;padding:14px;border:1px solid #e0e6ea;border-radius:14px;background:#fff}
+.work-detail-audit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.work-detail-audit-grid article{padding:10px;border-radius:10px;background:#f4f7f9}
+.work-detail-audit-grid small,.work-detail-audit-grid b,.work-detail-audit-grid span{display:block}
+.work-detail-audit-grid small{font-size:6.5px;font-weight:900;color:#7c8994}
+.work-detail-audit-grid b{margin:4px 0;font-size:8.5px;color:#2d3d49}
+.work-detail-audit-grid span{font-size:7px;color:#84909a}
+.work-detail-danger{margin-top:14px}
+@media(max-width:900px){
+  .work-detail-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .work-detail-summary,.work-detail-audit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .work-card-side{align-items:flex-start;text-align:left}
+  .work-detail-form{grid-template-columns:1fr}
+  .work-detail-title-field,.work-detail-description-field,.work-detail-save-row{grid-column:auto}
+  .work-detail-summary,.work-detail-audit-grid{grid-template-columns:1fr 1fr}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -2770,6 +2807,51 @@ function canUpdateWorkOrder(item){
   if(canManageWorkRequest(item))return true;
   return !!permissions().updateAssignedWorkOrders&&item.assignedTo===s.user?.name;
 }
+function canEditWorkItemCore(item){
+  if(!item)return false;
+  if(canManageWorkRequest(item))return true;
+  return item.kind==="request"
+    &&permissions().createRequest
+    &&item.createdBy===s.user?.name
+    &&["new","reviewing"].includes(item.status);
+}
+function canDeleteWorkItem(item){
+  if(!item)return false;
+  if(canManageWorkRequest(item))return true;
+  return item.kind==="request"
+    &&permissions().createRequest
+    &&item.createdBy===s.user?.name
+    &&["new","reviewing","cancelled"].includes(item.status);
+}
+function deleteWorkItemById(id){
+  const item=s.workItems.find(x=>x.id===id);
+  if(!item)return {ok:false,message:"Kayıt bulunamadı."};
+  if(!canDeleteWorkItem(item))return {ok:false,message:"Bu kaydı silme yetkiniz bulunmuyor."};
+
+  if(item.kind==="request"){
+    const linked=s.workItems.find(x=>x.kind==="workorder"&&x.sourceRequestId===item.id);
+    if(linked){
+      return {
+        ok:false,
+        message:`Bu talebe bağlı ${linked.id} numaralı iş emri bulunuyor. Önce bağlı iş emrini silmelisiniz.`
+      };
+    }
+  }
+
+  if(item.kind==="workorder"&&item.sourceRequestId){
+    const request=s.workItems.find(x=>x.id===item.sourceRequestId);
+    if(request){
+      request.status="approved";
+      request.convertedBy="";
+      request.convertedAt=null;
+      request.completedAt=null;
+    }
+  }
+
+  s.workItems=s.workItems.filter(x=>x.id!==id);
+  saveWorkItems();
+  return {ok:true,item};
+}
 function visibleWorkItems(){
   let items=[...s.workItems];
   if(s.user?.role==="Bakım Müdürü"||permissions().allFactories){}
@@ -2961,6 +3043,7 @@ let s={
   faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
   plannedMaintenances:safeJson(storageGet(localStorage,PM_KEY,"null"),null)||generatePlannedMaintenances(),
   workItems:safeJson(storageGet(localStorage,WORK_KEY,"null"),null)||generateWorkItems(),
+  workDetailId:null,
   maintenanceLogs:safeJson(storageGet(localStorage,MAINTENANCE_LOG_KEY,"[]"),[]),
   maintenanceLogModal:false,
   materialEditId:null,
@@ -3891,7 +3974,7 @@ function dashboard(){
         <span class="list-count blue">${dashboardWorkOrders.length}</span>
       </div>
       <div class="dashboard-work-order-list">
-        ${dashboardWorkOrders.map(item=>`<button type="button" data-p="work" class="dashboard-work-order-row">
+        ${dashboardWorkOrders.map(item=>`<button type="button" data-p="work" data-work-detail-id="${esc(item.id)}" class="dashboard-work-order-row">
           <span class="work-order-priority ${{"Acil":"acil","Yüksek":"yuksek","Orta":"orta","Düşük":"dusuk"}[item.priority]||"orta"}">${esc(item.priority||"Orta")}</span>
           <div><b>${esc(item.title)}</b><small>${esc(item.factory)} · ${esc(item.assignedTeam||"Bakım Ekibi")}</small><em>${esc(item.assignedTo||"Personel bekliyor")}</em></div>
           <strong>${esc(workStatusLabel(item.status,"workorder"))}</strong>
@@ -4891,7 +4974,7 @@ function workManagementPage(){
     </form>
   </section>`:"";
   const requestCards=requests.map(item=>`<article class="work-card request-card priority-${item.priority.toLocaleLowerCase("tr-TR")}">
-    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,"request")}</b><small>${fmtDate(item.createdAt)}</small></div></div>
+    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,"request")}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="secondary work-detail-button" data-work-detail-id="${esc(item.id)}">Detay / Düzenle</button></div></div>
     <p class="work-description">${esc(item.description)}</p>
     <div class="work-meta"><span>Talep Eden: <b>${esc(item.createdBy)}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span><span>İstenen Tarih: <b>${esc(item.requestedDate||"-")}</b></span><span>Ekip: <b>${esc(item.assignedTeam||workTeamForCategory(item.category))}</b></span></div>
     <div class="work-request-audit"><span><small>İSTEYEN</small><b>${esc(item.createdBy||"Bilinmiyor")}</b><em>${fmtDate(item.createdAt)}</em></span>${item.reviewedBy?`<span><small>İNCELEYEN</small><b>${esc(item.reviewedBy)}</b><em>${fmtDate(item.reviewedAt)}</em></span>`:""}${item.approvedBy?`<span class="approved"><small>ONAYLAYAN</small><b>${esc(item.approvedBy)}</b><em>${fmtDate(item.approvedAt)}</em></span>`:""}${item.rejectedBy?`<span class="rejected"><small>REDDEDEN</small><b>${esc(item.rejectedBy)}</b><em>${fmtDate(item.rejectedAt)}</em></span>`:""}${item.convertedBy?`<span><small>İŞ EMRİNE ÇEVİREN</small><b>${esc(item.convertedBy)}</b><em>${fmtDate(item.convertedAt)}</em></span>`:""}</div>
@@ -4909,7 +4992,7 @@ function workManagementPage(){
     const materials=workMaterials(item);
     const people=workMaintenanceOptions(item.factory,item.assignedTeam);
     return `<article class="work-card order-card priority-${item.priority.toLocaleLowerCase("tr-TR")}">
-      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status)}</b><small>${fmtDate(item.createdAt)}</small></div></div>
+      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status)}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="secondary work-detail-button" data-work-detail-id="${esc(item.id)}">Detay / Düzenle</button></div></div>
       <p class="work-description">${esc(item.description)}</p>
       <div class="work-meta"><span>Ekip: <b>${esc(item.assignedTeam)}</b></span><span>Sorumlu: <b>${esc(item.assignedTo||"Atama Bekliyor")}</b></span><span>Plan: <b>${esc(item.planStart||"-")} → ${esc(item.planEnd||"-")}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span></div>
       ${canManageWorkRequest(item)?`<div class="work-control-row"><label>Sorumlu Personel<select class="work-assignee" data-work-id="${item.id}"><option value="">Atama Bekliyor</option>${people.map(p=>`<option ${p===item.assignedTo?"selected":""}>${esc(p)}</option>`).join("")}</select></label></div>`:""}
@@ -4928,6 +5011,191 @@ function workManagementPage(){
   <section class="work-list">${s.workTab==="requests"?requestCards:orderCards}</section>`;
 }
 
+
+
+function workDetailModal(){
+  if(!s.workDetailId)return "";
+  const item=s.workItems.find(x=>x.id===s.workDetailId);
+  if(!item)return "";
+
+  const isRequest=item.kind==="request";
+  const canCoreEdit=canEditWorkItemCore(item);
+  const canProgressEdit=!isRequest&&canUpdateWorkOrder(item);
+  const canDelete=canDeleteWorkItem(item);
+
+  const categories=[
+    "Aydınlatma",
+    "Klima / Havalandırma",
+    "Elektrik Tesisatı",
+    "Enerji Hattı",
+    "Kamera / Güvenlik",
+    "Mekanik İyileştirme",
+    "Kaynak / İmalat",
+    "Pnömatik Hat",
+    "Hidrolik Sistem",
+    "Makine Taşıma",
+    "Diğer"
+  ];
+  const priorities=["Düşük","Orta","Yüksek","Acil"];
+  const factories=[...new Set([...userFactories(),item.factory].filter(Boolean))];
+  const teams=["Elektrik Bakım","Mekanik Bakım"];
+  const assignedTeam=item.assignedTeam||workTeamForCategory(item.category);
+  const people=workMaintenanceOptions(item.factory,assignedTeam);
+  const materials=workMaterials(item);
+
+  const auditRows=[
+    ["OLUŞTURAN / İSTEYEN",item.createdBy,item.createdAt],
+    ["İNCELEYEN",item.reviewedBy,item.reviewedAt],
+    ["ONAYLAYAN",item.approvedBy,item.approvedAt],
+    ["REDDEDEN",item.rejectedBy,item.rejectedAt],
+    ["İŞ EMRİNE DÖNÜŞTÜREN",item.convertedBy,item.convertedAt],
+    ["SON DÜZENLEYEN",item.updatedBy,item.updatedAt],
+    ["TAMAMLAYAN",item.completedBy,item.completedAt]
+  ].filter(([,name])=>name);
+
+  return `<div class="modal-bg work-detail-backdrop" id="workDetailBackdrop">
+    <div class="modal work-detail-modal">
+      <div class="modal-head">
+        <div>
+          <span class="work-detail-kind">${isRequest?"İŞ TALEBİ":"İŞ EMRİ"}</span>
+          <h2>${esc(item.id)} · ${esc(item.title)}</h2>
+          <p>${esc(item.factory)} · ${esc(item.department||"-")} · ${esc(item.location||"-")}</p>
+        </div>
+        <button type="button" id="closeWorkDetail">×</button>
+      </div>
+
+      <div class="work-detail-summary">
+        <article><small>DURUM</small><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,isRequest?"request":"workorder")}</b></article>
+        <article><small>ÖNCELİK</small><b>${esc(item.priority||"-")}</b></article>
+        <article><small>BAKIM EKİBİ</small><b>${esc(assignedTeam||"-")}</b></article>
+        <article><small>SORUMLU</small><b>${esc(item.assignedTo||"Atama bekliyor")}</b></article>
+      </div>
+
+      <form id="workDetailForm" class="work-detail-form" data-work-id="${esc(item.id)}">
+        <div class="field">
+          <label>Fabrika</label>
+          <select id="workDetailFactory" ${canCoreEdit?"":"disabled"}>
+            ${factories.map(factory=>`<option value="${esc(factory)}" ${factory===item.factory?"selected":""}>${esc(factory)}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label>Bölüm</label>
+          <input id="workDetailDepartment" value="${esc(item.department||"")}" ${canCoreEdit?"":"disabled"}>
+        </div>
+        <div class="field">
+          <label>Talep / İş Yeri</label>
+          <input id="workDetailLocation" value="${esc(item.location||"")}" ${canCoreEdit?"":"disabled"}>
+        </div>
+        <div class="field">
+          <label>Kategori</label>
+          <select id="workDetailCategory" ${canCoreEdit?"":"disabled"}>
+            ${[...new Set([...categories,item.category].filter(Boolean))].map(category=>`<option value="${esc(category)}" ${category===item.category?"selected":""}>${esc(category)}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field work-detail-title-field">
+          <label>Başlık</label>
+          <input id="workDetailTitle" maxlength="160" value="${esc(item.title||"")}" ${canCoreEdit?"":"disabled"}>
+        </div>
+        <div class="field">
+          <label>Öncelik</label>
+          <select id="workDetailPriority" ${canCoreEdit?"":"disabled"}>
+            ${priorities.map(priority=>`<option value="${priority}" ${priority===item.priority?"selected":""}>${priority}</option>`).join("")}
+          </select>
+        </div>
+
+        ${isRequest?`
+          <div class="field">
+            <label>İstenen Tamamlanma Tarihi</label>
+            <input id="workDetailRequestedDate" type="date" value="${esc(item.requestedDate||"")}" ${canCoreEdit?"":"disabled"}>
+          </div>
+          <div class="field">
+            <label>Sorumlu Bakım Ekibi</label>
+            <select id="workDetailTeam" ${canCoreEdit?"":"disabled"}>
+              ${teams.map(team=>`<option value="${team}" ${team===assignedTeam?"selected":""}>${team}</option>`).join("")}
+            </select>
+          </div>
+        `:`
+          <div class="field">
+            <label>Planlanan Başlangıç</label>
+            <input id="workDetailPlanStart" type="date" value="${esc(item.planStart||"")}" ${canCoreEdit?"":"disabled"}>
+          </div>
+          <div class="field">
+            <label>Planlanan Bitiş</label>
+            <input id="workDetailPlanEnd" type="date" value="${esc(item.planEnd||"")}" ${canCoreEdit?"":"disabled"}>
+          </div>
+          <div class="field">
+            <label>Bakım Ekibi</label>
+            <select id="workDetailTeam" ${canCoreEdit?"":"disabled"}>
+              ${teams.map(team=>`<option value="${team}" ${team===assignedTeam?"selected":""}>${team}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label>Atanan Personel</label>
+            <select id="workDetailAssignedTo" ${canCoreEdit?"":"disabled"}>
+              <option value="">Atama bekliyor</option>
+              ${[...new Set([...people,item.assignedTo].filter(Boolean))].map(person=>`<option value="${esc(person)}" ${person===item.assignedTo?"selected":""}>${esc(person)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label>İş Emri Durumu</label>
+            <select id="workDetailStatus" ${canProgressEdit?"":"disabled"}>
+              ${[
+                ["open","Açık"],
+                ["assigned","Personele Atandı"],
+                ["progress","Devam Ediyor"],
+                ["material","Malzeme Bekliyor"],
+                ["approval","Bölüm Onayı Bekliyor"],
+                ["done","Tamamlandı"],
+                ["cancelled","İptal Edildi"]
+              ].map(([value,label])=>`<option value="${value}" ${value===item.status?"selected":""}>${label}</option>`).join("")}
+            </select>
+          </div>
+        `}
+
+        <div class="field work-detail-description-field">
+          <label>Açıklama</label>
+          <textarea id="workDetailDescription" rows="5" maxlength="2000" ${canCoreEdit?"":"disabled"}>${esc(item.description||"")}</textarea>
+        </div>
+
+        ${!isRequest?`<div class="field work-detail-description-field">
+          <label>Yapılan İş / Sonuç</label>
+          <textarea id="workDetailResult" rows="4" maxlength="2000" ${canProgressEdit?"":"disabled"}>${esc(item.workDescription||"")}</textarea>
+        </div>`:""}
+
+        ${(canCoreEdit||canProgressEdit)?`<div class="work-detail-save-row">
+          <button type="submit" class="primary">Değişiklikleri Kaydet</button>
+        </div>`:""}
+      </form>
+
+      <section class="work-detail-audit">
+        <div class="section-modern-head"><div><h2>Kayıt Geçmişi</h2><p>Talebi isteyen, onaylayan, reddeden ve düzenleyen kullanıcı bilgileri.</p></div></div>
+        <div class="work-detail-audit-grid">
+          ${auditRows.map(([label,name,date])=>`<article><small>${label}</small><b>${esc(name)}</b><span>${date?fmtDate(date):"-"}</span></article>`).join("")||'<div class="compact-empty"><p>İşlem geçmişi bulunmuyor.</p></div>'}
+        </div>
+      </section>
+
+      ${!isRequest?`<section class="work-detail-materials">
+        <div class="section-modern-head"><div><h2>Kullanılan Malzemeler</h2><p>İş emrine kaydedilen malzemeler.</p></div></div>
+        <div class="work-material-chips">
+          ${materials.map(material=>{
+            const catalog=materialById(material.materialId);
+            return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${material.quantity} ${esc(material.unit||catalog?.unit||"Adet")}</span>`;
+          }).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}
+        </div>
+      </section>`:""}
+
+      ${canDelete?`<section class="detail-danger-zone work-detail-danger">
+        <div>
+          <b>${isRequest?"İş Talebini Sil":"İş Emrini Sil"}</b>
+          <p>${isRequest
+            ?"Talep kalıcı olarak listeden kaldırılır. Bağlı iş emri varsa önce iş emrinin silinmesi gerekir."
+            :"İş emri kalıcı olarak kaldırılır. Bir talepten oluşturulduysa talep yeniden Onaylandı durumuna alınır."}</p>
+        </div>
+        <button type="button" class="danger" id="deleteWorkDetail">${isRequest?"Talebi Sil":"İş Emrini Sil"}</button>
+      </section>`:""}
+    </div>
+  </div>`;
+}
 
 function materialsManagementPage(){
   const usage=materialUsageRows();
@@ -5321,7 +5589,7 @@ function app(){
     <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
     ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
     <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>
-  </aside><main>${page()}</main></div>${personnelDetailModal()}${faultDetailModal()}${machineModal()}${maintenanceLogModal()}${materialEditorModal()}${qrModal()}${shiftPersonModal()}`;
+  </aside><main>${page()}</main></div>${personnelDetailModal()}${faultDetailModal()}${machineModal()}${workDetailModal()}${maintenanceLogModal()}${materialEditorModal()}${qrModal()}${shiftPersonModal()}`;
 }
 function login(){
   return `<div class="login login-redesign">
@@ -5739,6 +6007,141 @@ function bind(){
       <div class="footer"><div class="sign">Kontrol Eden</div><div class="sign">Bakım Formeni</div></div>
       <script>window.onload=()=>window.print()<\/script></body></html>`);
     popup.document.close();
+  };
+
+  document.querySelectorAll("[data-work-detail-id]").forEach(btn=>btn.onclick=e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const id=btn.dataset.workDetailId;
+    if(!s.workItems.some(item=>item.id===id))return;
+    s.page="work";
+    s.workDetailId=id;
+    render();
+  });
+
+  const closeWorkDetail=()=>{
+    s.workDetailId=null;
+    render();
+  };
+  const closeWorkDetailButton=document.getElementById("closeWorkDetail");
+  if(closeWorkDetailButton)closeWorkDetailButton.onclick=closeWorkDetail;
+  const workDetailBackdrop=document.getElementById("workDetailBackdrop");
+  if(workDetailBackdrop)workDetailBackdrop.onclick=e=>{
+    if(e.target===workDetailBackdrop)closeWorkDetail();
+  };
+
+  const workDetailTeam=document.getElementById("workDetailTeam");
+  const workDetailFactory=document.getElementById("workDetailFactory");
+  const workDetailAssignedTo=document.getElementById("workDetailAssignedTo");
+  const refreshWorkDetailPeople=()=>{
+    if(!workDetailAssignedTo||!workDetailTeam||!workDetailFactory)return;
+    const item=s.workItems.find(x=>x.id===s.workDetailId);
+    const selected=workDetailAssignedTo.value||item?.assignedTo||"";
+    const people=workMaintenanceOptions(workDetailFactory.value,workDetailTeam.value);
+    workDetailAssignedTo.innerHTML='<option value="">Atama bekliyor</option>'+
+      [...new Set([...people,selected].filter(Boolean))]
+        .map(person=>`<option value="${esc(person)}" ${person===selected?"selected":""}>${esc(person)}</option>`)
+        .join("");
+  };
+  if(workDetailTeam)workDetailTeam.onchange=refreshWorkDetailPeople;
+  if(workDetailFactory)workDetailFactory.onchange=refreshWorkDetailPeople;
+
+  const workDetailForm=document.getElementById("workDetailForm");
+  if(workDetailForm)workDetailForm.onsubmit=e=>{
+    e.preventDefault();
+    const item=s.workItems.find(x=>x.id===workDetailForm.dataset.workId);
+    if(!item)return;
+
+    const isRequest=item.kind==="request";
+    const canCoreEdit=canEditWorkItemCore(item);
+    const canProgressEdit=!isRequest&&canUpdateWorkOrder(item);
+
+    if(canCoreEdit){
+      const title=(document.getElementById("workDetailTitle")?.value||"").trim();
+      const description=(document.getElementById("workDetailDescription")?.value||"").trim();
+      const location=(document.getElementById("workDetailLocation")?.value||"").trim();
+
+      if(!title||!description||!location){
+        alert("Başlık, yer ve açıklama alanları boş bırakılamaz.");
+        return;
+      }
+
+      item.factory=document.getElementById("workDetailFactory")?.value||item.factory;
+      item.department=(document.getElementById("workDetailDepartment")?.value||"").trim();
+      item.location=location;
+      item.category=document.getElementById("workDetailCategory")?.value||item.category;
+      item.title=title;
+      item.priority=document.getElementById("workDetailPriority")?.value||item.priority;
+      item.description=description;
+      item.assignedTeam=document.getElementById("workDetailTeam")?.value||item.assignedTeam;
+
+      if(isRequest){
+        item.requestedDate=document.getElementById("workDetailRequestedDate")?.value||"";
+      }else{
+        item.planStart=document.getElementById("workDetailPlanStart")?.value||"";
+        item.planEnd=document.getElementById("workDetailPlanEnd")?.value||"";
+        item.assignedTo=document.getElementById("workDetailAssignedTo")?.value||"";
+        if(item.assignedTo&&item.status==="open")item.status="assigned";
+      }
+    }
+
+    if(canProgressEdit&&!isRequest){
+      const nextStatus=document.getElementById("workDetailStatus")?.value||item.status;
+      item.workDescription=(document.getElementById("workDetailResult")?.value||"").trim();
+      item.status=nextStatus;
+
+      if(nextStatus==="done"){
+        item.completedAt=item.completedAt||new Date().toISOString();
+        item.completedBy=s.user?.name||"Bilinmeyen Kullanıcı";
+        const source=s.workItems.find(x=>x.id===item.sourceRequestId);
+        if(source){
+          source.status="done";
+          source.completedAt=item.completedAt;
+        }
+      }else{
+        item.completedAt=null;
+        item.completedBy="";
+        const source=s.workItems.find(x=>x.id===item.sourceRequestId);
+        if(source&&source.status==="done")source.status="converted";
+      }
+    }
+
+    item.updatedBy=s.user?.name||"Bilinmeyen Kullanıcı";
+    item.updatedAt=new Date().toISOString();
+    saveWorkItems();
+    alert(`${isRequest?"İş talebi":"İş emri"} güncellendi.`);
+    render();
+  };
+
+  const deleteWorkDetail=document.getElementById("deleteWorkDetail");
+  if(deleteWorkDetail)deleteWorkDetail.onclick=()=>{
+    const item=s.workItems.find(x=>x.id===s.workDetailId);
+    if(!item)return;
+
+    if(deleteWorkDetail.dataset.confirmDelete!=="yes"){
+      deleteWorkDetail.dataset.confirmDelete="yes";
+      deleteWorkDetail.textContent=`Tekrar Tıkla: ${item.kind==="request"?"Talebi":"İş Emrini"} Sil`;
+      setTimeout(()=>{
+        if(document.body.contains(deleteWorkDetail)){
+          deleteWorkDetail.dataset.confirmDelete="";
+          deleteWorkDetail.textContent=item.kind==="request"?"Talebi Sil":"İş Emrini Sil";
+        }
+      },5000);
+      return;
+    }
+
+    const result=deleteWorkItemById(item.id);
+    if(!result.ok){
+      alert(result.message);
+      deleteWorkDetail.dataset.confirmDelete="";
+      deleteWorkDetail.textContent=item.kind==="request"?"Talebi Sil":"İş Emrini Sil";
+      return;
+    }
+
+    s.workDetailId=null;
+    s.workTab=item.kind==="request"?"requests":"orders";
+    alert(`${item.id} numaralı ${item.kind==="request"?"iş talebi":"iş emri"} silindi.`);
+    render();
   };
 
   document.querySelectorAll("[data-work-tab]").forEach(btn=>btn.onclick=()=>{s.workTab=btn.dataset.workTab;render()});
