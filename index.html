@@ -1216,6 +1216,27 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .factory-machine-summary div{flex:1}
 }
 
+
+/* === Grafik eksen etiketleri okunabilirlik düzeltmesi === */
+.responsive-chartbox{overflow:hidden}
+.chart-scroll-area{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:4px}
+.chart-scroll-area svg{display:block;width:100%;height:auto;min-width:720px;overflow:visible}
+.chart-grid-line{stroke:#e6eaf0;stroke-width:1}
+.chart-y-label{font-family:"Segoe UI",Arial,sans-serif;font-size:10px;fill:#77818e}
+.chart-x-label{font-family:"Segoe UI",Arial,sans-serif;font-size:10px;font-weight:700;fill:#596474}
+.chart-x-label.secondary{font-size:9px;font-weight:500;fill:#87909b}
+.chart-value-label{font-family:"Segoe UI",Arial,sans-serif;font-size:10px;font-weight:800;fill:#303947}
+.chart-line-path{fill:none;stroke:#2b78c5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-point{fill:#fff;stroke:#2b78c5;stroke-width:3}
+.chart-bar{fill:#2b78c5}
+@media(max-width:900px){
+  .chart-scroll-area svg{min-width:680px!important}
+}
+@media(max-width:520px){
+  .chart-scroll-area svg{min-width:640px!important}
+  .chart-x-label{font-size:9.5px}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -1701,22 +1722,105 @@ function trendDataFor(base,chartId){
   });
   return buckets;
 }
+function chartLabelParts(label){
+  const raw=String(label??"");
+  // Vardiya etiketlerini: "25.07 08-16" veya benzeri ise iki satıra böl.
+  const shiftMatch=raw.match(/^(.{4,12}?)\s+(0?0[-–]0?8|0?8[-–]16|16[-–]24|Vardiya\s*\d+)$/i);
+  if(shiftMatch)return [shiftMatch[1],shiftMatch[2]];
+  // Uzun tarih-vardiya etiketlerini son boşluktan ikiye böl.
+  if(raw.length>12&&raw.includes(" ")){
+    const parts=raw.split(/\s+/);
+    if(parts.length>=2)return [parts.slice(0,-1).join(" "),parts[parts.length-1]];
+  }
+  return [raw];
+}
+function chartShortLabel(label,max=14){
+  const raw=String(label??"");
+  return raw.length>max?raw.slice(0,max-1)+"…":raw;
+}
 function lineChartSVG(data,title){
-  const w=620,h=210,p=35,max=Math.max(...data.map(x=>x.value),1);
-  const pts=data.map((x,i)=>`${p+i*(w-2*p)/Math.max(data.length-1,1)},${h-p-x.value*(h-2*p)/max}`).join(" ");
-  return `<div class="chartbox"><h4>${title}</h4><svg viewBox="0 0 ${w} ${h}" role="img">
-    <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" class="axis"/>
-    <polyline points="${pts}" class="line"/>
-    ${data.map((x,i)=>{const cx=p+i*(w-2*p)/Math.max(data.length-1,1),cy=h-p-x.value*(h-2*p)/max;return `<circle cx="${cx}" cy="${cy}" r="4" class="point"><title>${x.label}: ${x.value}</title></circle><text x="${cx}" y="${h-10}" text-anchor="middle">${x.label}</text>`}).join("")}
-  </svg></div>`;
+  const safe=data?.length?data:[{label:"Kayıt Yok",value:0}];
+  const W=760,H=310,L=48,R=22,T=24,B=safe.length>6?92:64;
+  const innerW=W-L-R,innerH=H-T-B,max=Math.max(1,...safe.map(x=>Number(x.value)||0));
+  const step=safe.length>1?innerW/(safe.length-1):innerW;
+  const points=safe.map((x,i)=>({
+    x:L+(safe.length===1?innerW/2:i*step),
+    y:T+innerH-(Number(x.value)||0)/max*innerH,
+    ...x
+  }));
+  const path=points.map((p,i)=>(i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" ");
+  const rotate=safe.length>6;
+  const grid=[0,.25,.5,.75,1].map(r=>{
+    const y=T+innerH-innerH*r;
+    return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" class="chart-grid-line"/>
+      <text x="${L-8}" y="${y+4}" text-anchor="end" class="chart-y-label">${Math.round(max*r)}</text>`;
+  }).join("");
+  const labels=points.map((p,i)=>{
+    const parts=chartLabelParts(p.label);
+    const label=chartShortLabel(parts[0],rotate?12:16);
+    if(rotate){
+      return `<g transform="translate(${p.x},${T+innerH+16}) rotate(-42)">
+        <title>${esc(String(p.label))}</title>
+        <text text-anchor="end" class="chart-x-label">${esc(label)}</text>
+        ${parts[1]?`<text y="13" text-anchor="end" class="chart-x-label secondary">${esc(chartShortLabel(parts[1],12))}</text>`:""}
+      </g>`;
+    }
+    return `<g transform="translate(${p.x},${T+innerH+18})">
+      <title>${esc(String(p.label))}</title>
+      <text text-anchor="middle" class="chart-x-label">${esc(label)}</text>
+      ${parts[1]?`<text y="13" text-anchor="middle" class="chart-x-label secondary">${esc(chartShortLabel(parts[1],12))}</text>`:""}
+    </g>`;
+  }).join("");
+  return `<div class="chartbox responsive-chartbox">${title?`<h4>${esc(title)}</h4>`:""}
+    <div class="chart-scroll-area">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title||"Çizgi grafik")}">
+        ${grid}
+        <path d="${path}" class="chart-line-path"/>
+        ${points.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4.5" class="chart-point"><title>${esc(String(p.label))}: ${p.value}</title></circle>`).join("")}
+        ${labels}
+      </svg>
+    </div>
+  </div>`;
 }
 function barChartSVG(data,title){
-  const w=620,h=230,p=40,max=Math.max(...data.map(x=>x.value),1);
-  const bw=(w-2*p)/Math.max(data.length,1)*0.62;
-  return `<div class="chartbox"><h4>${title}</h4><svg viewBox="0 0 ${w} ${h}" role="img">
-    <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" class="axis"/>
-    ${data.map((x,i)=>{const xPos=p+i*(w-2*p)/data.length+((w-2*p)/data.length-bw)/2;const bh=x.value*(h-2*p)/max;return `<rect x="${xPos}" y="${h-p-bh}" width="${bw}" height="${bh}" rx="5" class="bar"><title>${x.label}: ${x.value}</title></rect><text x="${xPos+bw/2}" y="${h-12}" text-anchor="middle">${esc(x.label)}</text><text x="${xPos+bw/2}" y="${h-p-bh-6}" text-anchor="middle" class="val">${x.value}</text>`}).join("")}
-  </svg></div>`;
+  const safe=data?.length?data:[{label:"Kayıt Yok",value:0}];
+  const W=760,H=330,L=52,R=20,T=22,B=safe.length>5?105:72;
+  const innerW=W-L-R,innerH=H-T-B,max=Math.max(1,...safe.map(x=>Number(x.value)||0));
+  const slot=innerW/safe.length,barW=Math.max(12,Math.min(58,slot*.58));
+  const rotate=safe.length>5||safe.some(x=>String(x.label).length>12);
+  const grid=[0,.25,.5,.75,1].map(r=>{
+    const y=T+innerH-innerH*r;
+    return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" class="chart-grid-line"/>
+      <text x="${L-8}" y="${y+4}" text-anchor="end" class="chart-y-label">${Math.round(max*r)}</text>`;
+  }).join("");
+  const bars=safe.map((d,i)=>{
+    const value=Number(d.value)||0;
+    const h=value/max*innerH;
+    const x=L+i*slot+(slot-barW)/2,y=T+innerH-h,cx=x+barW/2;
+    const parts=chartLabelParts(d.label);
+    const primary=chartShortLabel(parts[0],rotate?13:16);
+    const labelMarkup=rotate
+      ? `<g transform="translate(${cx},${T+innerH+17}) rotate(-42)">
+          <title>${esc(String(d.label))}</title>
+          <text text-anchor="end" class="chart-x-label">${esc(primary)}</text>
+          ${parts[1]?`<text y="13" text-anchor="end" class="chart-x-label secondary">${esc(chartShortLabel(parts[1],12))}</text>`:""}
+        </g>`
+      : `<g transform="translate(${cx},${T+innerH+18})">
+          <title>${esc(String(d.label))}</title>
+          <text text-anchor="middle" class="chart-x-label">${esc(primary)}</text>
+          ${parts[1]?`<text y="13" text-anchor="middle" class="chart-x-label secondary">${esc(chartShortLabel(parts[1],12))}</text>`:""}
+        </g>`;
+    return `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="7" class="chart-bar"><title>${esc(String(d.label))}: ${value}</title></rect>
+      <text x="${cx}" y="${Math.max(T+12,y-7)}" text-anchor="middle" class="chart-value-label">${value}</text>
+      ${labelMarkup}`;
+  }).join("");
+  return `<div class="chartbox responsive-chartbox">${title?`<h4>${esc(title)}</h4>`:""}
+    <div class="chart-scroll-area">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title||"Sütun grafik")}">
+        ${grid}${bars}
+      </svg>
+    </div>
+  </div>`;
 }
 
 function compactFaultList(items,emptyText){
