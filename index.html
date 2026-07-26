@@ -2927,16 +2927,27 @@ function canEditWorkItemCore(item){
 }
 function canDeleteWorkItem(item){
   if(!item)return false;
-  if(canManageWorkRequest(item))return true;
-  return item.kind==="request"
-    &&permissions().createRequest
-    &&item.createdBy===s.user?.name
-    &&["new","reviewing","cancelled"].includes(item.status);
+  if(item.kind==="workorder"){
+    return canManageWorkRequest(item);
+  }
+  if(item.kind==="request"){
+    return s.user?.role==="Bölüm Formeni"
+      &&workItemFactoryVisible(item)
+      &&item.department===s.user?.department;
+  }
+  return false;
 }
 function deleteWorkItemById(id){
   const item=findWorkItemById(id);
   if(!item)return {ok:false,message:"Kayıt bulunamadı."};
-  if(!canDeleteWorkItem(item))return {ok:false,message:"Bu kaydı silme yetkiniz bulunmuyor."};
+  if(!canDeleteWorkItem(item)){
+    return {
+      ok:false,
+      message:item.kind==="request"
+        ?"İş taleplerini yalnızca ilgili bölüm formeni silebilir."
+        :"İş emirlerini yalnızca bakım müdürü veya yetkili bakım formeni silebilir."
+    };
+  }
 
   if(item.kind==="request"){
     const linked=s.workItems.find(x=>x.kind==="workorder"&&x.sourceRequestId===item.id);
