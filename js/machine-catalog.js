@@ -25,8 +25,8 @@ const MACHINE_CATALOG_CUSTOM_KEY="etilismart_custom_machines_v1";
 const MACHINE_CATALOG_DELETED_KEY="etilismart_deleted_machines_v1";
 let CUSTOM_MACHINE_CATALOG=[];
 let DELETED_MACHINE_CATALOG=[];
-try{CUSTOM_MACHINE_CATALOG=JSON.parse(localStorage.getItem(MACHINE_CATALOG_CUSTOM_KEY)||"[]")||[]}catch(e){CUSTOM_MACHINE_CATALOG=[]}
-try{DELETED_MACHINE_CATALOG=JSON.parse(localStorage.getItem(MACHINE_CATALOG_DELETED_KEY)||"[]")||[]}catch(e){DELETED_MACHINE_CATALOG=[]}
+CUSTOM_MACHINE_CATALOG=storageJsonRecordArray(localStorage,MACHINE_CATALOG_CUSTOM_KEY,[]);
+DELETED_MACHINE_CATALOG=storageJsonArray(localStorage,MACHINE_CATALOG_DELETED_KEY,[]).filter(key=>typeof key==="string");
 function machineCatalogKey(factory,line,department,machine){
   return [factory,line,department,machine].join("¦");
 }
@@ -70,8 +70,8 @@ function applyMachineCatalogChanges(){
   });
 }
 function saveMachineCatalogChanges(){
-  localStorage.setItem(MACHINE_CATALOG_CUSTOM_KEY,JSON.stringify(CUSTOM_MACHINE_CATALOG));
-  localStorage.setItem(MACHINE_CATALOG_DELETED_KEY,JSON.stringify(DELETED_MACHINE_CATALOG));
+  storageSet(localStorage,MACHINE_CATALOG_CUSTOM_KEY,JSON.stringify(CUSTOM_MACHINE_CATALOG));
+  storageSet(localStorage,MACHINE_CATALOG_DELETED_KEY,JSON.stringify(DELETED_MACHINE_CATALOG));
 }
 function addMachineToCatalog(factory,line,department,machine){
   const clean=String(machine||"").trim();

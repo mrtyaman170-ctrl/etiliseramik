@@ -52,6 +52,9 @@ function plannedMaintenanceModal(){
   const defaultLine=editing?.line||catalogLines(defaultFactory)[0]||"1. Hat";
   const selectedDepartment=editing?.department||s.user?.department||"";
   const selectedDate=editing?.date||s.plannedSelectedDate||dateOnly(new Date());
+  const machineOptions=[
+    ...new Set([...catalogMachines(defaultFactory,defaultLine,selectedDepartment),editing?.machine].filter(Boolean))
+  ];
   const departmentOptions=s.user?.role==="Bölüm Formeni"
     ?opts([s.user.department],"Bölüm seçiniz",s.user.department)
     :opts(catalogDepartments(defaultFactory,defaultLine),"Bölüm seçiniz",selectedDepartment);
@@ -62,7 +65,7 @@ function plannedMaintenanceModal(){
       <div class="field"><label>Fabrika</label><select id="pmFactory" required>${opts(factories,"Fabrika seçiniz",defaultFactory)}</select></div>
       <div class="field"><label>Hat</label><select id="pmLine" required>${opts(catalogLines(defaultFactory),"Hat seçiniz",defaultLine)}</select></div>
       <div class="field"><label>Bölüm</label><select id="pmDepartment" ${s.user?.role==="Bölüm Formeni"?"disabled":""} required>${departmentOptions}</select></div>
-      <div class="field"><label>Makine</label><select id="pmMachine" data-selected="${esc(editing?.machine||"")}" required>${opts(catalogMachines(defaultFactory,defaultLine,selectedDepartment),"Makine seçiniz",editing?.machine||"")}</select></div>
+      <div class="field"><label>Makine</label><select id="pmMachine" data-selected="${esc(editing?.machine||"")}" required>${opts(machineOptions,"Makine seçiniz",editing?.machine||"")}</select></div>
       <div class="field"><label>Bakım Türü</label><select id="pmType" required>${opts(MAINTENANCE_TYPES,"Tür seçiniz",editing?.type||"Periyodik Bakım")}</select></div>
       <div class="field"><label>Öncelik</label><select id="pmPriority" required>${opts(MAINTENANCE_PRIORITIES,"Öncelik seçiniz",editing?.priority||"Normal")}</select></div>
       <div class="field"><label>Tarih</label><input id="pmDate" type="date" value="${selectedDate}" required></div>
@@ -118,7 +121,7 @@ function plannedMaintenancePage(){
     const dayItems=items.filter(x=>x.date===key).sort((a,b)=>a.time.localeCompare(b.time));
     cells.push(`<div class="calendar-day ${inside?"":"outside"} ${key===today?"today":""}" data-calendar-date="${key}">
       <div class="calendar-day-number"><span>${label}</span>${dayItems.length?`<b>${dayItems.length}</b>`:""}</div>
-      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${x.id}" title="${esc(x.title)}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
+      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${esc(x.id)}" title="${esc(x.title)}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
     </div>`);
   }
   return `${clockBlock()}
@@ -144,10 +147,10 @@ function plannedMaintenancePage(){
     </article>
     <aside class="upcoming-maintenance-panel">
       <div class="upcoming-head"><div><h3>Yaklaşan Bakımlar</h3><p>Sıradaki planlı görevler</p></div><span>${upcoming.length}</span></div>
-      <div class="upcoming-list">${upcoming.slice(0,8).map(x=>`<article class="upcoming-item priority-${x.priority.toLowerCase().replace("ü","u").replace("ş","s")}" data-pm-id="${x.id}" tabindex="0">
+      <div class="upcoming-list">${upcoming.slice(0,8).map(x=>`<article class="upcoming-item priority-${esc(String(x.priority||"Normal").toLocaleLowerCase("tr-TR").replace("ü","u").replace("ş","s"))}" data-pm-id="${esc(x.id)}" tabindex="0">
         <div class="upcoming-date"><b>${new Date(x.date+"T00:00:00").getDate()}</b><small>${new Date(x.date+"T00:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></div>
         <div class="upcoming-copy"><div><b>${esc(x.machine)}</b><span>${esc(x.time)}</span></div><p>${esc(x.title)}</p><small>${esc(x.factory)} · ${esc(x.line)}</small><em>${esc(x.priority)}</em></div>
-        ${canEditPlannedMaintenance(x)?`<select class="pm-status" data-id="${x.id}"><option value="planned" ${x.status==="planned"?"selected":""}>Planlandı</option><option value="progress" ${x.status==="progress"?"selected":""}>Devam Ediyor</option><option value="done" ${x.status==="done"?"selected":""}>Tamamlandı</option><option value="cancelled" ${x.status==="cancelled"?"selected":""}>İptal</option></select>`:""}
+        ${canEditPlannedMaintenance(x)?`<select class="pm-status" data-id="${esc(x.id)}"><option value="planned" ${x.status==="planned"?"selected":""}>Planlandı</option><option value="progress" ${x.status==="progress"?"selected":""}>Devam Ediyor</option><option value="done" ${x.status==="done"?"selected":""}>Tamamlandı</option><option value="cancelled" ${x.status==="cancelled"?"selected":""}>İptal</option></select>`:""}
       </article>`).join("")||'<div class="compact-empty"><span>✓</span><p>Yaklaşan planlı bakım bulunmuyor.</p></div>'}</div>
     </aside>
   </section>

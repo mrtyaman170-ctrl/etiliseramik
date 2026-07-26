@@ -1,6 +1,6 @@
 const SHIFT_LABELS=["00-08","08-16","16-24"];
 const SHIFT_OVERRIDE_KEY="etilismart_shift_overrides_v1";
-let SHIFT_OVERRIDES=safeJson(storageGet(localStorage,SHIFT_OVERRIDE_KEY,"{}"),{});
+let SHIFT_OVERRIDES=storageJsonRecord(localStorage,SHIFT_OVERRIDE_KEY,{});
 function shiftOverrideKey(factory,team,weekOffset,personId,dayIndex){
   return [shiftFactoryName(factory),team,shiftWeekKey(weekOffset),personId,dayIndex].join("|");
 }

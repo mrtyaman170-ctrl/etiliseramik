@@ -2092,3 +2092,136 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   pointer-events:none;
   border-radius:inherit;
 }
+
+
+/* Günlük kontroller sade ana görünüm */
+.daily-control-kpis-compact{gap:8px;margin-bottom:11px}
+.daily-control-kpis-compact article{padding:10px 12px;border-radius:12px;box-shadow:none}
+.daily-control-kpis-compact b{font-size:16px;margin:3px 0 1px}
+.daily-control-kpis-compact span{font-size:7px}
+.daily-primary-section{margin-bottom:11px;padding:14px}
+.daily-primary-section .section-modern-head{margin-bottom:10px}
+.daily-inline-status{display:grid;gap:2px;min-width:112px;padding:8px 10px;border:1px solid;border-radius:11px;text-align:right;font-size:7px;font-weight:850}
+.daily-inline-status b{font-size:9px}
+.daily-inline-status.open{border-color:#b4dfc4;background:#edf9f2;color:#277047}
+.daily-inline-status.closed{border-color:#efceb8;background:#fff7ef;color:#925b35}
+.daily-secondary-panel{margin:0 0 9px;border:1px solid #dbe3e9;border-radius:14px;background:#fff;overflow:hidden}
+.daily-secondary-panel>summary{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:11px 13px;list-style:none;cursor:pointer;background:#fbfcfd}
+.daily-secondary-panel>summary::-webkit-details-marker{display:none}
+.daily-secondary-panel>summary>span{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#edf3f7;color:#39739e;font-size:15px}
+.daily-secondary-panel>summary b,.daily-secondary-panel>summary small{display:block}
+.daily-secondary-panel>summary b{font-size:10px;color:#2d3e4b}
+.daily-secondary-panel>summary small{margin-top:2px;font-size:7.5px;color:#7d8993}
+.daily-secondary-panel>summary>i{font-size:15px;color:#788691;transition:transform .18s}
+.daily-secondary-panel[open]>summary{border-bottom:1px solid #e2e7eb;background:#f4f8fb}
+.daily-secondary-panel[open]>summary>i{transform:rotate(180deg)}
+.daily-secondary-content{padding:13px}
+.daily-secondary-content .daily-duty-banner,.daily-secondary-content .utility-time-banner{margin-bottom:9px}
+.daily-secondary-content .utility-time-banner:last-child{margin-bottom:0}
+.daily-utility-reports>.utility-output-card,.daily-utility-reports>.utility-statistics-card{margin-bottom:11px}
+.daily-utility-reports>:last-child{margin-bottom:0}
+
+
+/* Masaüstü ile mobil içerik ve işlem eşdeğerliği */
+.mobile-menu-toggle,.mobile-drawer-head,.mobile-nav-overlay{display:none}
+@media(max-width:900px){
+  .mobile-menu-toggle{
+    display:grid!important;
+    place-items:center;
+    flex:0 0 39px;
+    width:39px;height:39px;
+    padding:0;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:11px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    font-size:20px;
+    cursor:pointer
+  }
+  .top{gap:9px}
+  .brand{min-width:0;font-size:17px!important}
+  .brand small{margin-left:5px!important;font-size:7px!important;white-space:nowrap}
+  .top-user{min-width:0}
+  .top-user-role{max-width:90px!important}
+  .mobile-top-tabs{display:none!important}
+  .mobile-nav-overlay{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:110;
+    background:rgba(13,20,30,.52);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s
+  }
+  .layout>aside{
+    display:block!important;
+    position:fixed!important;
+    z-index:120!important;
+    inset:0 auto 0 0;
+    width:min(320px,88vw)!important;
+    padding:14px!important;
+    overflow-y:auto;
+    transform:translateX(-102%);
+    transition:transform .22s ease;
+    box-shadow:18px 0 45px rgba(12,20,31,.24)!important
+  }
+  .mobile-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:4px 3px 12px}
+  .mobile-drawer-head b{font-size:12px;color:#273544}
+  .mobile-drawer-head button{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:10px;background:#eef2f5;color:#344552;font-size:19px}
+  body.mobile-menu-open{overflow:hidden}
+  body.mobile-menu-open .mobile-nav-overlay{opacity:1;pointer-events:auto}
+  body.mobile-menu-open .layout>aside{transform:translateX(0)}
+  .pro-system-state{display:flex!important;grid-column:1/-1;margin-left:0!important;justify-content:center}
+  .layout-live-dot{display:inline-flex!important}
+  .daily-control-title{align-items:stretch}
+  .daily-control-toolbar{width:100%}
+  .daily-control-tabs{width:100%}
+  .daily-primary-section{padding:12px}
+  .daily-primary-section .section-modern-head{align-items:flex-start;gap:9px}
+  .daily-inline-status{min-width:104px}
+  .daily-secondary-panel>summary{padding:11px}
+}
+@media(max-width:620px){
+  .top-user-role{display:none}
+  .brand small{display:block!important}
+  .daily-control-kpis-compact{grid-template-columns:1fr 1fr!important}
+  .daily-control-kpis-compact article{min-height:68px}
+  .daily-primary-section .section-modern-head{display:grid}
+  .daily-inline-status{width:100%;text-align:left;grid-template-columns:auto 1fr;align-items:center}
+  .daily-reading-grid{grid-template-columns:1fr}
+  .daily-secondary-content{padding:10px}
+  .daily-secondary-panel>summary small{font-size:7px}
+
+  /* Tablolar masaüstündeki sütunları korur ve yatay kaydırılır. */
+  .table-wrap{
+    display:block!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding:0!important;
+    border:1px solid #dde3eb!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:none!important;
+    -webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{display:table!important;width:100%!important;min-width:960px!important;table-layout:fixed!important}
+  .table-wrap thead{display:table-header-group!important}
+  .table-wrap tbody{display:table-row-group!important}
+  .table-wrap tr{display:table-row!important;width:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
+  .table-wrap th,.table-wrap td{display:table-cell!important;width:auto!important;min-height:0!important;padding:10px 12px!important;border-bottom:1px solid #e8ecf0!important;position:static!important;text-align:left!important;font-size:11px!important}
+  .table-wrap td::before{display:none!important;content:none!important}
+  .table-wrap td>*{min-width:0}
+
+  /* Personel sıralamasındaki masaüstü bilgileri mobilde de korunur. */
+  .ranking-list{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ranking-list button{min-width:620px;grid-template-columns:38px 1.2fr 1.4fr 70px 95px!important}
+  .ranking-list small,.ranking-list em{display:block!important}
+}
+@media(max-width:420px){
+  .top{padding:9px 10px!important}
+  .mobile-menu-toggle{flex-basis:37px;width:37px;height:37px}
+  .brand{font-size:15px!important}
+  .brand small{font-size:6px!important}
+  .top .secondary{padding:7px 8px!important;font-size:9px!important}
+}

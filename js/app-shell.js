@@ -4,13 +4,13 @@ function notificationUserId(){
   return String(s.user?.id||s.user?.name||"guest");
 }
 function notificationStateMap(){
-  return safeJson(storageGet(localStorage,NOTIFICATION_STATE_KEY,"{}"),{})||{};
+  return storageJsonRecord(localStorage,NOTIFICATION_STATE_KEY,{});
 }
 function ensureNotificationBaseline(){
   if(!s.user)return;
   const map=notificationStateMap();
   const key=notificationUserId();
-  if(!map[key]){
+  if(!safeRecord(map[key],null)){
     const initialSeen=new Date(Date.now()-8*60*60*1000).toISOString();
     map[key]={faults:initialSeen,requests:initialSeen};
     storageSet(localStorage,NOTIFICATION_STATE_KEY,JSON.stringify(map));
@@ -19,14 +19,14 @@ function ensureNotificationBaseline(){
 function notificationSeenState(){
   ensureNotificationBaseline();
   const map=notificationStateMap();
-  return map[notificationUserId()]||{faults:new Date().toISOString(),requests:new Date().toISOString()};
+  return safeRecord(map[notificationUserId()],{faults:new Date().toISOString(),requests:new Date().toISOString()});
 }
 function markNotificationsSeen(pageName){
   if(!s.user)return;
   if(!["faults","work"].includes(pageName))return;
   const map=notificationStateMap();
   const key=notificationUserId();
-  const current=map[key]||{faults:new Date().toISOString(),requests:new Date().toISOString()};
+  const current=safeRecord(map[key],{faults:new Date().toISOString(),requests:new Date().toISOString()});
   const now=new Date().toISOString();
   if(pageName==="faults")current.faults=now;
   if(pageName==="work")current.requests=now;
@@ -60,21 +60,30 @@ function notificationBadge(pageName){
   return count?`<span class="nav-notification" title="${count} yeni kayıt"><b>!</b><small>${count}</small></span>`:"";
 }
 
-const storedUser=safeJson(storageGet(sessionStorage,"esuser","null"),null);
+const storedSessionUser=storageJsonRecord(sessionStorage,"esuser",null);
+const storedSessionAccount=storedSessionUser?.id?APP_USERS[String(storedSessionUser.id)]:null;
+const storedUser=storedSessionAccount?{
+  id:String(storedSessionUser.id),
+  name:storedSessionAccount.name,
+  role:storedSessionAccount.role,
+  factories:[...(storedSessionAccount.factories||[])],
+  department:storedSessionAccount.department||"",
+  team:storedSessionAccount.team||""
+}:null;
 const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION;
 let s={
   login:sessionIsCurrent&&storageGet(sessionStorage,"eslogin","0")==="1"&&!!storedUser,
   user:sessionIsCurrent?storedUser:null,
   page:"dashboard",
-  faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
-  plannedMaintenances:safeJson(storageGet(localStorage,PM_KEY,"null"),null)||generatePlannedMaintenances(),
-  workItems:safeJson(storageGet(localStorage,WORK_KEY,"null"),null)||generateWorkItems(),
+  faults:storageJsonRecordArray(localStorage,K,generateHistory()),
+  plannedMaintenances:storageJsonRecordArray(localStorage,PM_KEY,generatePlannedMaintenances()),
+  workItems:storageJsonRecordArray(localStorage,WORK_KEY,generateWorkItems()),
   workDetailId:null,
-  maintenanceLogs:safeJson(storageGet(localStorage,MAINTENANCE_LOG_KEY,"[]"),[]),
+  maintenanceLogs:storageJsonRecordArray(localStorage,MAINTENANCE_LOG_KEY,[]),
   maintenanceLogModal:false,
   materialEditId:null,
-  dailyChecks:safeJson(storageGet(localStorage,DAILY_CHECK_KEY,"{}"),{}),
-  contractorChecks:safeJson(storageGet(localStorage,CONTRACTOR_CHECK_KEY,"{}"),{}),
+  dailyChecks:storageJsonRecord(localStorage,DAILY_CHECK_KEY,{}),
+  contractorChecks:storageJsonRecord(localStorage,CONTRACTOR_CHECK_KEY,{}),
   dailyControlTab:"daily",
   dailyControlDate:dateOnly(new Date()),
   contractorControlMonth:monthKeyLocal(new Date()),
@@ -229,18 +238,18 @@ function table(items,editable=false){
   if(!items.length)return `<div class="card empty-panel"><h3>Kayıt bulunamadı</h3><p>Seçilen kriterlere uygun arıza kaydı yok.</p></div>`;
   return `<div class="card table-wrap"><table>
     <thead><tr><th>Tarih</th><th>Fabrika / Hat</th><th>Bölüm / Makine</th><th>Arıza</th><th>Kaydı Açan</th><th>Sorumlu Bakımcı</th><th>Durum</th><th>Süre</th>${editable?"<th>İşlem</th>":""}</tr></thead>
-    <tbody>${items.map(f=>`<tr class="fault-click-row" data-fault-detail-id="${f.id}" title="Arıza detaylarını görüntülemek için tıklayın">
+    <tbody>${items.map(f=>`<tr class="fault-click-row" data-fault-detail-id="${esc(f.id)}" title="Arıza detaylarını görüntülemek için tıklayın">
       <td data-label="Tarih">${fmtDate(f.createdAt)}</td>
       <td data-label="Fabrika / Hat"><b>${esc(f.factory)}</b><br><small>${esc(f.line)}</small></td>
       <td data-label="Bölüm / Makine"><b>${esc(f.department)}</b><br><small>${esc(f.machine)}</small></td>
       <td data-label="Arıza"><b>${esc(f.subject)}</b>${f.description?`<br><small>${esc(f.description)}</small>`:""}${f.stopped?'<br><span class="stop-tag">Üretim durdu</span>':""}</td>
       <td data-label="Kaydı Açan"><span class="person-cell"><i>${esc((f.openedBy||"?").charAt(0))}</i><b>${esc(f.openedBy||"Bilinmiyor")}</b></span></td>
       <td data-label="Sorumlu Bakımcı">${canRedirectFault(f)
-        ?`<select class="sel personnel-sel" data-personnel-id="${f.id}">${personnelSelectOptions(f)}</select>`
+        ?`<select class="sel personnel-sel" data-personnel-id="${esc(f.id)}">${personnelSelectOptions(f)}</select>`
         :`<span class="assigned-person">${esc(f.assignedTo||"Otomatik atanıyor")}</span>`}</td>
-      <td data-label="Durum"><span class="status ${f.status}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza açıklaması yazılmadı</span>':""}</td>
-      <td data-label="Süre"><span class="duration" data-id="${f.id}">${durationText(f)}</span></td>
-      ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${f.id}">
+      <td data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza açıklaması yazılmadı</span>':""}</td>
+      <td data-label="Süre"><span class="duration" data-id="${esc(f.id)}">${durationText(f)}</span></td>
+      ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${esc(f.id)}">
         <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
         <option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option>
         <option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option>
@@ -533,7 +542,7 @@ function compactFaultList(items,emptyText){
   if(!items.length)return `<div class="compact-empty"><span>✓</span><p>${esc(emptyText)}</p></div>`;
   return `<div class="compact-fault-list">${items.slice(0,8).map(f=>`
     <button class="compact-fault-row" data-p="faults">
-      <span class="compact-state ${f.stopped?"stop":f.status}"></span>
+      <span class="compact-state ${f.stopped?"stop":esc(f.status)}"></span>
       <div class="compact-fault-copy">
         <div><b>${esc(f.machine)}</b><time>${durationText(f)}</time></div>
         <small>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</small>
@@ -644,11 +653,14 @@ function mobileNav(){
 function app(){
   normalizeFaultParticipants();
   ensureNotificationBaseline();
-  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
+  return `<div class="top">
+    <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menüyü aç" aria-expanded="false">☰</button>
+    <div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
     <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
   </div>
-  ${mobileNav()}
+  <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
   <div class="layout"><aside>
+    <div class="mobile-drawer-head"><b>ETİLİSMART Menü</b><button type="button" id="mobileMenuClose" aria-label="Menüyü kapat">×</button></div>
     <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
     ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
     <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>

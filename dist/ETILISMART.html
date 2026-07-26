@@ -2094,9 +2094,150 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   border-radius:inherit;
 }
 
+
+/* Günlük kontroller sade ana görünüm */
+.daily-control-kpis-compact{gap:8px;margin-bottom:11px}
+.daily-control-kpis-compact article{padding:10px 12px;border-radius:12px;box-shadow:none}
+.daily-control-kpis-compact b{font-size:16px;margin:3px 0 1px}
+.daily-control-kpis-compact span{font-size:7px}
+.daily-primary-section{margin-bottom:11px;padding:14px}
+.daily-primary-section .section-modern-head{margin-bottom:10px}
+.daily-inline-status{display:grid;gap:2px;min-width:112px;padding:8px 10px;border:1px solid;border-radius:11px;text-align:right;font-size:7px;font-weight:850}
+.daily-inline-status b{font-size:9px}
+.daily-inline-status.open{border-color:#b4dfc4;background:#edf9f2;color:#277047}
+.daily-inline-status.closed{border-color:#efceb8;background:#fff7ef;color:#925b35}
+.daily-secondary-panel{margin:0 0 9px;border:1px solid #dbe3e9;border-radius:14px;background:#fff;overflow:hidden}
+.daily-secondary-panel>summary{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:11px 13px;list-style:none;cursor:pointer;background:#fbfcfd}
+.daily-secondary-panel>summary::-webkit-details-marker{display:none}
+.daily-secondary-panel>summary>span{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#edf3f7;color:#39739e;font-size:15px}
+.daily-secondary-panel>summary b,.daily-secondary-panel>summary small{display:block}
+.daily-secondary-panel>summary b{font-size:10px;color:#2d3e4b}
+.daily-secondary-panel>summary small{margin-top:2px;font-size:7.5px;color:#7d8993}
+.daily-secondary-panel>summary>i{font-size:15px;color:#788691;transition:transform .18s}
+.daily-secondary-panel[open]>summary{border-bottom:1px solid #e2e7eb;background:#f4f8fb}
+.daily-secondary-panel[open]>summary>i{transform:rotate(180deg)}
+.daily-secondary-content{padding:13px}
+.daily-secondary-content .daily-duty-banner,.daily-secondary-content .utility-time-banner{margin-bottom:9px}
+.daily-secondary-content .utility-time-banner:last-child{margin-bottom:0}
+.daily-utility-reports>.utility-output-card,.daily-utility-reports>.utility-statistics-card{margin-bottom:11px}
+.daily-utility-reports>:last-child{margin-bottom:0}
+
+
+/* Masaüstü ile mobil içerik ve işlem eşdeğerliği */
+.mobile-menu-toggle,.mobile-drawer-head,.mobile-nav-overlay{display:none}
+@media(max-width:900px){
+  .mobile-menu-toggle{
+    display:grid!important;
+    place-items:center;
+    flex:0 0 39px;
+    width:39px;height:39px;
+    padding:0;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:11px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    font-size:20px;
+    cursor:pointer
+  }
+  .top{gap:9px}
+  .brand{min-width:0;font-size:17px!important}
+  .brand small{margin-left:5px!important;font-size:7px!important;white-space:nowrap}
+  .top-user{min-width:0}
+  .top-user-role{max-width:90px!important}
+  .mobile-top-tabs{display:none!important}
+  .mobile-nav-overlay{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:110;
+    background:rgba(13,20,30,.52);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s
+  }
+  .layout>aside{
+    display:block!important;
+    position:fixed!important;
+    z-index:120!important;
+    inset:0 auto 0 0;
+    width:min(320px,88vw)!important;
+    padding:14px!important;
+    overflow-y:auto;
+    transform:translateX(-102%);
+    transition:transform .22s ease;
+    box-shadow:18px 0 45px rgba(12,20,31,.24)!important
+  }
+  .mobile-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:4px 3px 12px}
+  .mobile-drawer-head b{font-size:12px;color:#273544}
+  .mobile-drawer-head button{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:10px;background:#eef2f5;color:#344552;font-size:19px}
+  body.mobile-menu-open{overflow:hidden}
+  body.mobile-menu-open .mobile-nav-overlay{opacity:1;pointer-events:auto}
+  body.mobile-menu-open .layout>aside{transform:translateX(0)}
+  .pro-system-state{display:flex!important;grid-column:1/-1;margin-left:0!important;justify-content:center}
+  .layout-live-dot{display:inline-flex!important}
+  .daily-control-title{align-items:stretch}
+  .daily-control-toolbar{width:100%}
+  .daily-control-tabs{width:100%}
+  .daily-primary-section{padding:12px}
+  .daily-primary-section .section-modern-head{align-items:flex-start;gap:9px}
+  .daily-inline-status{min-width:104px}
+  .daily-secondary-panel>summary{padding:11px}
+}
+@media(max-width:620px){
+  .top-user-role{display:none}
+  .brand small{display:block!important}
+  .daily-control-kpis-compact{grid-template-columns:1fr 1fr!important}
+  .daily-control-kpis-compact article{min-height:68px}
+  .daily-primary-section .section-modern-head{display:grid}
+  .daily-inline-status{width:100%;text-align:left;grid-template-columns:auto 1fr;align-items:center}
+  .daily-reading-grid{grid-template-columns:1fr}
+  .daily-secondary-content{padding:10px}
+  .daily-secondary-panel>summary small{font-size:7px}
+
+  /* Tablolar masaüstündeki sütunları korur ve yatay kaydırılır. */
+  .table-wrap{
+    display:block!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding:0!important;
+    border:1px solid #dde3eb!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:none!important;
+    -webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{display:table!important;width:100%!important;min-width:960px!important;table-layout:fixed!important}
+  .table-wrap thead{display:table-header-group!important}
+  .table-wrap tbody{display:table-row-group!important}
+  .table-wrap tr{display:table-row!important;width:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
+  .table-wrap th,.table-wrap td{display:table-cell!important;width:auto!important;min-height:0!important;padding:10px 12px!important;border-bottom:1px solid #e8ecf0!important;position:static!important;text-align:left!important;font-size:11px!important}
+  .table-wrap td::before{display:none!important;content:none!important}
+  .table-wrap td>*{min-width:0}
+
+  /* Personel sıralamasındaki masaüstü bilgileri mobilde de korunur. */
+  .ranking-list{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ranking-list button{min-width:620px;grid-template-columns:38px 1.2fr 1.4fr 70px 95px!important}
+  .ranking-list small,.ranking-list em{display:block!important}
+}
+@media(max-width:420px){
+  .top{padding:9px 10px!important}
+  .mobile-menu-toggle{flex-basis:37px;width:37px;height:37px}
+  .brand{font-size:15px!important}
+  .brand small{font-size:6px!important}
+  .top .secondary{padding:7px 8px!important;font-size:9px!important}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
+  function escapeText(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
   window.__etiliStarted = false;
   window.addEventListener("error", function (event) {
     var app = document.getElementById("app");
@@ -2104,7 +2245,7 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
     app.innerHTML =
       '<div style="max-width:680px;margin:40px auto;padding:22px;font-family:Arial,sans-serif;background:#fff;border:1px solid #ddd;border-radius:16px">' +
       '<h2 style="margin-top:0">ETİLİSMART başlatılamadı</h2>' +
-      '<p>Hata: ' + String(event.message || "Bilinmeyen hata") + '</p>' +
+      '<p>Hata: ' + escapeText(event.message || "Bilinmeyen hata") + '</p>' +
       '<button onclick="localStorage.clear();sessionStorage.clear();location.reload()" style="border:0;border-radius:10px;padding:12px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>' +
       '</div>';
   });
@@ -2126,6 +2267,24 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 <script>
 function safeJson(text,fallback){
   try{return JSON.parse(text)}catch(e){return fallback}
+}
+function safeArray(value,fallback=[]){
+  return Array.isArray(value)?value:fallback;
+}
+function safeRecordArray(value,fallback=[]){
+  return safeArray(value,fallback).filter(item=>item!==null&&typeof item==="object"&&!Array.isArray(item));
+}
+function safeRecord(value,fallback={}){
+  return value!==null&&typeof value==="object"&&!Array.isArray(value)?value:fallback;
+}
+function storageJsonArray(storage,key,fallback=[]){
+  return safeArray(safeJson(storageGet(storage,key,"null"),null),fallback);
+}
+function storageJsonRecordArray(storage,key,fallback=[]){
+  return safeRecordArray(safeJson(storageGet(storage,key,"null"),null),fallback);
+}
+function storageJsonRecord(storage,key,fallback={}){
+  return safeRecord(safeJson(storageGet(storage,key,"null"),null),fallback);
 }
 function storageGet(storage,key,fallback){
   try{
@@ -2174,8 +2333,8 @@ const MACHINE_CATALOG_CUSTOM_KEY="etilismart_custom_machines_v1";
 const MACHINE_CATALOG_DELETED_KEY="etilismart_deleted_machines_v1";
 let CUSTOM_MACHINE_CATALOG=[];
 let DELETED_MACHINE_CATALOG=[];
-try{CUSTOM_MACHINE_CATALOG=JSON.parse(localStorage.getItem(MACHINE_CATALOG_CUSTOM_KEY)||"[]")||[]}catch(e){CUSTOM_MACHINE_CATALOG=[]}
-try{DELETED_MACHINE_CATALOG=JSON.parse(localStorage.getItem(MACHINE_CATALOG_DELETED_KEY)||"[]")||[]}catch(e){DELETED_MACHINE_CATALOG=[]}
+CUSTOM_MACHINE_CATALOG=storageJsonRecordArray(localStorage,MACHINE_CATALOG_CUSTOM_KEY,[]);
+DELETED_MACHINE_CATALOG=storageJsonArray(localStorage,MACHINE_CATALOG_DELETED_KEY,[]).filter(key=>typeof key==="string");
 function machineCatalogKey(factory,line,department,machine){
   return [factory,line,department,machine].join("¦");
 }
@@ -2219,8 +2378,8 @@ function applyMachineCatalogChanges(){
   });
 }
 function saveMachineCatalogChanges(){
-  localStorage.setItem(MACHINE_CATALOG_CUSTOM_KEY,JSON.stringify(CUSTOM_MACHINE_CATALOG));
-  localStorage.setItem(MACHINE_CATALOG_DELETED_KEY,JSON.stringify(DELETED_MACHINE_CATALOG));
+  storageSet(localStorage,MACHINE_CATALOG_CUSTOM_KEY,JSON.stringify(CUSTOM_MACHINE_CATALOG));
+  storageSet(localStorage,MACHINE_CATALOG_DELETED_KEY,JSON.stringify(DELETED_MACHINE_CATALOG));
 }
 function addMachineToCatalog(factory,line,department,machine){
   const clean=String(machine||"").trim();
@@ -2299,6 +2458,7 @@ const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 const AUTH_VERSION="pc-v4";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
 const USER_STORE_KEY="etilismart_users_v2";
+const DELETED_PERSONNEL_KEY="etilismart_deleted_personnel_ids_v1";
 const FACTORY_DEPARTMENT_FOREMEN={
   "4401":{"password":"1801","name":"1. Fabrika Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Masse Bölümü"},
   "4402":{"password":"1802","name":"1. Fabrika Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},
@@ -2320,21 +2480,61 @@ const PRODUCTION_MANAGER_USERS={
 const DEVELOPER_USERS={
   "9001":{"password":"9001","name":"Mert Yaman","role":"Yazılımcı","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"}
 };
+const VALID_ACCOUNT_ROLES=new Set([...ROLES,"Elektrik Bakım Formeni","Mekanik Bakım Formeni","Fabrika Müdürü"]);
+let DELETED_PERSONNEL_IDS=new Set(storageJsonArray(localStorage,DELETED_PERSONNEL_KEY,[]).map(String));
 const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
 function removeLegacyUsers(users){
   REMOVED_LEGACY_USER_IDS.forEach(id=>delete users[id]);
   return users;
 }
 const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS});
+const PROTECTED_USERS=Object.fromEntries(
+  Object.entries(DEFAULT_USERS)
+    .filter(([,account])=>account.role!=="Bakım Personeli")
+    .map(([id,account])=>[id,JSON.parse(JSON.stringify(account))])
+);
+function validStoredUsers(saved){
+  const valid={};
+  Object.entries(saved||{}).forEach(([id,account])=>{
+    if(!/^\d{4}$/.test(String(id))||!account||typeof account!=="object"||Array.isArray(account))return;
+    const name=String(account.name||"").trim();
+    const password=String(account.password||"").trim();
+    const role=String(account.role||"").trim();
+    const factories=Array.isArray(account.factories)
+      ?[...new Set(account.factories.filter(factory=>Object.prototype.hasOwnProperty.call(FACTORIES,factory)))]
+      :[];
+    if(!name||!/^\d{4}$/.test(password)||!VALID_ACCOUNT_ROLES.has(role)||!factories.length)return;
+    valid[id]={
+      ...account,
+      password,
+      name,
+      role,
+      factories,
+      department:String(account.department||"").trim(),
+      team:String(account.team||"").trim()
+    };
+  });
+  return valid;
+}
+function saveDeletedPersonnelIds(){
+  storageSet(localStorage,DELETED_PERSONNEL_KEY,JSON.stringify([...DELETED_PERSONNEL_IDS]));
+}
 function loadAppUsers(){
-  const saved=safeJson(storageGet(localStorage,USER_STORE_KEY,"null"),null);
-  if(saved&&typeof saved==="object"){
-    const merged=removeLegacyUsers({...JSON.parse(JSON.stringify(DEMO_USERS)),...saved,...JSON.parse(JSON.stringify(FACTORY_DEPARTMENT_FOREMEN)),...JSON.parse(JSON.stringify(PRODUCTION_MANAGER_USERS)),...JSON.parse(JSON.stringify(DEVELOPER_USERS))});
+  const saved=storageJsonRecord(localStorage,USER_STORE_KEY,null);
+  if(saved){
+    const merged=removeLegacyUsers({...JSON.parse(JSON.stringify(DEMO_USERS)),...validStoredUsers(saved),...PROTECTED_USERS});
+    DELETED_PERSONNEL_IDS.forEach(id=>{
+      if(merged[id]?.role==="Bakım Personeli")delete merged[id];
+    });
     storageSet(localStorage,USER_STORE_KEY,JSON.stringify(merged));
     return merged;
   }
-  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(DEFAULT_USERS));
-  return JSON.parse(JSON.stringify(DEFAULT_USERS));
+  const initial=JSON.parse(JSON.stringify(DEFAULT_USERS));
+  DELETED_PERSONNEL_IDS.forEach(id=>{
+    if(initial[id]?.role==="Bakım Personeli")delete initial[id];
+  });
+  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(initial));
+  return initial;
 }
 let APP_USERS=loadAppUsers();
 function saveAppUsers(){storageSet(localStorage,USER_STORE_KEY,JSON.stringify(APP_USERS));}
@@ -2411,7 +2611,7 @@ function managedPersonnelEntries(){
     .sort((a,b)=>a[1].name.localeCompare(b[1].name,"tr"));
 }
 function faultParticipants(fault){
-  return [...new Set(Array.isArray(fault?.participants)?fault.participants.filter(Boolean):[])];
+  return [...new Set(Array.isArray(fault?.participants)?fault.participants.filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()):[])];
 }
 function normalizeFaultParticipants(){
   let changed=false;
@@ -2463,7 +2663,11 @@ function canClaimFault(fault){
   if(!fault||fault.status==="done"||fault.assignmentState==="accepted")return false;
   if(!currentMaintenanceAccountForFault(fault)||!isCurrentMaintenanceUserActiveForFault(fault))return false;
   const assigned=String(fault.assignedTo||"").trim();
-  return !assigned||["Atama Bekliyor","Bakım Ekibi"].includes(assigned)||assigned===s.user?.name;
+  const activeNames=activeMaintenanceForFault(fault);
+  return !assigned
+    ||["Atama Bekliyor","Bakım Ekibi"].includes(assigned)
+    ||assigned===s.user?.name
+    ||!activeNames.includes(assigned);
 }
 function claimFaultByCurrentUser(fault){
   if(!canClaimFault(fault))return {ok:false,message:"Bu arızayı üstlenme yetkiniz yok veya arıza başka bir personele atanmış."};
@@ -2507,7 +2711,7 @@ function saveMaintenanceLogs(){
   storageSet(localStorage,MAINTENANCE_LOG_KEY,JSON.stringify(s.maintenanceLogs||[]));
 }
 function maintenanceLogParticipants(log){
-  return [...new Set(Array.isArray(log?.participants)?log.participants.filter(Boolean):[])];
+  return [...new Set(Array.isArray(log?.participants)?log.participants.filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()):[])];
 }
 function maintenanceWorkPeople(factory){
   const roles=["Bakım Personeli","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni","Bakım Müdürü"];
@@ -2531,11 +2735,7 @@ function canSelfJoinFault(fault){
   if(!fault||fault.status==="done"||s.user?.role!=="Bakım Personeli")return false;
   if(fault.assignmentState!=="accepted")return false;
   if(faultParticipants(fault).includes(s.user?.name))return false;
-  const account=APP_USERS[s.user.id];
-  if(!account)return false;
-  const sameFactory=(account.factories||[]).some(f=>shiftFactoryName(f)===shiftFactoryName(fault.factory));
-  const sameTeam=account.team===maintenanceDisciplineForFault(fault);
-  return sameFactory&&sameTeam;
+  return isCurrentMaintenanceUserActiveForFault(fault);
 }
 function shiftLabelForDate(date=new Date()){
   const h=date.getHours();
@@ -2653,13 +2853,28 @@ function deleteMaintenancePersonnelAccount(id){
   if(!permissions().manageAllPersonnel)return {ok:false,message:"Personel silme yetkisi yalnızca Bakım Müdüründedir."};
 
   delete APP_USERS[id];
+  DELETED_PERSONNEL_IDS.add(String(id));
+  saveDeletedPersonnelIds();
   saveAppUsers();
 
   // Silinen personeli açık ve geçmiş arıza katılımcılarından kaldır.
   s.faults.forEach(f=>{
     const remaining=faultParticipants(f).filter(name=>name!==account.name);
     f.participants=remaining;
-    if(f.assignedTo===account.name)f.assignedTo=remaining[0]||"";
+    if(f.assignedTo===account.name){
+      f.assignedTo=remaining[0]||"Atama Bekliyor";
+      f.assignmentState=remaining.length?"accepted":"pending";
+      f.claimedBy=remaining[0]||"";
+      f.claimedAt=remaining.length?(f.claimedAt||new Date().toISOString()):null;
+      if(!remaining.length&&f.status!=="done")f.status="open";
+    }
+  });
+
+  s.workItems.forEach(item=>{
+    if(item.kind==="workorder"&&item.assignedTo===account.name){
+      item.assignedTo="";
+      if(item.status==="assigned")item.status="open";
+    }
   });
 
   // Vardiya planındaki kayıtlarını kaldır.
@@ -2684,7 +2899,15 @@ function deleteMaintenancePersonnelAccount(id){
     });
   }
 
+  if(typeof SHIFT_OVERRIDES==="object"&&SHIFT_OVERRIDES){
+    Object.keys(SHIFT_OVERRIDES)
+      .filter(key=>key.split("|")[3]===String(id))
+      .forEach(key=>delete SHIFT_OVERRIDES[key]);
+    storageSet(localStorage,SHIFT_OVERRIDE_KEY,JSON.stringify(SHIFT_OVERRIDES));
+  }
+
   save();
+  saveWorkItems();
   return {ok:true,name:account.name};
 }
 
@@ -2736,7 +2959,7 @@ function personnelDetailModal(){
         <section class="personnel-detail-card"><div class="section-modern-head"><div><h3>En Çok Müdahale Edilen Makineler</h3><p>Atanan arızalara göre</p></div></div><div class="top-machine-list">${p.topMachines.length?p.topMachines.map(([name,count],i)=>`<div><span>${i+1}</span><b>${esc(name)}</b><strong>${count} iş</strong></div>`).join(""):'<p class="muted">Henüz kayıt bulunmuyor.</p>'}</div></section>
         <section class="personnel-detail-card"><div class="section-modern-head"><div><h3>Performans Özeti</h3><p>Mevcut kayıtlar üzerinden</p></div></div><div class="profile-performance"><div class="profile-score-ring"><span>%${score}</span></div><dl><div><dt>Çözüm oranı</dt><dd>%${p.assigned?Math.round(p.completed/p.assigned*100):0}</dd></div><div><dt>Duruşlu arıza</dt><dd>${p.stopped}</dd></div><div><dt>Açık iş yükü</dt><dd>${p.active}</dd></div></dl></div></section>
         <section class="personnel-detail-card wide"><div class="section-modern-head"><div><h3>Yapılan İş Kayıtları</h3><p>Arıza ve iş emri dışında kaydedilen çalışmalar</p></div></div><div class="maintenance-log-person-list">${workLogs.map(log=>`<article><div><small>${new Date(log.performedAt||log.createdAt).toLocaleDateString("tr-TR")} · ${esc(log.factory)}</small><b>${esc(log.title)}</b><span>${esc(log.location||"-")}</span></div><p>${esc(log.description)}</p><strong>${maintenanceLogParticipants(log).map(esc).join(" · ")}</strong></article>`).join("")||'<div class="compact-empty"><span>✎</span><p>Bu personele ait yapılan iş kaydı bulunmuyor.</p></div>'}</div></section>
-        <section class="personnel-detail-card wide"><div class="section-modern-head"><div><h3>Son 10 Arıza Kaydı</h3><p>Personele atanmış veya müdahale ettiği işler</p></div></div><div class="table-wrap"><table><thead><tr><th>Kayıt</th><th>Makine</th><th>Konu</th><th>Durum</th><th>Açılış</th><th>Süre</th></tr></thead><tbody>${recent.map(f=>`<tr class="personnel-fault-link" data-fault-id="${f.id}"><td>#${esc(f.id)}</td><td>${esc(f.machine)}</td><td>${esc(f.subject)}</td><td><span class="status ${f.status}">${statusLabel(f.status)}</span></td><td>${fmtDate(f.createdAt)}</td><td>${durationText(f)}</td></tr>`).join("")||'<tr><td colspan="6">Henüz atanmış arıza bulunmuyor.</td></tr>'}</tbody></table></div></section>
+        <section class="personnel-detail-card wide"><div class="section-modern-head"><div><h3>Son 10 Arıza Kaydı</h3><p>Personele atanmış veya müdahale ettiği işler</p></div></div><div class="table-wrap"><table><thead><tr><th>Kayıt</th><th>Makine</th><th>Konu</th><th>Durum</th><th>Açılış</th><th>Süre</th></tr></thead><tbody>${recent.map(f=>`<tr class="personnel-fault-link" data-fault-id="${esc(f.id)}"><td>#${esc(f.id)}</td><td>${esc(f.machine)}</td><td>${esc(f.subject)}</td><td><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span></td><td>${fmtDate(f.createdAt)}</td><td>${durationText(f)}</td></tr>`).join("")||'<tr><td colspan="6">Henüz atanmış arıza bulunmuyor.</td></tr>'}</tbody></table></div></section>
       </div>
     </div>
   </div>`;
@@ -2937,8 +3160,21 @@ const DAILY_CONTROL_CUSTOM_CATALOG_KEY="etilismart_custom_daily_controls_v1";
 const DAILY_CONTROL_DELETED_CATALOG_KEY="etilismart_deleted_daily_controls_v1";
 let CUSTOM_DAILY_CONTROL_ASSETS=[];
 let DELETED_DAILY_CONTROL_ASSETS=[];
-try{CUSTOM_DAILY_CONTROL_ASSETS=JSON.parse(localStorage.getItem(DAILY_CONTROL_CUSTOM_CATALOG_KEY)||"[]")||[]}catch(e){CUSTOM_DAILY_CONTROL_ASSETS=[]}
-try{DELETED_DAILY_CONTROL_ASSETS=JSON.parse(localStorage.getItem(DAILY_CONTROL_DELETED_CATALOG_KEY)||"[]")||[]}catch(e){DELETED_DAILY_CONTROL_ASSETS=[]}
+CUSTOM_DAILY_CONTROL_ASSETS=storageJsonRecordArray(localStorage,DAILY_CONTROL_CUSTOM_CATALOG_KEY,[])
+  .filter(asset=>typeof asset.id==="string"
+    &&["1. Fabrika","2. Fabrika"].includes(asset.factory)
+    &&typeof asset.name==="string"&&asset.name.trim()
+    &&["compressor","generator","ups","compensation","gas","water","other"].includes(asset.type)
+    &&["Elektrik Bakım","Mekanik Bakım"].includes(asset.team))
+  .map(asset=>({
+    ...asset,
+    id:asset.id.trim(),
+    name:asset.name.trim(),
+    special:["water","gas"].includes(asset.type),
+    contractorMonthly:false,
+    custom:true
+  }));
+DELETED_DAILY_CONTROL_ASSETS=storageJsonArray(localStorage,DAILY_CONTROL_DELETED_CATALOG_KEY,[]).filter(id=>typeof id==="string");
 CUSTOM_DAILY_CONTROL_ASSETS.forEach(asset=>{
   if(asset?.id&&!DAILY_CONTROL_ASSETS.some(item=>item.id===asset.id))DAILY_CONTROL_ASSETS.push(asset);
 });
@@ -2946,12 +3182,21 @@ for(let index=DAILY_CONTROL_ASSETS.length-1;index>=0;index--){
   if(DELETED_DAILY_CONTROL_ASSETS.includes(DAILY_CONTROL_ASSETS[index].id))DAILY_CONTROL_ASSETS.splice(index,1);
 }
 function saveDailyControlCatalog(){
-  localStorage.setItem(DAILY_CONTROL_CUSTOM_CATALOG_KEY,JSON.stringify(CUSTOM_DAILY_CONTROL_ASSETS));
-  localStorage.setItem(DAILY_CONTROL_DELETED_CATALOG_KEY,JSON.stringify(DELETED_DAILY_CONTROL_ASSETS));
+  storageSet(localStorage,DAILY_CONTROL_CUSTOM_CATALOG_KEY,JSON.stringify(CUSTOM_DAILY_CONTROL_ASSETS));
+  storageSet(localStorage,DAILY_CONTROL_DELETED_CATALOG_KEY,JSON.stringify(DELETED_DAILY_CONTROL_ASSETS));
 }
 function addDailyControlToCatalog({factory,name,type,team}){
   const clean=String(name||"").trim();
+  if(!canManageDailyControlCatalog()||!dailyControlFactories().includes(factory)){
+    return {ok:false,message:"Bu fabrika için günlük kontrol tanımlama yetkiniz bulunmuyor."};
+  }
   if(!clean)return {ok:false,message:"Kontrol adı boş bırakılamaz."};
+  if(!["compressor","generator","ups","compensation","gas","water","other"].includes(type)){
+    return {ok:false,message:"Geçerli bir kontrol türü seçiniz."};
+  }
+  if(!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+    return {ok:false,message:"Geçerli bir sorumlu bakım ekibi seçiniz."};
+  }
   if(DAILY_CONTROL_ASSETS.some(item=>item.factory===factory&&item.name.toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){
     return {ok:false,message:"Bu fabrikada aynı isimde bir günlük kontrol zaten bulunuyor."};
   }
@@ -3764,57 +4009,69 @@ function dailyChecksPage(){
   </details>`:""}
 
   ${activeTab==="daily"?`
-    <section class="daily-duty-banner">
-      <div><small>EKİPMAN KONTROL VARDİYASI</small><b>08:00 – 16:00</b><span>Kompresör, jeneratör, UPS, kompanzasyon, su ve gaz kontrolleri.</span></div>
-      <div class="daily-duty-team"><small>ELEKTRİK BAKIM</small><b>${electricalDuty.length?esc(electricalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
-      <div class="daily-duty-team"><small>MEKANİK BAKIM</small><b>${mechanicalDuty.length?esc(mechanicalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
-    </section>
-
-    <section class="utility-time-banner ${windowState.inWindow?"open":"closed"}">
-      <div><span>◷</span><div><small>SU VE GAZ RUTİN DEĞER ALMA SAATİ</small><b>08:00 – 09:00</b><p>Bakım personeli su ve gaz sayaçlarını yalnızca bu saat aralığında kaydedebilir.</p></div></div>
-      <strong>${windowState.inWindow?"Giriş Açık":windowState.beforeWindow?"Henüz Başlamadı":"Süre Doldu"}</strong>
-    </section>
-
-    <section class="daily-control-kpis">
+    <section class="daily-control-kpis daily-control-kpis-compact">
       <article><small>GÜNLÜK KONTROL</small><b>${stats.total}</b><span>trafo ve kesici hariç</span></article>
       <article><small>YAPILDI</small><b>${stats.done}</b><span>fotoğraflı kontrol</span></article>
       <article><small>YAPILMADI</small><b>${stats.pending}</b><span>bekleyen kontrol</span></article>
       <article><small>TAMAMLANMA</small><b>%${stats.percent}</b><span>${selectedIsToday?"bugünkü durum":"seçilen tarih"}</span></article>
     </section>
 
-    <section class="daily-section-card">
+    <section class="daily-section-card daily-primary-section">
       <div class="section-modern-head">
-        <div><h2>08:00–09:00 Su ve Gaz Sayaçları</h2><p>Su için üç kümülatif sayaç, gaz için tek gelen sayaç değeri ve fotoğraf zorunludur.</p></div>
+        <div><h2>Su ve Gaz Sayaçları</h2><p>Değer girmek, grafikleri görmek veya düzenlemek için kartın üzerine tıklayın.</p></div>
+        <span class="daily-inline-status ${windowState.inWindow?"open":"closed"}"><b>08:00–09:00</b>${windowState.inWindow?"Giriş Açık":windowState.beforeWindow?"Henüz Başlamadı":"Süre Doldu"}</span>
       </div>
       <div class="daily-reading-grid">${specialAssets.map(specialCard).join("")}</div>
     </section>
 
-    ${utilityOutput}
-    ${utilityStatistics}
-
-    <section class="daily-section-card">
+    <section class="daily-section-card daily-primary-section">
       <div class="daily-list-heading">
-        <div><h2>Bakım Ekibi Günlük Kontrol Listesi</h2><p>Her kontrol için sonuç seçimi ve kontrol fotoğrafı zorunludur.</p></div>
+        <div><h2>Günlük Kontrol Listesi</h2><p>Detay ve yetkili işlemler için kontrol kartına tıklayın.</p></div>
         <select id="dailyControlCategory">${categories.map(category=>`<option ${category===s.dailyControlCategory?"selected":""}>${esc(category)}</option>`).join("")}</select>
       </div>
       <div class="daily-check-list">${visibleAssets.map(assetCard).join("")}</div>
     </section>
 
-    <section class="daily-section-card">
-      <div class="section-modern-head"><div><h2>Son 7 Günlük Kontrol Geçmişi</h2><p>${esc(factory)} günlük tamamlanma özeti.</p></div></div>
-      <div class="table-wrap">
-        <table class="daily-history-table">
-          <thead><tr><th>Tarih</th><th>Yapıldı</th><th>Yapılmadı</th><th>Toplam</th><th>Tamamlanma</th></tr></thead>
-          <tbody>${history.map(row=>`<tr>
-            <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}</td>
-            <td><b class="daily-history-done">${row.done}</b></td>
-            <td><b class="daily-history-pending">${row.pending}</b></td>
-            <td>${row.total}</td>
-            <td><div class="daily-history-progress"><i style="width:${row.percent}%"></i><span>%${row.percent}</span></div></td>
-          </tr>`).join("")}</tbody>
-        </table>
+    <details class="daily-secondary-panel">
+      <summary><span>◷</span><div><b>Günün Sorumluları ve Kontrol Saatleri</b><small>08:00–16:00 ekipleri ve sayaç giriş zamanını görüntüleyin.</small></div><i>⌄</i></summary>
+      <div class="daily-secondary-content">
+        <section class="daily-duty-banner">
+          <div><small>EKİPMAN KONTROL VARDİYASI</small><b>08:00 – 16:00</b><span>Kompresör, jeneratör, UPS, kompanzasyon, su ve gaz kontrolleri.</span></div>
+          <div class="daily-duty-team"><small>ELEKTRİK BAKIM</small><b>${electricalDuty.length?esc(electricalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
+          <div class="daily-duty-team"><small>MEKANİK BAKIM</small><b>${mechanicalDuty.length?esc(mechanicalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
+        </section>
+        <section class="utility-time-banner ${windowState.inWindow?"open":"closed"}">
+          <div><span>◷</span><div><small>SU VE GAZ RUTİN DEĞER ALMA SAATİ</small><b>08:00 – 09:00</b><p>Bakım personeli su ve gaz sayaçlarını yalnızca bu saat aralığında kaydedebilir.</p></div></div>
+          <strong>${windowState.inWindow?"Giriş Açık":windowState.beforeWindow?"Henüz Başlamadı":"Süre Doldu"}</strong>
+        </section>
       </div>
-    </section>
+    </details>
+
+    <details class="daily-secondary-panel">
+      <summary><span>▥</span><div><b>Su ve Gaz Raporları</b><small>Günlük çıktı, dönem toplamları, grafikler ve sayaç geçmişi.</small></div><i>⌄</i></summary>
+      <div class="daily-secondary-content daily-utility-reports">
+        ${utilityOutput}
+        ${utilityStatistics}
+      </div>
+    </details>
+
+    <details class="daily-secondary-panel">
+      <summary><span>↺</span><div><b>Son 7 Günlük Kontrol Geçmişi</b><small>${esc(factory)} tamamlanma oranlarını görüntüleyin.</small></div><i>⌄</i></summary>
+      <div class="daily-secondary-content">
+        <div class="table-wrap">
+          <table class="daily-history-table">
+            <thead><tr><th>Tarih</th><th>Yapıldı</th><th>Yapılmadı</th><th>Toplam</th><th>Tamamlanma</th></tr></thead>
+            <tbody>${history.map(row=>`<tr>
+              <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}</td>
+              <td><b class="daily-history-done">${row.done}</b></td>
+              <td><b class="daily-history-pending">${row.pending}</b></td>
+              <td>${row.total}</td>
+              <td><div class="daily-history-progress"><i style="width:${row.percent}%"></i><span>%${row.percent}</span></div></td>
+            </tr>`).join("")}</tbody>
+          </table>
+        </div>
+      </div>
+    </details>
   `:`
     <section class="contractor-info-banner">
       <div><span>⚠</span><div><b>Trafo ve kesiciler günlük bakım ekibi kontrolüne dahil değildir.</b><p>Bu ekipmanların kontrolleri ayda bir defa yetkili taşeron tarafından yapılır; rapor numarası, sonuç ve fotoğraf sisteme kaydedilir.</p></div></div>
@@ -3933,7 +4190,7 @@ function deleteWorkItemById(id){
   }
 
   if(item.kind==="request"){
-    const linked=s.workItems.find(x=>x.kind==="workorder"&&x.sourceRequestId===item.id);
+    const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
     if(linked){
       return {
         ok:false,
@@ -3943,7 +4200,7 @@ function deleteWorkItemById(id){
   }
 
   if(item.kind==="workorder"&&item.sourceRequestId){
-    const request=s.workItems.find(x=>x.id===item.sourceRequestId);
+    const request=findWorkItemById(item.sourceRequestId);
     if(request){
       request.status="approved";
       request.convertedBy="";
@@ -3952,7 +4209,7 @@ function deleteWorkItemById(id){
     }
   }
 
-  s.workItems=s.workItems.filter(x=>x.id!==id);
+  s.workItems=s.workItems.filter(x=>String(x.id)!==String(id));
   saveWorkItems();
   return {ok:true,item};
 }
@@ -3964,7 +4221,7 @@ function visibleWorkItems(){
   if(s.user?.role==="Bakım Personeli")items=items.filter(x=>x.kind==="workorder"&&x.assignedTo===s.user.name);
   return items.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 }
-function workMaterials(item){return Array.isArray(item?.usedMaterials)?item.usedMaterials:[]}
+function workMaterials(item){return safeRecordArray(item?.usedMaterials,[])}
 
 /* İş talebi ve iş emri ekranları */
 function workManagementPage(){
@@ -4008,8 +4265,8 @@ function workManagementPage(){
       <div class="work-form-actions full"><button type="submit" class="primary">İş Emrini Oluştur</button></div>
     </form>
   </section>`:"";
-  const requestCards=requests.map(item=>`<article class="work-card request-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0">
-    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,"request")}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="work-open-detail" data-work-detail-id="${esc(item.id)}">Talep Detayını Aç ›</button></div></div>
+  const requestCards=requests.map(item=>`<article class="work-card request-card clickable-work-card priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0">
+    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status,"request"))}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="work-open-detail" data-work-detail-id="${esc(item.id)}">Talep Detayını Aç ›</button></div></div>
     <p class="work-description">${esc(item.description)}</p>
     <div class="work-meta"><span>Talep Eden: <b>${esc(item.createdBy)}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span><span>İstenen Tarih: <b>${esc(item.requestedDate||"-")}</b></span><span>Ekip: <b>${esc(item.assignedTeam||workTeamForCategory(item.category))}</b></span></div>
     <div class="work-request-audit"><span><small>İSTEYEN</small><b>${esc(item.createdBy||"Bilinmiyor")}</b><em>${fmtDate(item.createdAt)}</em></span>${item.reviewedBy?`<span><small>İNCELEYEN</small><b>${esc(item.reviewedBy)}</b><em>${fmtDate(item.reviewedAt)}</em></span>`:""}${item.approvedBy?`<span class="approved"><small>ONAYLAYAN</small><b>${esc(item.approvedBy)}</b><em>${fmtDate(item.approvedAt)}</em></span>`:""}${item.rejectedBy?`<span class="rejected"><small>REDDEDEN</small><b>${esc(item.rejectedBy)}</b><em>${fmtDate(item.rejectedAt)}</em></span>`:""}${item.convertedBy?`<span><small>İŞ EMRİNE ÇEVİREN</small><b>${esc(item.convertedBy)}</b><em>${fmtDate(item.convertedAt)}</em></span>`:""}</div>
@@ -4019,11 +4276,11 @@ function workManagementPage(){
     const canUpdate=canUpdateWorkOrder(item);
     const materials=workMaterials(item);
     const people=workMaintenanceOptions(item.factory,item.assignedTeam);
-    return `<article class="work-card order-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
-      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status)}</b><small>${fmtDate(item.createdAt)}</small></div></div>
+    return `<article class="work-card order-card clickable-work-card priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
+      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b><small>${fmtDate(item.createdAt)}</small></div></div>
       <p class="work-description">${esc(item.description)}</p>
       <div class="work-meta"><span>Ekip: <b>${esc(item.assignedTeam)}</b></span><span>Sorumlu: <b>${esc(item.assignedTo||"Atama Bekliyor")}</b></span><span>Plan: <b>${esc(item.planStart||"-")} → ${esc(item.planEnd||"-")}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span></div>
-      <div class="work-material-chips">${materials.map((m,index)=>{const catalog=materialById(m.materialId);return `<span>${esc(catalog?.name||m.name||"Malzeme")} · ${m.quantity} ${esc(m.unit||catalog?.unit||"Adet")}${canUpdate?`<button data-remove-work-material="${item.id}" data-index="${index}">×</button>`:""}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
+      <div class="work-material-chips">${materials.map((m,index)=>{const catalog=materialById(m.materialId);return `<span>${esc(catalog?.name||m.name||"Malzeme")} · ${esc(m.quantity)} ${esc(m.unit||catalog?.unit||"Adet")}${canUpdate?`<button data-remove-work-material="${esc(item.id)}" data-index="${index}">×</button>`:""}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
       ${item.completedAt?`<div class="work-completed">Tamamlanma: ${fmtDate(item.completedAt)}</div>`:""}
     </article>`;
   }).join("")||'<div class="card empty-panel"><h3>İş emri bulunamadı</h3><p>Yetki alanınızda henüz iş emri yok.</p></div>';
@@ -4089,7 +4346,7 @@ function workDetailModal(){
       </div>
 
       <div class="work-detail-summary">
-        <article><small>DURUM</small><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,isRequest?"request":"workorder")}</b></article>
+        <article><small>DURUM</small><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status,isRequest?"request":"workorder"))}</b></article>
         <article><small>ÖNCELİK</small><b>${esc(item.priority||"-")}</b></article>
         <article><small>BAKIM EKİBİ</small><b>${esc(assignedTeam||"-")}</b></article>
         <article><small>SORUMLU</small><b>${esc(item.assignedTo||"Atama bekliyor")}</b></article>
@@ -4226,7 +4483,7 @@ function workDetailModal(){
         <div class="work-material-chips">
           ${materials.map((material,index)=>{
             const catalog=materialById(material.materialId);
-            return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${material.quantity} ${esc(material.unit||catalog?.unit||"Adet")}${canProgressEdit?`<button data-remove-work-material="${esc(item.id)}" data-index="${index}">×</button>`:""}</span>`;
+            return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${esc(material.quantity)} ${esc(material.unit||catalog?.unit||"Adet")}${canProgressEdit?`<button data-remove-work-material="${esc(item.id)}" data-index="${index}">×</button>`:""}</span>`;
           }).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}
         </div>
       </section>`:""}
@@ -4249,8 +4506,27 @@ function workDetailModal(){
 /* Malzeme verileri ve işlemleri */
 const MATERIAL_KEY="etilismart_material_catalog_v1";
 const DEFAULT_MATERIALS=[{"id":"MAT-001","code":"R6204","name":"6204 Rulman","category":"Mekanik","unit":"Adet","stock":35,"minStock":10},{"id":"MAT-002","code":"R6205","name":"6205 Rulman","category":"Mekanik","unit":"Adet","stock":22,"minStock":8},{"id":"MAT-003","code":"R6206","name":"6206 Rulman","category":"Mekanik","unit":"Adet","stock":18,"minStock":8},{"id":"MAT-004","code":"K18","name":"Kontaktör 18A","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-005","code":"K32","name":"Kontaktör 32A","category":"Elektrik","unit":"Adet","stock":10,"minStock":4},{"id":"MAT-006","code":"SNS-PNP","name":"Endüktif Sensör PNP","category":"Elektrik","unit":"Adet","stock":24,"minStock":8},{"id":"MAT-007","code":"PHOTO-01","name":"Fotosel Sensör","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-008","code":"REL-24","name":"24V Ara Röle","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-009","code":"PSU-24","name":"24V Güç Kaynağı","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-010","code":"BELT-A","name":"V Kayışı","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-011","code":"CHAIN-01","name":"Tahrik Zinciri","category":"Mekanik","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-012","code":"CYL-01","name":"Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":7,"minStock":3},{"id":"MAT-013","code":"VALF-24","name":"24V Solenoid Valf","category":"Pnömatik","unit":"Adet","stock":14,"minStock":5},{"id":"MAT-014","code":"CABLE-25","name":"2,5 mm² Kablo","category":"Elektrik","unit":"Metre","stock":250,"minStock":50},{"id":"MAT-015","code":"FUSE-16","name":"16A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-016","code":"CONT-009","name":"Kontaktör 9A","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-017","code":"CONT-012","name":"Kontaktör 12A","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-018","code":"CONT-025","name":"Kontaktör 25A","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-019","code":"CONT-040","name":"Kontaktör 40A","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-020","code":"CONT-050","name":"Kontaktör 50A","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-021","code":"CONT-065","name":"Kontaktör 65A","category":"Elektrik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-022","code":"CONT-080","name":"Kontaktör 80A","category":"Elektrik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-023","code":"CONT-095","name":"Kontaktör 95A","category":"Elektrik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-024","code":"CONT-115","name":"Kontaktör 115A","category":"Elektrik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-025","code":"CONT-150","name":"Kontaktör 150A","category":"Elektrik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-026","code":"THR-1-1.6","name":"Termik Röle 1–1,6A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-027","code":"THR-1.6-2.5","name":"Termik Röle 1,6–2,5A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-028","code":"THR-2.5-4","name":"Termik Röle 2,5–4A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-029","code":"THR-4-6.3","name":"Termik Röle 4–6,3A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-030","code":"THR-6-10","name":"Termik Röle 6–10A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-031","code":"THR-9-13","name":"Termik Röle 9–13A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-032","code":"THR-12-18","name":"Termik Röle 12–18A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-033","code":"THR-17-25","name":"Termik Röle 17–25A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-034","code":"THR-23-32","name":"Termik Röle 23–32A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-035","code":"THR-30-40","name":"Termik Röle 30–40A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-036","code":"THR-37-50","name":"Termik Röle 37–50A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-037","code":"THR-48-65","name":"Termik Röle 48–65A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-038","code":"REL-24-2CO","name":"24V DC 2 Kontaklı Ara Röle","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-039","code":"REL-24-4CO","name":"24V DC 4 Kontaklı Ara Röle","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-040","code":"REL-230-2CO","name":"230V AC 2 Kontaklı Ara Röle","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-041","code":"REL-230-4CO","name":"230V AC 4 Kontaklı Ara Röle","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-042","code":"TMR-24-ON","name":"24V DC Gecikmeli Zaman Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-043","code":"TMR-230-ON","name":"230V AC Gecikmeli Zaman Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-044","code":"TMR-24-OFF","name":"24V DC Bırakma Gecikmeli Röle","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-045","code":"PHASE-REL","name":"Faz Sırası ve Faz Koruma Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-046","code":"LEVEL-REL","name":"Sıvı Seviye Kontrol Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-047","code":"VOLT-REL","name":"Gerilim Kontrol Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-048","code":"CURR-REL","name":"Akım Kontrol Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-049","code":"TEMP-REL","name":"Dijital Sıcaklık Rölesi","category":"Elektrik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-050","code":"SSR-25","name":"Solid State Röle 25A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-051","code":"SSR-40","name":"Solid State Röle 40A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-052","code":"SSR-75","name":"Solid State Röle 75A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-053","code":"SSR-100","name":"Solid State Röle 100A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-054","code":"PSU24-25","name":"24V DC Güç Kaynağı 2,5A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-055","code":"PSU24-5","name":"24V DC Güç Kaynağı 5A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-056","code":"PSU24-10","name":"24V DC Güç Kaynağı 10A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-057","code":"PSU24-20","name":"24V DC Güç Kaynağı 20A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-058","code":"MCB-1P-2","name":"1 Kutuplu 2A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-059","code":"MCB-1P-4","name":"1 Kutuplu 4A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-060","code":"MCB-1P-6","name":"1 Kutuplu 6A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-061","code":"MCB-1P-10","name":"1 Kutuplu 10A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-062","code":"MCB-1P-16","name":"1 Kutuplu 16A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-063","code":"MCB-1P-20","name":"1 Kutuplu 20A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-064","code":"MCB-1P-25","name":"1 Kutuplu 25A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-065","code":"MCB-1P-32","name":"1 Kutuplu 32A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-066","code":"MCB-3P-6","name":"3 Kutuplu 6A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-067","code":"MCB-3P-10","name":"3 Kutuplu 10A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-068","code":"MCB-3P-16","name":"3 Kutuplu 16A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-069","code":"MCB-3P-20","name":"3 Kutuplu 20A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-070","code":"MCB-3P-25","name":"3 Kutuplu 25A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-071","code":"MCB-3P-32","name":"3 Kutuplu 32A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-072","code":"MCB-3P-40","name":"3 Kutuplu 40A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-073","code":"MCB-3P-50","name":"3 Kutuplu 50A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-074","code":"MCB-3P-63","name":"3 Kutuplu 63A Otomatik Sigorta","category":"Elektrik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-075","code":"MCCB-100","name":"100A Kompakt Şalter","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-076","code":"MCCB-160","name":"160A Kompakt Şalter","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-077","code":"MCCB-250","name":"250A Kompakt Şalter","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-078","code":"RCD-2P-25","name":"2P 25A 30mA Kaçak Akım Rölesi","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-079","code":"RCD-2P-40","name":"2P 40A 30mA Kaçak Akım Rölesi","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-080","code":"RCD-2P-63","name":"2P 63A 30mA Kaçak Akım Rölesi","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-081","code":"RCD-4P-40","name":"4P 40A 30mA Kaçak Akım Rölesi","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-082","code":"RCD-4P-63","name":"4P 63A 30mA Kaçak Akım Rölesi","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-083","code":"FUSE-GG-2","name":"2A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-084","code":"FUSE-GG-4","name":"4A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-085","code":"FUSE-GG-6","name":"6A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-086","code":"FUSE-GG-10","name":"10A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-087","code":"FUSE-GG-16","name":"16A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-088","code":"FUSE-GG-20","name":"20A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-089","code":"FUSE-GG-25","name":"25A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-090","code":"FUSE-GG-32","name":"32A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-091","code":"FUSE-GG-40","name":"40A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-092","code":"FUSE-GG-50","name":"50A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-093","code":"FUSE-GG-63","name":"63A gG Silindirik Sigorta","category":"Elektrik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-094","code":"FH-10X38-1","name":"10×38 Tekli Sigorta Yuvası","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-095","code":"FH-10X38-2","name":"10×38 İkili Sigorta Yuvası","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-096","code":"FH-10X38-3","name":"10×38 Üçlü Sigorta Yuvası","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-097","code":"MPCB-1.6-2.5","name":"Motor Koruma Şalteri 1,6–2,5A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-098","code":"MPCB-2.5-4","name":"Motor Koruma Şalteri 2,5–4A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-099","code":"MPCB-4-6.3","name":"Motor Koruma Şalteri 4–6,3A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-100","code":"MPCB-6-10","name":"Motor Koruma Şalteri 6–10A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-101","code":"MPCB-9-14","name":"Motor Koruma Şalteri 9–14A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-102","code":"MPCB-13-18","name":"Motor Koruma Şalteri 13–18A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-103","code":"MPCB-17-23","name":"Motor Koruma Şalteri 17–23A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-104","code":"MPCB-20-25","name":"Motor Koruma Şalteri 20–25A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-105","code":"MPCB-24-32","name":"Motor Koruma Şalteri 24–32A","category":"Elektrik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-106","code":"PB-GREEN","name":"Yeşil Yaylı Buton","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-107","code":"PB-RED","name":"Kırmızı Yaylı Buton","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-108","code":"PB-BLACK","name":"Siyah Yaylı Buton","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-109","code":"SEL-2","name":"2 Konumlu Kalıcı Seçici Şalter","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-110","code":"SEL-3","name":"3 Konumlu Kalıcı Seçici Şalter","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-111","code":"ESTOP-40","name":"40 mm Acil Stop Butonu","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-112","code":"ESTOP-60","name":"60 mm Acil Stop Butonu","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-113","code":"LAMP-GREEN","name":"24V Yeşil Sinyal Lambası","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-114","code":"LAMP-RED","name":"24V Kırmızı Sinyal Lambası","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-115","code":"LAMP-YELLOW","name":"24V Sarı Sinyal Lambası","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-116","code":"BUZZER-24","name":"24V Pano Buzzerı","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-117","code":"SIREN-24","name":"24V Endüstriyel Siren","category":"Elektrik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-118","code":"IND-M8-PNP","name":"M8 Endüktif Sensör PNP NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-119","code":"IND-M8-NPN","name":"M8 Endüktif Sensör NPN NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-120","code":"IND-M12-PNP","name":"M12 Endüktif Sensör PNP NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-121","code":"IND-M12-NPN","name":"M12 Endüktif Sensör NPN NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-122","code":"IND-M18-PNP","name":"M18 Endüktif Sensör PNP NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-123","code":"IND-M18-NPN","name":"M18 Endüktif Sensör NPN NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-124","code":"IND-M30-PNP","name":"M30 Endüktif Sensör PNP NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-125","code":"IND-M30-NPN","name":"M30 Endüktif Sensör NPN NO","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-126","code":"CAP-M18-PNP","name":"M18 Kapasitif Sensör PNP","category":"Elektrik","unit":"Adet","stock":10,"minStock":4},{"id":"MAT-127","code":"CAP-M30-PNP","name":"M30 Kapasitif Sensör PNP","category":"Elektrik","unit":"Adet","stock":10,"minStock":4},{"id":"MAT-128","code":"PHOTO-DIFF","name":"Difüz Tip Fotosel Sensör","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-129","code":"PHOTO-REFL","name":"Reflektörlü Fotosel Sensör","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-130","code":"PHOTO-THRU","name":"Karşılıklı Fotosel Takımı","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-131","code":"PHOTO-FORK","name":"Çatal Tip Fotosel Sensör","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-132","code":"LIMIT-ROLLER","name":"Makaralı Limit Şalter","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-133","code":"LIMIT-LEVER","name":"Kollu Limit Şalter","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-134","code":"LIMIT-PLUNGER","name":"Pimli Limit Şalter","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-135","code":"MAG-REED","name":"Manyetik Silindir Sensörü","category":"Elektrik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-136","code":"ENC-360","name":"360 Pals Artımlı Encoder","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-137","code":"ENC-500","name":"500 Pals Artımlı Encoder","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-138","code":"ENC-1024","name":"1024 Pals Artımlı Encoder","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-139","code":"ENC-2048","name":"2048 Pals Artımlı Encoder","category":"Elektrik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-140","code":"VFD-075KW","name":"0,75 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-141","code":"VFD-15KW","name":"1,5 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-142","code":"VFD-22KW","name":"2,2 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-143","code":"VFD-4KW","name":"4 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-144","code":"VFD-55KW","name":"5,5 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-145","code":"VFD-75KW","name":"7,5 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-146","code":"VFD-11KW","name":"11 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-147","code":"VFD-185KW","name":"18,5 kW Frekans İnvertörü","category":"Elektrik","unit":"Adet","stock":3,"minStock":1},{"id":"MAT-148","code":"SERVO-M-400","name":"400 W Servo Motor","category":"Elektrik","unit":"Adet","stock":2,"minStock":1},{"id":"MAT-149","code":"SERVO-D-400","name":"400 W Servo Sürücü","category":"Elektrik","unit":"Adet","stock":2,"minStock":1},{"id":"MAT-150","code":"SERVO-M-750","name":"750 W Servo Motor","category":"Elektrik","unit":"Adet","stock":2,"minStock":1},{"id":"MAT-151","code":"SERVO-D-750","name":"750 W Servo Sürücü","category":"Elektrik","unit":"Adet","stock":2,"minStock":1},{"id":"MAT-152","code":"SERVO-M-1K","name":"1 kW Servo Motor","category":"Elektrik","unit":"Adet","stock":2,"minStock":1},{"id":"MAT-153","code":"SERVO-D-1K","name":"1 kW Servo Sürücü","category":"Elektrik","unit":"Adet","stock":2,"minStock":1},{"id":"MAT-154","code":"CAB-NYY-075","name":"0,75 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":300,"minStock":60},{"id":"MAT-155","code":"CAB-NYY-15","name":"1,5 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":300,"minStock":60},{"id":"MAT-156","code":"CAB-NYY-25","name":"2,5 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":300,"minStock":60},{"id":"MAT-157","code":"CAB-NYY-4","name":"4 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":300,"minStock":60},{"id":"MAT-158","code":"CAB-NYY-6","name":"6 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":300,"minStock":60},{"id":"MAT-159","code":"CAB-NYY-10","name":"10 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":120,"minStock":25},{"id":"MAT-160","code":"CAB-NYY-16","name":"16 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":120,"minStock":25},{"id":"MAT-161","code":"CAB-NYY-35","name":"35 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":120,"minStock":25},{"id":"MAT-162","code":"CAB-NYY-50","name":"50 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":120,"minStock":25},{"id":"MAT-163","code":"CAB-NYY-70","name":"70 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":120,"minStock":25},{"id":"MAT-164","code":"CAB-NYY-95","name":"95 mm² NYY Kablo","category":"Elektrik","unit":"Metre","stock":120,"minStock":25},{"id":"MAT-165","code":"LUG-15","name":"1,5 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-166","code":"LUG-25","name":"2,5 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-167","code":"LUG-4","name":"4 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-168","code":"LUG-6","name":"6 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-169","code":"LUG-10","name":"10 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-170","code":"LUG-16","name":"16 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-171","code":"LUG-35","name":"35 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-172","code":"LUG-50","name":"50 mm² İzoleli Kablo Pabucu","category":"Elektrik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-173","code":"TERM-25","name":"2,5 mm² Ray Klemensi","category":"Elektrik","unit":"Adet","stock":100,"minStock":25},{"id":"MAT-174","code":"TERM-4","name":"4 mm² Ray Klemensi","category":"Elektrik","unit":"Adet","stock":100,"minStock":25},{"id":"MAT-175","code":"TERM-6","name":"6 mm² Ray Klemensi","category":"Elektrik","unit":"Adet","stock":100,"minStock":25},{"id":"MAT-176","code":"TERM-10","name":"10 mm² Ray Klemensi","category":"Elektrik","unit":"Adet","stock":100,"minStock":25},{"id":"MAT-177","code":"TERM-16","name":"16 mm² Ray Klemensi","category":"Elektrik","unit":"Adet","stock":100,"minStock":25},{"id":"MAT-178","code":"TERM-35","name":"35 mm² Ray Klemensi","category":"Elektrik","unit":"Adet","stock":100,"minStock":25},{"id":"MAT-179","code":"BRG-6000","name":"6000 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-180","code":"BRG-6001","name":"6001 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-181","code":"BRG-6002","name":"6002 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-182","code":"BRG-6003","name":"6003 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-183","code":"BRG-6004","name":"6004 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-184","code":"BRG-6005","name":"6005 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-185","code":"BRG-6006","name":"6006 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-186","code":"BRG-6007","name":"6007 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-187","code":"BRG-6008","name":"6008 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-188","code":"BRG-6009","name":"6009 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-189","code":"BRG-6010","name":"6010 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-190","code":"BRG-6200","name":"6200 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-191","code":"BRG-6201","name":"6201 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-192","code":"BRG-6202","name":"6202 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-193","code":"BRG-6203","name":"6203 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-194","code":"BRG-6207","name":"6207 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-195","code":"BRG-6208","name":"6208 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-196","code":"BRG-6209","name":"6209 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-197","code":"BRG-6210","name":"6210 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-198","code":"BRG-6211","name":"6211 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-199","code":"BRG-6212","name":"6212 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-200","code":"BRG-6300","name":"6300 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-201","code":"BRG-6301","name":"6301 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-202","code":"BRG-6302","name":"6302 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-203","code":"BRG-6303","name":"6303 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-204","code":"BRG-6304","name":"6304 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-205","code":"BRG-6305","name":"6305 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-206","code":"BRG-6306","name":"6306 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-207","code":"BRG-6307","name":"6307 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-208","code":"BRG-6308","name":"6308 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-209","code":"BRG-6309","name":"6309 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-210","code":"BRG-6310","name":"6310 Rulman","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-211","code":"UCP-204","name":"UCP204 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-212","code":"UCP-205","name":"UCP205 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-213","code":"UCP-206","name":"UCP206 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-214","code":"UCP-207","name":"UCP207 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-215","code":"UCP-208","name":"UCP208 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-216","code":"UCP-209","name":"UCP209 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-217","code":"UCP-210","name":"UCP210 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-218","code":"UCF-204","name":"UCF204 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-219","code":"UCF-205","name":"UCF205 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-220","code":"UCF-206","name":"UCF206 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-221","code":"UCF-207","name":"UCF207 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-222","code":"UCF-208","name":"UCF208 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-223","code":"UCF-209","name":"UCF209 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-224","code":"UCF-210","name":"UCF210 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-225","code":"UCFL-204","name":"UCFL204 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-226","code":"UCFL-205","name":"UCFL205 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-227","code":"UCFL-206","name":"UCFL206 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-228","code":"UCFL-207","name":"UCFL207 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-229","code":"UCFL-208","name":"UCFL208 Yataklı Rulman","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-230","code":"SEAL-15","name":"15 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-231","code":"SEAL-20","name":"20 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-232","code":"SEAL-25","name":"25 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-233","code":"SEAL-30","name":"30 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-234","code":"SEAL-35","name":"35 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-235","code":"SEAL-40","name":"40 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-236","code":"SEAL-45","name":"45 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-237","code":"SEAL-50","name":"50 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-238","code":"SEAL-60","name":"60 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-239","code":"SEAL-70","name":"70 mm Mil Keçesi","category":"Mekanik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-240","code":"ORING-10","name":"10 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-241","code":"ORING-12","name":"12 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-242","code":"ORING-16","name":"16 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-243","code":"ORING-20","name":"20 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-244","code":"ORING-25","name":"25 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-245","code":"ORING-30","name":"30 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-246","code":"ORING-35","name":"35 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-247","code":"ORING-40","name":"40 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-248","code":"ORING-50","name":"50 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-249","code":"ORING-60","name":"60 mm O-Ring","category":"Mekanik","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-250","code":"VB-A-32","name":"A32 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-251","code":"VB-A-40","name":"A40 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-252","code":"VB-A-50","name":"A50 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-253","code":"VB-A-60","name":"A60 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-254","code":"VB-A-75","name":"A75 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-255","code":"VB-B-40","name":"B40 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-256","code":"VB-B-50","name":"B50 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-257","code":"VB-B-60","name":"B60 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-258","code":"VB-B-75","name":"B75 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-259","code":"VB-B-90","name":"B90 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-260","code":"VB-SPA-1000","name":"SPA1000 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-261","code":"VB-SPA-1250","name":"SPA1250 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-262","code":"VB-SPA-1500","name":"SPA1500 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-263","code":"VB-SPB-1250","name":"SPB1250 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-264","code":"VB-SPB-1600","name":"SPB1600 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-265","code":"VB-SPB-2000","name":"SPB2000 V Kayışı","category":"Mekanik","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-266","code":"TB-T5-500","name":"T5 500 mm Triger Kayış","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-267","code":"TB-T10-1000","name":"T10 1000 mm Triger Kayış","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-268","code":"TB-HTD5M-1000","name":"HTD 5M 1000 mm Triger Kayış","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-269","code":"TB-HTD8M-1600","name":"HTD 8M 1600 mm Triger Kayış","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-270","code":"CHAIN-06B-1","name":"06B-1 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-271","code":"CHAIN-08B-1","name":"08B-1 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-272","code":"CHAIN-10B-1","name":"10B-1 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-273","code":"CHAIN-12B-1","name":"12B-1 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-274","code":"CHAIN-16B-1","name":"16B-1 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-275","code":"CHAIN-08B-2","name":"08B-2 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-276","code":"CHAIN-10B-2","name":"10B-2 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-277","code":"CHAIN-12B-2","name":"12B-2 Makaralı Zincir","category":"Mekanik","unit":"Metre","stock":25,"minStock":8},{"id":"MAT-278","code":"SPROCK-08B-15T","name":"08B-15T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-279","code":"SPROCK-08B-20T","name":"08B-20T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-280","code":"SPROCK-10B-15T","name":"10B-15T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-281","code":"SPROCK-10B-20T","name":"10B-20T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-282","code":"SPROCK-12B-15T","name":"12B-15T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-283","code":"SPROCK-12B-20T","name":"12B-20T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-284","code":"SPROCK-16B-15T","name":"16B-15T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-285","code":"SPROCK-16B-20T","name":"16B-20T Zincir Dişlisi","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-286","code":"COUP-14","name":"14 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-287","code":"COUP-19","name":"19 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-288","code":"COUP-24","name":"24 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-289","code":"COUP-28","name":"28 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-290","code":"COUP-38","name":"38 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-291","code":"COUP-42","name":"42 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-292","code":"COUP-48","name":"48 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-293","code":"COUP-55","name":"55 mm Elastik Kaplin","category":"Mekanik","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-294","code":"COUP-CHAIN","name":"Zincir Kaplin","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-295","code":"COUP-GRID","name":"Yaylı Grid Kaplin","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-296","code":"COUP-BELLOWS","name":"Körüklü Servo Kaplin","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-297","code":"COUP-OLDHAM","name":"Oldham Kaplin","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-298","code":"COUP-JAW-INSERT","name":"Kaplin Elastomer Yıldızı","category":"Mekanik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-299","code":"BOLT-M6","name":"M6 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-300","code":"NUT-M6","name":"M6 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-301","code":"WASH-M6","name":"M6 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-302","code":"SPRING-WASH-M6","name":"M6 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-303","code":"BOLT-M8","name":"M8 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-304","code":"NUT-M8","name":"M8 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-305","code":"WASH-M8","name":"M8 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-306","code":"SPRING-WASH-M8","name":"M8 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-307","code":"BOLT-M10","name":"M10 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-308","code":"NUT-M10","name":"M10 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-309","code":"WASH-M10","name":"M10 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-310","code":"SPRING-WASH-M10","name":"M10 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-311","code":"BOLT-M12","name":"M12 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-312","code":"NUT-M12","name":"M12 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-313","code":"WASH-M12","name":"M12 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-314","code":"SPRING-WASH-M12","name":"M12 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-315","code":"BOLT-M14","name":"M14 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-316","code":"NUT-M14","name":"M14 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-317","code":"WASH-M14","name":"M14 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-318","code":"SPRING-WASH-M14","name":"M14 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-319","code":"BOLT-M16","name":"M16 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-320","code":"NUT-M16","name":"M16 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-321","code":"WASH-M16","name":"M16 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-322","code":"SPRING-WASH-M16","name":"M16 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-323","code":"BOLT-M20","name":"M20 Altı Köşe Cıvata","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-324","code":"NUT-M20","name":"M20 Somun","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-325","code":"WASH-M20","name":"M20 Düz Rondela","category":"Mekanik","unit":"Adet","stock":250,"minStock":60},{"id":"MAT-326","code":"SPRING-WASH-M20","name":"M20 Yaylı Rondela","category":"Mekanik","unit":"Adet","stock":200,"minStock":50},{"id":"MAT-327","code":"CIRCLIP-S-6","name":"6 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-328","code":"CIRCLIP-H-6","name":"6 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-329","code":"CIRCLIP-S-8","name":"8 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-330","code":"CIRCLIP-H-8","name":"8 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-331","code":"CIRCLIP-S-10","name":"10 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-332","code":"CIRCLIP-H-10","name":"10 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-333","code":"CIRCLIP-S-12","name":"12 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-334","code":"CIRCLIP-H-12","name":"12 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-335","code":"CIRCLIP-S-15","name":"15 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-336","code":"CIRCLIP-H-15","name":"15 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-337","code":"CIRCLIP-S-20","name":"20 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-338","code":"CIRCLIP-H-20","name":"20 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-339","code":"CIRCLIP-S-25","name":"25 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-340","code":"CIRCLIP-H-25","name":"25 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-341","code":"CIRCLIP-S-30","name":"30 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-342","code":"CIRCLIP-H-30","name":"30 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-343","code":"CIRCLIP-S-35","name":"35 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-344","code":"CIRCLIP-H-35","name":"35 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-345","code":"CIRCLIP-S-40","name":"40 mm Mil Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-346","code":"CIRCLIP-H-40","name":"40 mm Delik Segmanı","category":"Mekanik","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-347","code":"KEY-6X6","name":"6×6 mm Kama","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-348","code":"KEY-8X7","name":"8×7 mm Kama","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-349","code":"KEY-10X8","name":"10×8 mm Kama","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-350","code":"KEY-12X8","name":"12×8 mm Kama","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-351","code":"SPRING-COMP","name":"Baskı Yayı","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-352","code":"SPRING-TENS","name":"Çekme Yayı","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-353","code":"GEAR-SPUR-M2","name":"Modül 2 Düz Dişli","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-354","code":"GEAR-SPUR-M3","name":"Modül 3 Düz Dişli","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-355","code":"PULLEY-ALU","name":"Alüminyum Triger Kasnağı","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-356","code":"PULLEY-V","name":"V Kayış Kasnağı","category":"Mekanik","unit":"Adet","stock":10,"minStock":3},{"id":"MAT-357","code":"PU-HOSE-4","name":"4 mm Pnömatik Hortum","category":"Pnömatik","unit":"Metre","stock":100,"minStock":25},{"id":"MAT-358","code":"FIT-STRAIGHT-4","name":"4 mm Düz Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-359","code":"FIT-ELBOW-4","name":"4 mm Dirsek Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-360","code":"FIT-TEE-4","name":"4 mm T Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-361","code":"PU-HOSE-6","name":"6 mm Pnömatik Hortum","category":"Pnömatik","unit":"Metre","stock":100,"minStock":25},{"id":"MAT-362","code":"FIT-STRAIGHT-6","name":"6 mm Düz Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-363","code":"FIT-ELBOW-6","name":"6 mm Dirsek Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-364","code":"FIT-TEE-6","name":"6 mm T Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-365","code":"PU-HOSE-8","name":"8 mm Pnömatik Hortum","category":"Pnömatik","unit":"Metre","stock":100,"minStock":25},{"id":"MAT-366","code":"FIT-STRAIGHT-8","name":"8 mm Düz Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-367","code":"FIT-ELBOW-8","name":"8 mm Dirsek Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-368","code":"FIT-TEE-8","name":"8 mm T Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-369","code":"PU-HOSE-10","name":"10 mm Pnömatik Hortum","category":"Pnömatik","unit":"Metre","stock":100,"minStock":25},{"id":"MAT-370","code":"FIT-STRAIGHT-10","name":"10 mm Düz Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-371","code":"FIT-ELBOW-10","name":"10 mm Dirsek Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-372","code":"FIT-TEE-10","name":"10 mm T Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-373","code":"PU-HOSE-12","name":"12 mm Pnömatik Hortum","category":"Pnömatik","unit":"Metre","stock":100,"minStock":25},{"id":"MAT-374","code":"FIT-STRAIGHT-12","name":"12 mm Düz Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-375","code":"FIT-ELBOW-12","name":"12 mm Dirsek Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-376","code":"FIT-TEE-12","name":"12 mm T Rakor","category":"Pnömatik","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-377","code":"VALVE-3-2-24","name":"24V DC 3/2 Solenoid Valf","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-378","code":"VALVE-5-2-24","name":"24V DC 5/2 Tek Bobinli Valf","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-379","code":"VALVE-5-2-D24","name":"24V DC 5/2 Çift Bobinli Valf","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-380","code":"VALVE-5-3-24","name":"24V DC 5/3 Kapalı Merkez Valf","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-381","code":"MANUAL-3-2","name":"3/2 Manuel Valf","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-382","code":"FLOW-6","name":"6 mm Hız Ayar Valfi","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-383","code":"FLOW-8","name":"8 mm Hız Ayar Valfi","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-384","code":"CHECK-PNEU","name":"Pnömatik Çek Valf","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-385","code":"QUICK-EXH","name":"Hızlı Egzoz Valfi","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-386","code":"SILENCER-1-4","name":"1/4 inç Susturucu","category":"Pnömatik","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-387","code":"CYL-20X50","name":"Ø20×50 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-388","code":"CYL-20X100","name":"Ø20×100 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-389","code":"CYL-25X50","name":"Ø25×50 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-390","code":"CYL-25X100","name":"Ø25×100 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-391","code":"CYL-32X50","name":"Ø32×50 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-392","code":"CYL-32X100","name":"Ø32×100 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-393","code":"CYL-32X200","name":"Ø32×200 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-394","code":"CYL-40X100","name":"Ø40×100 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-395","code":"CYL-40X200","name":"Ø40×200 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-396","code":"CYL-50X100","name":"Ø50×100 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-397","code":"CYL-50X200","name":"Ø50×200 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-398","code":"CYL-63X200","name":"Ø63×200 mm Pnömatik Silindir","category":"Pnömatik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-399","code":"FRL-1-4","name":"1/4 inç Filtre-Regülatör-Yağlayıcı","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-400","code":"FRL-1-2","name":"1/2 inç Filtre-Regülatör-Yağlayıcı","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-401","code":"REG-1-4","name":"1/4 inç Basınç Regülatörü","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-402","code":"PRESS-SW-P","name":"Pnömatik Basınç Şalteri","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-403","code":"VAC-EJECT","name":"Vakum Ejektörü","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-404","code":"VAC-CUP-30","name":"30 mm Vakum Pedi","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-405","code":"VAC-CUP-50","name":"50 mm Vakum Pedi","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-406","code":"VAC-CUP-80","name":"80 mm Vakum Pedi","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-407","code":"VAC-FILTER","name":"Vakum Hattı Filtresi","category":"Pnömatik","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-408","code":"HYD-HOSE-1-4","name":"1/4 inç Hidrolik Hortum","category":"Hidrolik","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-409","code":"HYD-FIT-1-4","name":"1/4 inç Hidrolik Rakor","category":"Hidrolik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-410","code":"HYD-HOSE-3-8","name":"3/8 inç Hidrolik Hortum","category":"Hidrolik","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-411","code":"HYD-FIT-3-8","name":"3/8 inç Hidrolik Rakor","category":"Hidrolik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-412","code":"HYD-HOSE-1-2","name":"1/2 inç Hidrolik Hortum","category":"Hidrolik","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-413","code":"HYD-FIT-1-2","name":"1/2 inç Hidrolik Rakor","category":"Hidrolik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-414","code":"HYD-HOSE-3-4","name":"3/4 inç Hidrolik Hortum","category":"Hidrolik","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-415","code":"HYD-FIT-3-4","name":"3/4 inç Hidrolik Rakor","category":"Hidrolik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-416","code":"HYD-HOSE-1","name":"1 inç Hidrolik Hortum","category":"Hidrolik","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-417","code":"HYD-FIT-1","name":"1 inç Hidrolik Rakor","category":"Hidrolik","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-418","code":"HYD-FILT-RET","name":"Hidrolik Dönüş Filtresi","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-419","code":"HYD-FILT-PRES","name":"Hidrolik Basınç Filtresi","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-420","code":"HYD-VALVE-4-3","name":"4/3 Hidrolik Yön Valfi","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-421","code":"HYD-RELIEF","name":"Hidrolik Basınç Emniyet Valfi","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-422","code":"HYD-CHECK","name":"Hidrolik Çek Valf","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-423","code":"HYD-FLOW","name":"Hidrolik Akış Ayar Valfi","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-424","code":"HYD-PUMP-GEAR","name":"Hidrolik Dişli Pompa","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-425","code":"HYD-CYL-SEAL","name":"Hidrolik Silindir Keçe Takımı","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-426","code":"HYD-ACC","name":"Hidrolik Akümülatör","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-427","code":"HYD-MAN-250","name":"0–250 bar Hidrolik Manometre","category":"Hidrolik","unit":"Adet","stock":5,"minStock":2},{"id":"MAT-428","code":"TC-K-100","name":"K Tipi Termokupl 100 mm","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-429","code":"TC-K-300","name":"K Tipi Termokupl 300 mm","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-430","code":"TC-K-500","name":"K Tipi Termokupl 500 mm","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-431","code":"TC-J-300","name":"J Tipi Termokupl 300 mm","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-432","code":"PT100-100","name":"PT100 Sıcaklık Sensörü 100 mm","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-433","code":"PT100-300","name":"PT100 Sıcaklık Sensörü 300 mm","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-434","code":"TEMP-TX","name":"Sıcaklık Transmitteri 4–20 mA","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-435","code":"PRESS-TX-10","name":"0–10 bar Basınç Transmitteri","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-436","code":"PRESS-TX-16","name":"0–16 bar Basınç Transmitteri","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-437","code":"PRESS-TX-25","name":"0–25 bar Basınç Transmitteri","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-438","code":"PRESS-TX-100","name":"0–100 bar Basınç Transmitteri","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-439","code":"MANO-10","name":"0–10 bar Manometre","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-440","code":"MANO-16","name":"0–16 bar Manometre","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-441","code":"THERMOSTAT","name":"Pano Termostatı","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-442","code":"LOAD-50","name":"50 kg Load Cell","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-443","code":"LOAD-100","name":"100 kg Load Cell","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-444","code":"LOAD-500","name":"500 kg Load Cell","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-445","code":"LOAD-1000","name":"1000 kg Load Cell","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-446","code":"LOAD-AMP","name":"Load Cell Sinyal Yükseltici","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-447","code":"ISO-420","name":"4–20 mA Sinyal İzolatörü","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-448","code":"CONV-010-420","name":"0–10V / 4–20mA Sinyal Dönüştürücü","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-449","code":"FLOW-SW","name":"Akış Şalteri","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-450","code":"LEVEL-CAP","name":"Kapasitif Seviye Sensörü","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-451","code":"LEVEL-FORK","name":"Titreşim Çatallı Seviye Sensörü","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-452","code":"ROTARY-LEVEL","name":"Döner Paletli Seviye Sensörü","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-453","code":"HUMIDITY-TX","name":"Nem Transmitteri","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-454","code":"TEMP-CTRL","name":"Dijital PID Sıcaklık Kontrol Cihazı","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-455","code":"COUNTER","name":"Dijital Sayıcı","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-456","code":"TACHO","name":"Dijital Takometre","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-457","code":"ANALOG-METER","name":"Pano Tipi Dijital Multimetre","category":"Enstrümantasyon","unit":"Adet","stock":6,"minStock":2},{"id":"MAT-458","code":"GREASE-EP2","name":"EP2 Rulman Gresi","category":"Sarf","unit":"Kilogram","stock":25,"minStock":5},{"id":"MAT-459","code":"OIL-GEAR-220","name":"ISO VG 220 Redüktör Yağı","category":"Sarf","unit":"Litre","stock":80,"minStock":20},{"id":"MAT-460","code":"OIL-HYD-46","name":"ISO VG 46 Hidrolik Yağı","category":"Sarf","unit":"Litre","stock":100,"minStock":25},{"id":"MAT-461","code":"OIL-COMP-68","name":"Kompresör Yağı ISO VG 68","category":"Sarf","unit":"Litre","stock":60,"minStock":15},{"id":"MAT-462","code":"CONTACT-CLEAN","name":"Elektrik Kontak Temizleme Spreyi","category":"Sarf","unit":"Adet","stock":25,"minStock":8},{"id":"MAT-463","code":"BRAKE-CLEAN","name":"Balata Temizleme Spreyi","category":"Sarf","unit":"Adet","stock":20,"minStock":6},{"id":"MAT-464","code":"PEN-OIL","name":"Pas Sökücü Sprey","category":"Sarf","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-465","code":"THREAD-MED","name":"Orta Mukavemetli Vida Sabitleyici","category":"Sarf","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-466","code":"THREAD-HIGH","name":"Yüksek Mukavemetli Vida Sabitleyici","category":"Sarf","unit":"Adet","stock":8,"minStock":3},{"id":"MAT-467","code":"SILICONE-RED","name":"Yüksek Isı Kırmızı Silikon","category":"Sarf","unit":"Adet","stock":15,"minStock":5},{"id":"MAT-468","code":"GASKET","name":"Sıvı Conta","category":"Sarf","unit":"Adet","stock":12,"minStock":4},{"id":"MAT-469","code":"TEFLON","name":"Teflon Bant","category":"Sarf","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-470","code":"INS-TAPE-BLK","name":"Siyah Elektrik Bandı","category":"Sarf","unit":"Adet","stock":60,"minStock":20},{"id":"MAT-471","code":"INS-TAPE-COLOR","name":"Renkli Elektrik Bandı Seti","category":"Sarf","unit":"Set","stock":20,"minStock":6},{"id":"MAT-472","code":"HEAT-3","name":"3 mm Isı Makaronu","category":"Sarf","unit":"Metre","stock":50,"minStock":15},{"id":"MAT-473","code":"HEAT-6","name":"6 mm Isı Makaronu","category":"Sarf","unit":"Metre","stock":50,"minStock":15},{"id":"MAT-474","code":"HEAT-10","name":"10 mm Isı Makaronu","category":"Sarf","unit":"Metre","stock":40,"minStock":12},{"id":"MAT-475","code":"HEAT-20","name":"20 mm Isı Makaronu","category":"Sarf","unit":"Metre","stock":30,"minStock":10},{"id":"MAT-476","code":"CABLE-TIE-100","name":"100 mm Kablo Bağı","category":"Sarf","unit":"Paket","stock":25,"minStock":8},{"id":"MAT-477","code":"CABLE-TIE-200","name":"200 mm Kablo Bağı","category":"Sarf","unit":"Paket","stock":25,"minStock":8},{"id":"MAT-478","code":"CABLE-TIE-300","name":"300 mm Kablo Bağı","category":"Sarf","unit":"Paket","stock":20,"minStock":6},{"id":"MAT-479","code":"SPIRAL-10","name":"10 mm Spiral Kablo Koruma","category":"Sarf","unit":"Metre","stock":50,"minStock":15},{"id":"MAT-480","code":"SPIRAL-20","name":"20 mm Spiral Kablo Koruma","category":"Sarf","unit":"Metre","stock":50,"minStock":15},{"id":"MAT-481","code":"GLAND-PG13","name":"PG13,5 Kablo Rakoru","category":"Sarf","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-482","code":"GLAND-PG16","name":"PG16 Kablo Rakoru","category":"Sarf","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-483","code":"GLAND-PG21","name":"PG21 Kablo Rakoru","category":"Sarf","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-484","code":"CUT-DISC-115","name":"115 mm Metal Kesme Diski","category":"Sarf","unit":"Adet","stock":50,"minStock":15},{"id":"MAT-485","code":"GRIND-DISC-115","name":"115 mm Taşlama Diski","category":"Sarf","unit":"Adet","stock":40,"minStock":12},{"id":"MAT-486","code":"FLAP-DISC-115","name":"115 mm Flap Disk","category":"Sarf","unit":"Adet","stock":30,"minStock":10},{"id":"MAT-487","code":"WELD-E6013","name":"2,5 mm Kaynak Elektrodu","category":"Sarf","unit":"Paket","stock":15,"minStock":5},{"id":"MAT-488","code":"DRILL-SET","name":"HSS Matkap Ucu Seti","category":"Sarf","unit":"Set","stock":8,"minStock":3},{"id":"MAT-489","code":"CLOTH","name":"Endüstriyel Temizlik Bezi","category":"Sarf","unit":"Paket","stock":20,"minStock":6},{"id":"MAT-490","code":"GLOVE-MECH","name":"Mekanik İş Eldiveni","category":"Sarf","unit":"Çift","stock":40,"minStock":12},{"id":"MAT-491","code":"GLOVE-ELEC","name":"Elektrikçi İzole Eldiveni","category":"Sarf","unit":"Çift","stock":8,"minStock":3}];
-const STORED_MATERIALS=safeJson(storageGet(localStorage,MATERIAL_KEY,"[]"),[]);
-const DELETED_MATERIAL_IDS=new Set(safeJson(storageGet(localStorage,MATERIAL_DELETED_KEY,"[]"),[]));
+const STORED_MATERIALS=storageJsonRecordArray(localStorage,MATERIAL_KEY,[]).filter(item=>{
+  const stock=Number(item.stock);
+  const minStock=Number(item.minStock);
+  return typeof item.id==="string"
+    &&typeof item.code==="string"&&item.code.trim()
+    &&typeof item.name==="string"&&item.name.trim()
+    &&typeof item.category==="string"&&item.category.trim()
+    &&typeof item.unit==="string"&&item.unit.trim()
+    &&Number.isFinite(stock)&&stock>=0
+    &&Number.isFinite(minStock)&&minStock>=0;
+}).map(item=>({
+  ...item,
+  id:item.id.trim(),
+  code:item.code.trim(),
+  name:item.name.trim(),
+  category:item.category.trim(),
+  unit:item.unit.trim(),
+  stock:Number(item.stock),
+  minStock:Number(item.minStock)
+}));
+const DELETED_MATERIAL_IDS=new Set(storageJsonArray(localStorage,MATERIAL_DELETED_KEY,[]));
 const STORED_MATERIAL_MAP=new Map((Array.isArray(STORED_MATERIALS)?STORED_MATERIALS:[]).map(x=>[x.id,x]));
 const DEFAULT_MATERIAL_IDS=new Set(DEFAULT_MATERIALS.map(x=>x.id));
 let MATERIALS=DEFAULT_MATERIALS
@@ -4275,7 +4551,7 @@ function saveMaterials(){storageSet(localStorage,MATERIAL_KEY,JSON.stringify(MAT
 function saveDeletedMaterialIds(){storageSet(localStorage,MATERIAL_DELETED_KEY,JSON.stringify([...DELETED_MATERIAL_IDS]))}
 function materialById(id){return MATERIALS.find(x=>x.id===id)}
 function faultUsedMaterials(fault){
-  return Array.isArray(fault?.usedMaterials)?fault.usedMaterials:[];
+  return safeRecordArray(fault?.usedMaterials,[]);
 }
 function canManageFaultMaterials(){
   return !!permissions().manageFaultMaterials;
@@ -4496,6 +4772,9 @@ function plannedMaintenanceModal(){
   const defaultLine=editing?.line||catalogLines(defaultFactory)[0]||"1. Hat";
   const selectedDepartment=editing?.department||s.user?.department||"";
   const selectedDate=editing?.date||s.plannedSelectedDate||dateOnly(new Date());
+  const machineOptions=[
+    ...new Set([...catalogMachines(defaultFactory,defaultLine,selectedDepartment),editing?.machine].filter(Boolean))
+  ];
   const departmentOptions=s.user?.role==="Bölüm Formeni"
     ?opts([s.user.department],"Bölüm seçiniz",s.user.department)
     :opts(catalogDepartments(defaultFactory,defaultLine),"Bölüm seçiniz",selectedDepartment);
@@ -4506,7 +4785,7 @@ function plannedMaintenanceModal(){
       <div class="field"><label>Fabrika</label><select id="pmFactory" required>${opts(factories,"Fabrika seçiniz",defaultFactory)}</select></div>
       <div class="field"><label>Hat</label><select id="pmLine" required>${opts(catalogLines(defaultFactory),"Hat seçiniz",defaultLine)}</select></div>
       <div class="field"><label>Bölüm</label><select id="pmDepartment" ${s.user?.role==="Bölüm Formeni"?"disabled":""} required>${departmentOptions}</select></div>
-      <div class="field"><label>Makine</label><select id="pmMachine" data-selected="${esc(editing?.machine||"")}" required>${opts(catalogMachines(defaultFactory,defaultLine,selectedDepartment),"Makine seçiniz",editing?.machine||"")}</select></div>
+      <div class="field"><label>Makine</label><select id="pmMachine" data-selected="${esc(editing?.machine||"")}" required>${opts(machineOptions,"Makine seçiniz",editing?.machine||"")}</select></div>
       <div class="field"><label>Bakım Türü</label><select id="pmType" required>${opts(MAINTENANCE_TYPES,"Tür seçiniz",editing?.type||"Periyodik Bakım")}</select></div>
       <div class="field"><label>Öncelik</label><select id="pmPriority" required>${opts(MAINTENANCE_PRIORITIES,"Öncelik seçiniz",editing?.priority||"Normal")}</select></div>
       <div class="field"><label>Tarih</label><input id="pmDate" type="date" value="${selectedDate}" required></div>
@@ -4562,7 +4841,7 @@ function plannedMaintenancePage(){
     const dayItems=items.filter(x=>x.date===key).sort((a,b)=>a.time.localeCompare(b.time));
     cells.push(`<div class="calendar-day ${inside?"":"outside"} ${key===today?"today":""}" data-calendar-date="${key}">
       <div class="calendar-day-number"><span>${label}</span>${dayItems.length?`<b>${dayItems.length}</b>`:""}</div>
-      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${x.id}" title="${esc(x.title)}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
+      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${esc(x.id)}" title="${esc(x.title)}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
     </div>`);
   }
   return `${clockBlock()}
@@ -4588,10 +4867,10 @@ function plannedMaintenancePage(){
     </article>
     <aside class="upcoming-maintenance-panel">
       <div class="upcoming-head"><div><h3>Yaklaşan Bakımlar</h3><p>Sıradaki planlı görevler</p></div><span>${upcoming.length}</span></div>
-      <div class="upcoming-list">${upcoming.slice(0,8).map(x=>`<article class="upcoming-item priority-${x.priority.toLowerCase().replace("ü","u").replace("ş","s")}" data-pm-id="${x.id}" tabindex="0">
+      <div class="upcoming-list">${upcoming.slice(0,8).map(x=>`<article class="upcoming-item priority-${esc(String(x.priority||"Normal").toLocaleLowerCase("tr-TR").replace("ü","u").replace("ş","s"))}" data-pm-id="${esc(x.id)}" tabindex="0">
         <div class="upcoming-date"><b>${new Date(x.date+"T00:00:00").getDate()}</b><small>${new Date(x.date+"T00:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></div>
         <div class="upcoming-copy"><div><b>${esc(x.machine)}</b><span>${esc(x.time)}</span></div><p>${esc(x.title)}</p><small>${esc(x.factory)} · ${esc(x.line)}</small><em>${esc(x.priority)}</em></div>
-        ${canEditPlannedMaintenance(x)?`<select class="pm-status" data-id="${x.id}"><option value="planned" ${x.status==="planned"?"selected":""}>Planlandı</option><option value="progress" ${x.status==="progress"?"selected":""}>Devam Ediyor</option><option value="done" ${x.status==="done"?"selected":""}>Tamamlandı</option><option value="cancelled" ${x.status==="cancelled"?"selected":""}>İptal</option></select>`:""}
+        ${canEditPlannedMaintenance(x)?`<select class="pm-status" data-id="${esc(x.id)}"><option value="planned" ${x.status==="planned"?"selected":""}>Planlandı</option><option value="progress" ${x.status==="progress"?"selected":""}>Devam Ediyor</option><option value="done" ${x.status==="done"?"selected":""}>Tamamlandı</option><option value="cancelled" ${x.status==="cancelled"?"selected":""}>İptal</option></select>`:""}
       </article>`).join("")||'<div class="compact-empty"><span>✓</span><p>Yaklaşan planlı bakım bulunmuyor.</p></div>'}</div>
     </aside>
   </section>
@@ -4684,8 +4963,8 @@ function newf(){
   <div class="field"><label>Bölüm</label><select id="department" required disabled>${opts([],"Önce hat seçiniz")}</select></div>
   <div class="field"><label>Makine</label><select id="machine" required disabled>${opts([],"Önce bölüm seçiniz")}</select></div>
   <div class="field"><label>Arıza Tipi</label><select id="type" required>${opts(TYPES)}</select></div>
-  <div class="field"><label>Arıza Konusu</label><input id="subject" required></div>
-  <div class="field full"><label>Arıza Açıklaması</label><textarea id="desc" required></textarea></div>
+  <div class="field"><label>Arıza Konusu</label><input id="subject" maxlength="160" required></div>
+  <div class="field full"><label>Arıza Açıklaması</label><textarea id="desc" maxlength="2000" required></textarea></div>
   <div class="field"><label>Fotoğraf</label><input type="file" id="photo" accept="image/*" capture="environment"></div>
   <div class="field check"><label><input type="checkbox" id="stopped"> Üretim durdu mu?</label></div>
   </div><div class="actions"><button type="button" class="secondary" data-p="dashboard">İptal</button><button class="primary">Kaydı Oluştur</button></div></form></div>`;
@@ -4915,7 +5194,7 @@ function faultDetailModal(){
   const handoverCandidates=nextShiftMembersForFault(f);
   const handoverSection=canHandoverFault(f)?`<section class="fault-detail-card wide fault-handover-card"><div class="fault-handover-head"><div><span>VARDİYA DEVİR İŞLEMİ</span><p>Devam eden arızayı bir sonraki vardiyadaki personele devredin. Önceki müdahale edenler kayıtta kalır.</p></div><b>${esc(currentShiftLabel())} → ${esc(nextShiftLabel())}</b></div><form id="faultHandoverForm" class="fault-handover-form"><div class="field"><label>Devredilecek Personel *</label><select id="faultHandoverTo" required><option value="">Sonraki vardiyadan seçiniz</option>${handoverCandidates.map(name=>`<option>${esc(name)}</option>`).join("")}</select></div><div class="field handover-note"><label>Devir Notu *</label><input id="faultHandoverNote" maxlength="500" placeholder="Yapılan işlem, beklenen parça ve sonraki kontrol bilgisi" required></div><button type="submit" class="primary">Arızayı Devret</button></form>${handoverCandidates.length?"":'<div class="solution-missing-message">Sonraki vardiyada uygun personel bulunamadı. Bakım formeni vardiya planını kontrol etmelidir.</div>'}</section>`:"";
   const handoverHistory=(f.handovers||[]).length?`<section class="fault-detail-card wide"><div class="section-modern-head"><div><h3>Arıza Devir Geçmişi</h3><p>Vardiyalar arasındaki teslim kayıtları</p></div></div><div class="fault-handover-history">${[...(f.handovers||[])].reverse().map(h=>`<article><span>${fmtDate(h.at)}</span><b>${esc(h.from)} → ${esc(h.to)}</b><small>${esc(h.fromShift||"-")} → ${esc(h.toShift||"-")}</small><p>${esc(h.note||"Devir notu girilmedi.")}</p></article>`).join("")}</div></section>`:"";
-  const statusControl=canUpdateFaultStatus(f)?`<select id="faultModalStatus" class="sel fault-modal-status"><option value="open" ${f.status==="open"?"selected":""}>Yeni</option><option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option><option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option></select>`:`<span class="status ${f.status}">${statusLabel(f.status)}</span>`;
+  const statusControl=canUpdateFaultStatus(f)?`<select id="faultModalStatus" class="sel fault-modal-status"><option value="open" ${f.status==="open"?"selected":""}>Yeni</option><option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option><option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option></select>`:`<span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>`;
   const canEditSolution=canUpdateFaultStatus(f);
   const solutionText=String(f.solutionText||"");
   const hasSolution=solutionText.trim().length>0;
@@ -4928,11 +5207,11 @@ function faultDetailModal(){
   const materialOptions=materialCategories.map(category=>`<optgroup label="${esc(category)}">${MATERIALS.filter(m=>m.category===category).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.id)}">${esc(m.code)} · ${esc(m.name)} (${esc(m.unit)})</option>`).join("")}</optgroup>`).join("");
   const materialSection=`<section class="fault-detail-card wide fault-material-card"><div class="fault-material-head"><div><span>KULLANILAN MALZEMELER</span><p>Bu arızada değiştirilen veya tüketilen yedek parçalar.</p></div><b>${usedMaterials.length} kayıt</b></div><div class="fault-material-list">${usedMaterials.map((item,index)=>{const m=materialById(item.materialId);return `<article><div><small>${esc(m?.code||item.code||"-")}</small><b>${esc(m?.name||item.name||"Malzeme")}</b><span>${esc(item.note||"Açıklama girilmedi.")}</span></div><strong>${Number(item.quantity)||0} ${esc(item.unit||m?.unit||"Adet")}</strong>${canEditMaterials?`<button type="button" class="fault-material-remove danger" data-material-index="${index}">Sil</button>`:""}</article>`}).join("")||'<div class="compact-empty"><span>□</span><p>Bu arızaya henüz malzeme eklenmedi.</p></div>'}</div>${canEditMaterials?`<form id="faultMaterialForm" class="fault-material-form"><div class="field"><label>Malzeme</label><select id="faultMaterialId" required><option value="">Malzeme seçiniz</option>${materialOptions}</select></div><div class="field"><label>Miktar</label><input id="faultMaterialQuantity" type="number" min="0.01" step="0.01" value="1" required></div><div class="field material-note-field"><label>Açıklama</label><input id="faultMaterialNote" placeholder="Örn. Motor rulmanı değiştirildi"></div><button class="primary" type="submit">+ Malzeme Ekle</button></form>`:""}</section>`;
 
-  return `<div class="modal-backdrop fault-detail-backdrop" id="faultModalCloseBg"><div class="modal fault-detail-modal"><div class="modal-head"><div><span class="fault-detail-id">ARIZA KAYDI #${esc(f.id)}</span><h2>${esc(f.subject)}</h2><p>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</p></div><button type="button" id="faultModalClose">×</button></div><div class="fault-detail-statusbar"><div><small>DURUM</small>${statusControl}</div><div><small>SÜRE</small><b class="duration" data-id="${f.id}">${durationText(f)}</b></div><div><small>ÜRETİM DURDU MU?</small><b class="${f.stopped?"fault-stop-yes":""}">${productionText}</b></div></div><div class="fault-detail-grid">
+  return `<div class="modal-backdrop fault-detail-backdrop" id="faultModalCloseBg"><div class="modal fault-detail-modal"><div class="modal-head"><div><span class="fault-detail-id">ARIZA KAYDI #${esc(f.id)}</span><h2>${esc(f.subject)}</h2><p>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</p></div><button type="button" id="faultModalClose">×</button></div><div class="fault-detail-statusbar"><div><small>DURUM</small>${statusControl}</div><div><small>SÜRE</small><b class="duration" data-id="${esc(f.id)}">${durationText(f)}</b></div><div><small>ÜRETİM DURDU MU?</small><b class="${f.stopped?"fault-stop-yes":""}">${productionText}</b></div></div><div class="fault-detail-grid">
     <section class="fault-detail-card wide"><span>ARIZA AÇIKLAMASI</span><h3>${esc(f.subject)}</h3><p>${esc(f.description||"Açıklama girilmemiş.")}</p>${photo}</section>
     <section class="fault-detail-card"><span>KONUM BİLGİLERİ</span><dl><div><dt>Fabrika</dt><dd>${esc(f.factory)}</dd></div><div><dt>Hat / Alan</dt><dd>${esc(f.line)}</dd></div><div><dt>Bölüm</dt><dd>${esc(f.department)}</dd></div><div><dt>Makine</dt><dd>${esc(f.machine)}</dd></div><div><dt>Arıza Türü</dt><dd>${esc(f.type||"-")}</dd></div></dl></section>
     <section class="fault-detail-card"><span>PERSONEL BİLGİLERİ</span><dl><div><dt>Kaydı Açan</dt><dd>${esc(f.openedBy||"Bilinmiyor")}</dd></div><div><dt>Atanan Personel</dt><dd>${esc(f.assignedTo||"Atama Bekliyor")}</dd></div><div><dt>Üstlenme Durumu</dt><dd>${f.assignmentState==="accepted"?`Üstlenildi · ${esc(f.claimedBy||f.assignedTo||"")}${f.claimedAt?`<br><small>${fmtDate(f.claimedAt)}</small>`:""}`:"Personelin kabulü bekleniyor"}</dd></div><div class="fault-assignment-row"><dt>Müdahale Edenler</dt><dd>${assignmentControl}${claimButton}${selfJoin}</dd></div></dl></section>
-    <section class="fault-detail-card"><span>ZAMAN BİLGİLERİ</span><dl><div><dt>Açılış Tarihi</dt><dd>${fmtDate(f.createdAt)}</dd></div><div><dt>Kapanış Tarihi</dt><dd>${closeDate}</dd></div><div><dt>Geçen Süre</dt><dd class="duration" data-id="${f.id}">${durationText(f)}</dd></div></dl></section>
+    <section class="fault-detail-card"><span>ZAMAN BİLGİLERİ</span><dl><div><dt>Açılış Tarihi</dt><dd>${fmtDate(f.createdAt)}</dd></div><div><dt>Kapanış Tarihi</dt><dd>${closeDate}</dd></div><div><dt>Geçen Süre</dt><dd class="duration" data-id="${esc(f.id)}">${durationText(f)}</dd></div></dl></section>
     <section class="fault-detail-card"><span>KAYIT ÖZETİ</span><dl><div><dt>Kayıt No</dt><dd>#${esc(f.id)}</dd></div><div><dt>Aktif mi?</dt><dd>${isDone?"Hayır":"Evet"}</dd></div><div><dt>Duruş Kaydı</dt><dd>${f.stopped?"Var":"Yok"}</dd></div></dl></section>
     ${handoverSection}${handoverHistory}${solutionSection}${materialSection}
   </div></div></div>`;
@@ -4978,13 +5257,13 @@ function notificationUserId(){
   return String(s.user?.id||s.user?.name||"guest");
 }
 function notificationStateMap(){
-  return safeJson(storageGet(localStorage,NOTIFICATION_STATE_KEY,"{}"),{})||{};
+  return storageJsonRecord(localStorage,NOTIFICATION_STATE_KEY,{});
 }
 function ensureNotificationBaseline(){
   if(!s.user)return;
   const map=notificationStateMap();
   const key=notificationUserId();
-  if(!map[key]){
+  if(!safeRecord(map[key],null)){
     const initialSeen=new Date(Date.now()-8*60*60*1000).toISOString();
     map[key]={faults:initialSeen,requests:initialSeen};
     storageSet(localStorage,NOTIFICATION_STATE_KEY,JSON.stringify(map));
@@ -4993,14 +5272,14 @@ function ensureNotificationBaseline(){
 function notificationSeenState(){
   ensureNotificationBaseline();
   const map=notificationStateMap();
-  return map[notificationUserId()]||{faults:new Date().toISOString(),requests:new Date().toISOString()};
+  return safeRecord(map[notificationUserId()],{faults:new Date().toISOString(),requests:new Date().toISOString()});
 }
 function markNotificationsSeen(pageName){
   if(!s.user)return;
   if(!["faults","work"].includes(pageName))return;
   const map=notificationStateMap();
   const key=notificationUserId();
-  const current=map[key]||{faults:new Date().toISOString(),requests:new Date().toISOString()};
+  const current=safeRecord(map[key],{faults:new Date().toISOString(),requests:new Date().toISOString()});
   const now=new Date().toISOString();
   if(pageName==="faults")current.faults=now;
   if(pageName==="work")current.requests=now;
@@ -5034,21 +5313,30 @@ function notificationBadge(pageName){
   return count?`<span class="nav-notification" title="${count} yeni kayıt"><b>!</b><small>${count}</small></span>`:"";
 }
 
-const storedUser=safeJson(storageGet(sessionStorage,"esuser","null"),null);
+const storedSessionUser=storageJsonRecord(sessionStorage,"esuser",null);
+const storedSessionAccount=storedSessionUser?.id?APP_USERS[String(storedSessionUser.id)]:null;
+const storedUser=storedSessionAccount?{
+  id:String(storedSessionUser.id),
+  name:storedSessionAccount.name,
+  role:storedSessionAccount.role,
+  factories:[...(storedSessionAccount.factories||[])],
+  department:storedSessionAccount.department||"",
+  team:storedSessionAccount.team||""
+}:null;
 const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION;
 let s={
   login:sessionIsCurrent&&storageGet(sessionStorage,"eslogin","0")==="1"&&!!storedUser,
   user:sessionIsCurrent?storedUser:null,
   page:"dashboard",
-  faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
-  plannedMaintenances:safeJson(storageGet(localStorage,PM_KEY,"null"),null)||generatePlannedMaintenances(),
-  workItems:safeJson(storageGet(localStorage,WORK_KEY,"null"),null)||generateWorkItems(),
+  faults:storageJsonRecordArray(localStorage,K,generateHistory()),
+  plannedMaintenances:storageJsonRecordArray(localStorage,PM_KEY,generatePlannedMaintenances()),
+  workItems:storageJsonRecordArray(localStorage,WORK_KEY,generateWorkItems()),
   workDetailId:null,
-  maintenanceLogs:safeJson(storageGet(localStorage,MAINTENANCE_LOG_KEY,"[]"),[]),
+  maintenanceLogs:storageJsonRecordArray(localStorage,MAINTENANCE_LOG_KEY,[]),
   maintenanceLogModal:false,
   materialEditId:null,
-  dailyChecks:safeJson(storageGet(localStorage,DAILY_CHECK_KEY,"{}"),{}),
-  contractorChecks:safeJson(storageGet(localStorage,CONTRACTOR_CHECK_KEY,"{}"),{}),
+  dailyChecks:storageJsonRecord(localStorage,DAILY_CHECK_KEY,{}),
+  contractorChecks:storageJsonRecord(localStorage,CONTRACTOR_CHECK_KEY,{}),
   dailyControlTab:"daily",
   dailyControlDate:dateOnly(new Date()),
   contractorControlMonth:monthKeyLocal(new Date()),
@@ -5203,18 +5491,18 @@ function table(items,editable=false){
   if(!items.length)return `<div class="card empty-panel"><h3>Kayıt bulunamadı</h3><p>Seçilen kriterlere uygun arıza kaydı yok.</p></div>`;
   return `<div class="card table-wrap"><table>
     <thead><tr><th>Tarih</th><th>Fabrika / Hat</th><th>Bölüm / Makine</th><th>Arıza</th><th>Kaydı Açan</th><th>Sorumlu Bakımcı</th><th>Durum</th><th>Süre</th>${editable?"<th>İşlem</th>":""}</tr></thead>
-    <tbody>${items.map(f=>`<tr class="fault-click-row" data-fault-detail-id="${f.id}" title="Arıza detaylarını görüntülemek için tıklayın">
+    <tbody>${items.map(f=>`<tr class="fault-click-row" data-fault-detail-id="${esc(f.id)}" title="Arıza detaylarını görüntülemek için tıklayın">
       <td data-label="Tarih">${fmtDate(f.createdAt)}</td>
       <td data-label="Fabrika / Hat"><b>${esc(f.factory)}</b><br><small>${esc(f.line)}</small></td>
       <td data-label="Bölüm / Makine"><b>${esc(f.department)}</b><br><small>${esc(f.machine)}</small></td>
       <td data-label="Arıza"><b>${esc(f.subject)}</b>${f.description?`<br><small>${esc(f.description)}</small>`:""}${f.stopped?'<br><span class="stop-tag">Üretim durdu</span>':""}</td>
       <td data-label="Kaydı Açan"><span class="person-cell"><i>${esc((f.openedBy||"?").charAt(0))}</i><b>${esc(f.openedBy||"Bilinmiyor")}</b></span></td>
       <td data-label="Sorumlu Bakımcı">${canRedirectFault(f)
-        ?`<select class="sel personnel-sel" data-personnel-id="${f.id}">${personnelSelectOptions(f)}</select>`
+        ?`<select class="sel personnel-sel" data-personnel-id="${esc(f.id)}">${personnelSelectOptions(f)}</select>`
         :`<span class="assigned-person">${esc(f.assignedTo||"Otomatik atanıyor")}</span>`}</td>
-      <td data-label="Durum"><span class="status ${f.status}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza açıklaması yazılmadı</span>':""}</td>
-      <td data-label="Süre"><span class="duration" data-id="${f.id}">${durationText(f)}</span></td>
-      ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${f.id}">
+      <td data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza açıklaması yazılmadı</span>':""}</td>
+      <td data-label="Süre"><span class="duration" data-id="${esc(f.id)}">${durationText(f)}</span></td>
+      ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${esc(f.id)}">
         <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
         <option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option>
         <option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option>
@@ -5507,7 +5795,7 @@ function compactFaultList(items,emptyText){
   if(!items.length)return `<div class="compact-empty"><span>✓</span><p>${esc(emptyText)}</p></div>`;
   return `<div class="compact-fault-list">${items.slice(0,8).map(f=>`
     <button class="compact-fault-row" data-p="faults">
-      <span class="compact-state ${f.stopped?"stop":f.status}"></span>
+      <span class="compact-state ${f.stopped?"stop":esc(f.status)}"></span>
       <div class="compact-fault-copy">
         <div><b>${esc(f.machine)}</b><time>${durationText(f)}</time></div>
         <small>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</small>
@@ -5618,11 +5906,14 @@ function mobileNav(){
 function app(){
   normalizeFaultParticipants();
   ensureNotificationBaseline();
-  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
+  return `<div class="top">
+    <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menüyü aç" aria-expanded="false">☰</button>
+    <div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
     <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
   </div>
-  ${mobileNav()}
+  <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
   <div class="layout"><aside>
+    <div class="mobile-drawer-head"><b>ETİLİSMART Menü</b><button type="button" id="mobileMenuClose" aria-label="Menüyü kapat">×</button></div>
     <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
     ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
     <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>
@@ -5662,7 +5953,7 @@ function login(){
 <script>
 const SHIFT_LABELS=["00-08","08-16","16-24"];
 const SHIFT_OVERRIDE_KEY="etilismart_shift_overrides_v1";
-let SHIFT_OVERRIDES=safeJson(storageGet(localStorage,SHIFT_OVERRIDE_KEY,"{}"),{});
+let SHIFT_OVERRIDES=storageJsonRecord(localStorage,SHIFT_OVERRIDE_KEY,{});
 function shiftOverrideKey(factory,team,weekOffset,personId,dayIndex){
   return [shiftFactoryName(factory),team,shiftWeekKey(weekOffset),personId,dayIndex].join("|");
 }
@@ -7867,7 +8158,13 @@ function updateClockAndDurations(){
   if(d)d.textContent=x.date;if(t)t.textContent=x.time;if(v)v.textContent=x.shift.name;
   document.querySelectorAll(".duration").forEach(el=>{const f=s.faults.find(x=>x.id==el.dataset.id);if(f)el.textContent=durationText(f)});
 }
-function render(){window.__etiliStarted=true;document.getElementById("app").innerHTML=s.login?app():login();bind();updateClockAndDurations()}
+function render(){
+  window.__etiliStarted=true;
+  document.body.classList.remove("mobile-menu-open");
+  document.getElementById("app").innerHTML=s.login?app():login();
+  bind();
+  updateClockAndDurations();
+}
 function bind(){
   const appRoot=document.getElementById("app");
   if(appRoot)appRoot.addEventListener("click",event=>{
@@ -7888,6 +8185,17 @@ function bind(){
     s.workDetailId=String(item.id);
     render();
   });
+
+  const mobileMenuToggle=document.getElementById("mobileMenuToggle");
+  const mobileMenuClose=document.getElementById("mobileMenuClose");
+  const mobileNavOverlay=document.getElementById("mobileNavOverlay");
+  const setMobileMenu=open=>{
+    document.body.classList.toggle("mobile-menu-open",open);
+    mobileMenuToggle?.setAttribute("aria-expanded",open?"true":"false");
+  };
+  if(mobileMenuToggle)mobileMenuToggle.onclick=()=>setMobileMenu(!document.body.classList.contains("mobile-menu-open"));
+  if(mobileMenuClose)mobileMenuClose.onclick=()=>setMobileMenu(false);
+  if(mobileNavOverlay)mobileNavOverlay.onclick=()=>setMobileMenu(false);
 
   document.querySelectorAll("[data-p]").forEach(b=>{
     if(b.hasAttribute("data-work-detail-id"))return;
@@ -7964,6 +8272,10 @@ function bind(){
     const to=document.getElementById("faultHandoverTo")?.value||"";
     const note=document.getElementById("faultHandoverNote")?.value.trim()||"";
     if(!to||!note){alert("Devredilecek personeli ve devir notunu giriniz.");return}
+    if(!nextShiftMembersForFault(fault).includes(to)){
+      alert("Seçilen personel bu arızanın sonraki vardiya ekibinde bulunmuyor.");
+      return;
+    }
     if(!Array.isArray(fault.handovers))fault.handovers=[];
     fault.handovers.push({from:s.user?.name||"Bilinmeyen Kullanıcı",to,note,at:new Date().toISOString(),fromShift:currentShiftLabel(),toShift:nextShiftLabel()});
     fault.participants=[...new Set([...faultParticipants(fault),to])];
@@ -7999,12 +8311,21 @@ function bind(){
   if(maintenanceLogForm)maintenanceLogForm.onsubmit=e=>{
     e.preventDefault();
     if(!canAddMaintenanceLog())return;
-    const participants=[...document.querySelectorAll(".maintenance-log-person:checked")].map(x=>x.value);
+    const factory=document.getElementById("maintenanceLogFactory")?.value||"";
+    const title=(document.getElementById("maintenanceLogTitle")?.value||"").trim();
+    const location=(document.getElementById("maintenanceLogLocation")?.value||"").trim();
+    const description=(document.getElementById("maintenanceLogDescription")?.value||"").trim();
+    const performedDate=document.getElementById("maintenanceLogDate")?.value||"";
+    const validPeople=maintenanceWorkPeople(factory).map(person=>person.name);
+    const participants=[...new Set([...document.querySelectorAll(".maintenance-log-person:checked")].map(x=>x.value))]
+      .filter(name=>validPeople.includes(name));
+    if(!dailyControlFactories().includes(factory)||!/^\d{4}-\d{2}-\d{2}$/.test(performedDate)){
+      alert("Geçerli bir fabrika ve çalışma tarihi seçiniz.");
+      return;
+    }
     if(!participants.length){alert("İşe dahil olan en az bir personel seçiniz.");return}
-    const title=document.getElementById("maintenanceLogTitle").value.trim();
-    const description=document.getElementById("maintenanceLogDescription").value.trim();
-    if(!title||!description)return;
-    s.maintenanceLogs.push({id:`MW-${Date.now()}`,factory:document.getElementById("maintenanceLogFactory").value,title,location:document.getElementById("maintenanceLogLocation").value.trim(),description,participants,performedAt:`${document.getElementById("maintenanceLogDate").value}T12:00:00`,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
+    if(!title||!description){alert("İş başlığı ve yapılan iş açıklamasını giriniz.");return}
+    s.maintenanceLogs.push({id:`MW-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,factory,title,location,description,participants,performedAt:`${performedDate}T12:00:00`,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
     saveMaintenanceLogs();s.maintenanceLogModal=false;render();
   };
 
@@ -8401,20 +8722,50 @@ function bind(){
       const title=(document.getElementById("workDetailTitle")?.value||"").trim();
       const description=(document.getElementById("workDetailDescription")?.value||"").trim();
       const location=(document.getElementById("workDetailLocation")?.value||"").trim();
+      const factory=document.getElementById("workDetailFactory")?.value||"";
+      const department=(document.getElementById("workDetailDepartment")?.value||"").trim();
+      const assignedTeam=document.getElementById("workDetailTeam")?.value||item.assignedTeam;
 
-      if(!title||!description||!location){
-        alert("Başlık, yer ve açıklama alanları boş bırakılamaz.");
+      if(!title||!description||!location||!department){
+        alert("Başlık, bölüm, yer ve açıklama alanları boş bırakılamaz.");
+        return;
+      }
+      if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+        alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+        return;
+      }
+      if(s.user?.role==="Bölüm Formeni"&&department!==s.user.department){
+        alert("Yalnızca kendi bölümünüzdeki kayıtları düzenleyebilirsiniz.");
+        return;
+      }
+      if(!["Elektrik Bakım","Mekanik Bakım"].includes(assignedTeam)){
+        alert("Geçerli bir bakım ekibi seçin.");
         return;
       }
 
-      item.factory=document.getElementById("workDetailFactory")?.value||item.factory;
-      item.department=(document.getElementById("workDetailDepartment")?.value||"").trim();
+      if(!isRequest){
+        const planStart=document.getElementById("workDetailPlanStart")?.value||"";
+        const planEnd=document.getElementById("workDetailPlanEnd")?.value||"";
+        const assignedTo=document.getElementById("workDetailAssignedTo")?.value||"";
+        const validPeople=workMaintenanceOptions(factory,assignedTeam);
+        if(!planStart||!planEnd||planEnd<planStart){
+          alert("Planlanan bitiş tarihi başlangıç tarihinden önce olamaz.");
+          return;
+        }
+        if(assignedTo&&!validPeople.includes(assignedTo)){
+          alert("Seçilen personel bu fabrika ve bakım ekibinde bulunmuyor.");
+          return;
+        }
+      }
+
+      item.factory=factory;
+      item.department=department;
       item.location=location;
       item.category=document.getElementById("workDetailCategory")?.value||item.category;
       item.title=title;
       item.priority=document.getElementById("workDetailPriority")?.value||item.priority;
       item.description=description;
-      item.assignedTeam=document.getElementById("workDetailTeam")?.value||item.assignedTeam;
+      item.assignedTeam=assignedTeam;
 
       if(isRequest){
         item.requestedDate=document.getElementById("workDetailRequestedDate")?.value||"";
@@ -8428,13 +8779,17 @@ function bind(){
 
     if(canProgressEdit&&!isRequest){
       const nextStatus=document.getElementById("workDetailStatus")?.value||item.status;
+      if(!["open","assigned","progress","material","approval","done","cancelled"].includes(nextStatus)){
+        alert("Geçersiz iş emri durumu seçildi.");
+        return;
+      }
       item.workDescription=(document.getElementById("workDetailResult")?.value||"").trim();
       item.status=nextStatus;
 
       if(nextStatus==="done"){
         item.completedAt=item.completedAt||new Date().toISOString();
         item.completedBy=s.user?.name||"Bilinmeyen Kullanıcı";
-        const source=s.workItems.find(x=>x.id===item.sourceRequestId);
+        const source=findWorkItemById(item.sourceRequestId);
         if(source){
           source.status="done";
           source.completedAt=item.completedAt;
@@ -8442,7 +8797,7 @@ function bind(){
       }else{
         item.completedAt=null;
         item.completedBy="";
-        const source=s.workItems.find(x=>x.id===item.sourceRequestId);
+        const source=findWorkItemById(item.sourceRequestId);
         if(source&&source.status==="done")source.status="converted";
       }
     }
@@ -8494,8 +8849,26 @@ function bind(){
   if(workRequestForm)workRequestForm.onsubmit=e=>{
     e.preventDefault();
     if(!permissions().createRequest)return;
-    const category=document.getElementById("wrCategory").value;
-    s.workItems.push({id:nextWorkId("request"),kind:"request",factory:document.getElementById("wrFactory").value,department:s.user?.department||document.getElementById("wrDepartment").value,location:document.getElementById("wrLocation").value.trim(),title:document.getElementById("wrTitle").value.trim(),category,priority:document.getElementById("wrPriority").value,description:document.getElementById("wrDescription").value.trim(),requestedDate:document.getElementById("wrRequestedDate").value,status:"new",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:workTeamForCategory(category),assignedTo:"",sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
+    const factory=document.getElementById("wrFactory")?.value||"";
+    const department=(s.user?.role==="Bölüm Formeni"?s.user.department:document.getElementById("wrDepartment")?.value||"").trim();
+    const location=(document.getElementById("wrLocation")?.value||"").trim();
+    const title=(document.getElementById("wrTitle")?.value||"").trim();
+    const category=document.getElementById("wrCategory")?.value||"";
+    const description=(document.getElementById("wrDescription")?.value||"").trim();
+    const requestedDate=document.getElementById("wrRequestedDate")?.value||"";
+    if(!factory||!department||!location||!title||!category||!description){
+      alert("Fabrika, bölüm, yer, kategori, başlık ve açıklama alanlarını doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+      return;
+    }
+    if(s.user?.role==="Bölüm Formeni"&&department!==s.user.department){
+      alert("Yalnızca kendi bölümünüz için iş talebi oluşturabilirsiniz.");
+      return;
+    }
+    s.workItems.push({id:nextWorkId("request"),kind:"request",factory,department,location,title,category,priority:document.getElementById("wrPriority").value,description,requestedDate,status:"new",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:workTeamForCategory(category),assignedTo:"",sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
     saveWorkItems();s.workCreateMode="";s.workTab="requests";render();
   };
 
@@ -8505,19 +8878,51 @@ function bind(){
   const directWorkOrderForm=document.getElementById("directWorkOrderForm");
   if(directWorkOrderForm)directWorkOrderForm.onsubmit=e=>{
     e.preventDefault();if(!permissions().createDirectWorkOrder)return;
-    const assignedTo=woAssigned.value;
-    s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:woFactory.value,department:document.getElementById("woDepartment").value,location:document.getElementById("woLocation").value.trim(),title:document.getElementById("woTitle").value.trim(),category:document.getElementById("woCategory").value,priority:document.getElementById("woPriority").value,description:document.getElementById("woDescription").value.trim(),requestedDate:"",planStart:document.getElementById("woStart").value,planEnd:document.getElementById("woEnd").value,status:assignedTo?"assigned":"open",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:woTeam.value,assignedTo,sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
+    const factory=woFactory?.value||"";
+    const department=document.getElementById("woDepartment")?.value||"";
+    const location=(document.getElementById("woLocation")?.value||"").trim();
+    const title=(document.getElementById("woTitle")?.value||"").trim();
+    const category=document.getElementById("woCategory")?.value||"";
+    const description=(document.getElementById("woDescription")?.value||"").trim();
+    const planStart=document.getElementById("woStart")?.value||"";
+    const planEnd=document.getElementById("woEnd")?.value||"";
+    const team=woTeam?.value||"";
+    const assignedTo=woAssigned?.value||"";
+    if(!factory||!department||!location||!title||!category||!description||!planStart||!planEnd){
+      alert("Fabrika, bölüm, yer, kategori, başlık, açıklama ve plan tarihlerini doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+      return;
+    }
+    if(planEnd<planStart){
+      alert("Planlanan bitiş tarihi başlangıç tarihinden önce olamaz.");
+      return;
+    }
+    if(!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+      alert("Geçerli bir bakım ekibi seçin.");
+      return;
+    }
+    if(assignedTo&&!workMaintenanceOptions(factory,team).includes(assignedTo)){
+      alert("Seçilen personel bu fabrika ve bakım ekibinde bulunmuyor.");
+      return;
+    }
+    s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory,department,location,title,category,priority:document.getElementById("woPriority").value,description,requestedDate:"",planStart,planEnd,status:assignedTo?"assigned":"open",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:team,assignedTo,sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
     saveWorkItems();s.workCreateMode="";s.workTab="orders";render();
   };
 
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{
     const item=findWorkItemById(btn.dataset.workId);if(!item)return;
     const action=btn.dataset.workRequestAction;
+    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","cancelled"].includes(action))return;
     const actor=s.user?.name||"Bilinmeyen Kullanıcı";
     const at=new Date().toISOString();
     if(action==="cancelled"&&permissions().createRequest&&item.createdBy===s.user?.name){item.status="cancelled";item.cancelledBy=actor;item.cancelledAt=at;saveWorkItems();render();return}
     if(!canManageWorkRequest(item))return;
     if(action==="convert"){
+      const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
+      if(linked){item.status="converted";saveWorkItems();s.workTab="orders";render();return}
       const team=item.assignedTeam||workTeamForCategory(item.category);const people=workMaintenanceOptions(item.factory,team);const assignedTo=people[0]||"";
       s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:assignedTo?"assigned":"open",createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,workDescription:"",completedAt:null,usedMaterials:[]});
       item.status="converted";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
@@ -8530,11 +8935,11 @@ function bind(){
     saveWorkItems();render();
   });
 
-  document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=s.workItems.find(x=>x.id===sel.dataset.workId);if(item&&canManageWorkRequest(item)){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
-  document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=s.workItems.find(x=>x.id===sel.dataset.workId);if(item&&canUpdateWorkOrder(item)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;const source=s.workItems.find(x=>x.id===item.sourceRequestId);if(source&&sel.value==="done")source.status="done";saveWorkItems();render()}});
-  document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=document.querySelector(`.work-result-text[data-work-id="${CSS.escape(item.id)}"]`);item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
-  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
-  document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=s.workItems.find(x=>x.id===btn.dataset.removeWorkMaterial);if(!item||!canUpdateWorkOrder(item))return;item.usedMaterials.splice(Number(btn.dataset.index),1);saveWorkItems();render()});
+  document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canManageWorkRequest(item)&&(!sel.value||workMaintenanceOptions(item.factory,item.assignedTeam).includes(sel.value))){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
+  document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canUpdateWorkOrder(item)&&["open","assigned","progress","material","approval","done","cancelled"].includes(sel.value)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;item.completedBy=sel.value==="done"?(s.user?.name||""):"";const source=findWorkItemById(item.sourceRequestId);if(source){if(sel.value==="done"){source.status="done";source.completedAt=item.completedAt}else if(source.status==="done"){source.status="converted";source.completedAt=null}}saveWorkItems();render()}});
+  document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=[...document.querySelectorAll(".work-result-text")].find(el=>String(el.dataset.workId)===String(item.id));item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
+  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||!Number.isFinite(qty)||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
+  document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.removeWorkMaterial);const index=Number(btn.dataset.index);if(!item||!canUpdateWorkOrder(item)||!Array.isArray(item.usedMaterials)||!Number.isInteger(index)||index<0||index>=item.usedMaterials.length)return;item.usedMaterials.splice(index,1);saveWorkItems();render()});
 
   const materialCatalogAddForm=document.getElementById("materialCatalogAddForm");
   if(materialCatalogAddForm)materialCatalogAddForm.onsubmit=e=>{
@@ -8604,9 +9009,21 @@ function bind(){
     const material=materialById(id);if(!material)return;
     const code=document.getElementById("materialEditCode").value.trim().toLocaleUpperCase("tr-TR");
     const name=document.getElementById("materialEditName").value.trim();
-    const duplicate=MATERIALS.find(x=>x.id!==id&&String(x.code).toLocaleUpperCase("tr-TR")===code);
+    const category=(document.getElementById("materialEditCategory")?.value||"").trim();
+    const unit=(document.getElementById("materialEditUnit")?.value||"").trim();
+    const stock=Number(document.getElementById("materialEditStock")?.value);
+    const minStock=Number(document.getElementById("materialEditMinStock")?.value);
+    if(!code||!name||!category||!unit){
+      alert("Malzeme kodu, adı, kategori ve birim alanları boş bırakılamaz.");
+      return;
+    }
+    if(!Number.isFinite(stock)||stock<0||!Number.isFinite(minStock)||minStock<0){
+      alert("Stok değerleri sıfır veya sıfırdan büyük olmalıdır.");
+      return;
+    }
+    const duplicate=MATERIALS.find(x=>String(x.id)!==String(id)&&String(x.code||"").trim().toLocaleUpperCase("tr-TR")===code);
     if(duplicate){alert(`Bu malzeme kodu zaten kullanılıyor: ${duplicate.name}`);return}
-    Object.assign(material,{code,name,category:document.getElementById("materialEditCategory").value,unit:document.getElementById("materialEditUnit").value,stock:Number(document.getElementById("materialEditStock").value||0),minStock:Number(document.getElementById("materialEditMinStock").value||0),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
+    Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
     saveMaterials();s.materialEditId=null;render();
   };
   function deleteMaterialByButton(btn){
@@ -8714,7 +9131,7 @@ function bind(){
   const faultModalStatus=document.getElementById("faultModalStatus");
   if(faultModalStatus)faultModalStatus.onchange=()=>{
     const fault=s.faults.find(x=>Number(x.id)===Number(s.faultModalId));
-    if(!fault||!permissions().editStatus)return;
+    if(!fault||!canUpdateFaultStatus(fault)||!["open","progress","done"].includes(faultModalStatus.value))return;
     const nextStatus=faultModalStatus.value;
     const solution=(document.getElementById("faultSolutionText")?.value||"").trim();
     fault.solutionText=solution;
@@ -8898,11 +9315,21 @@ function bind(){
     const factory=document.getElementById("personnelFactory").value;
     const team=document.getElementById("personnelTeam").value;
     if(!/^\d{4}$/.test(newId)||!/^\d{4}$/.test(password)){alert("ID ve şifre tam olarak 4 haneli olmalıdır.");return}
+    if(!name){alert("Personelin adını ve soyadını girin.");return}
+    if(!["1. Fabrika","2. Fabrika"].includes(factory)||!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+      alert("Geçerli bir fabrika ve bakım ekibi seçin.");
+      return;
+    }
     if(APP_USERS[newId]&&newId!==original){alert("Bu kullanıcı ID zaten kullanılıyor.");return}
     const factories=factory==="1. Fabrika"?["1. Fabrika"]:["2. Fabrika A Blok","2. Fabrika B Blok"];
     const candidate={password,name,role:"Bakım Personeli",factories,department:"",team};
     if(!canManagePersonnelAccount(candidate)){alert("Yalnızca kendi fabrikanızdaki ve ekibinizdeki bakım personellerini yönetebilirsiniz.");return}
-    if(original&&original!==newId)delete APP_USERS[original];
+    if(original&&original!==newId){
+      delete APP_USERS[original];
+      DELETED_PERSONNEL_IDS.add(String(original));
+    }
+    DELETED_PERSONNEL_IDS.delete(String(newId));
+    saveDeletedPersonnelIds();
     APP_USERS[newId]=candidate;
     saveAppUsers();
     render();
@@ -8968,12 +9395,28 @@ function bind(){
       render();
       return;
     }
-    if(roleIsDepartmentLimited()&&s.user?.department&&depEl.value!==s.user.department){
+    const factory=factoryEl?.value||"";
+    const line=lineEl?.value||"";
+    const department=depEl?.value||"";
+    const machine=machineEl?.value||"";
+    const type=document.getElementById("type")?.value||"";
+    const subject=(document.getElementById("subject")?.value||"").trim();
+    const description=(document.getElementById("desc")?.value||"").trim();
+    if(roleIsDepartmentLimited()&&s.user?.department&&department!==s.user.department){
       alert("Yalnızca kendi bölümünüz için arıza kaydı açabilirsiniz.");
       return;
     }
+    if(!userFactories().includes(factory)||!catalogLines(factory).includes(line)||!catalogDepartments(factory,line).includes(department)||!catalogMachines(factory,line,department).includes(machine)){
+      alert("Geçersiz veya yetki alanınız dışında fabrika, hat, bölüm ya da makine seçildi.");
+      return;
+    }
+    if(!TYPES.includes(type)||!subject||!description){
+      alert("Arıza tipi, konusu ve açıklamasını eksiksiz girin.");
+      return;
+    }
     const now=new Date().toISOString();
-    const fault={id:Math.max(...s.faults.map(x=>x.id))+1,factory:factoryEl.value,line:lineEl.value,department:depEl.value,machine:machineEl.value,type:document.getElementById("type").value,subject:document.getElementById("subject").value,description:document.getElementById("desc").value,stopped:document.getElementById("stopped").checked,photoName:document.getElementById("photo").files[0]?.name||"",status:"open",openedBy:s.user?.name||"Bilinmeyen Kullanıcı",assignedTo:"",assignmentState:"pending",claimedBy:"",claimedAt:null,assignmentHistory:[],participants:[],solutionText:"",solutionBy:"",solutionAt:null,createdAt:now,closedAt:null};
+    const numericFaultIds=s.faults.map(item=>Number(item.id)).filter(Number.isFinite);
+    const fault={id:Math.max(1000,...numericFaultIds)+1,factory,line,department,machine,type,subject,description,stopped:!!document.getElementById("stopped")?.checked,photoName:document.getElementById("photo")?.files?.[0]?.name||"",status:"open",openedBy:s.user?.name||"Bilinmeyen Kullanıcı",assignedTo:"",assignmentState:"pending",claimedBy:"",claimedAt:null,assignmentHistory:[],participants:[],solutionText:"",solutionBy:"",solutionAt:null,createdAt:now,closedAt:null};
     const activePeople=activeMaintenanceForFault(fault);
     fault.assignedTo=deterministicPerson(activePeople,fault.id,31)||"Atama Bekliyor";
     fault.assignmentHistory.push({action:"assigned",from:"",to:fault.assignedTo,by:"Sistem",at:now,shift:currentShiftLabel()});
@@ -8983,7 +9426,7 @@ function bind(){
   };
   document.querySelectorAll(".status-sel").forEach(x=>x.onchange=()=>{
     const fault=s.faults.find(y=>y.id==x.dataset.id);
-    if(!fault||!canUpdateFaultStatus(fault))return;
+    if(!fault||!canUpdateFaultStatus(fault)||!["open","progress","done"].includes(x.value))return;
     fault.status=x.value;
     if(x.value==="progress"&&(!fault.assignedTo||fault.assignedTo==="Atama Bekliyor")){
       fault.assignedTo=deterministicPerson(activeMaintenanceForFault(fault),fault.id,19)||"Atama Bekliyor";
@@ -9003,7 +9446,8 @@ function bind(){
   });
   document.querySelectorAll(".personnel-sel").forEach(x=>x.onchange=()=>{
     const fault=s.faults.find(y=>y.id==x.dataset.personnelId);
-    if(fault&&canRedirectFault(fault)){
+    const validTargets=fault?["Atama Bekliyor",...maintenanceOptionsForFault(fault)]:[];
+    if(fault&&canRedirectFault(fault)&&validTargets.includes(x.value)){
       const previous=fault.assignedTo||"Atama Bekliyor";
       fault.assignedTo=x.value;
       fault.assignmentState="pending";
@@ -9106,8 +9550,11 @@ function bind(){
     pmMachine.innerHTML=opts(catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),"Makine seçiniz","");
   };
   if(pmDepartment&&pmMachine){
-    const initialMachines=catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value);
-    pmMachine.innerHTML=opts(initialMachines,"Makine seçiniz","");
+    const initialSelected=pmMachine.dataset.selected||"";
+    const initialMachines=[
+      ...new Set([...catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),initialSelected].filter(Boolean))
+    ];
+    pmMachine.innerHTML=opts(initialMachines,"Makine seçiniz",initialSelected);
   }
   const pmForm=document.getElementById("plannedForm");
   if(pmForm)pmForm.onsubmit=e=>{
@@ -9117,17 +9564,52 @@ function bind(){
     if(!editing&&!canCreatePlannedMaintenance()){alert("Planlı bakım oluşturma yetkiniz yok.");return}
     const department=s.user?.role==="Bölüm Formeni"?s.user.department:pmDepartment.value;
     if(s.user?.role==="Bölüm Formeni"&&department!==s.user.department){alert("Yalnızca kendi bölümünüz için işlem yapabilirsiniz.");return}
+    const title=(document.getElementById("pmTitle")?.value||"").trim();
+    const factory=pmFactory?.value||"";
+    const line=pmLine?.value||"";
+    const machine=pmMachine?.value||"";
+    const type=document.getElementById("pmType")?.value||"";
+    const priority=document.getElementById("pmPriority")?.value||"";
+    const date=document.getElementById("pmDate")?.value||"";
+    const time=document.getElementById("pmTime")?.value||"";
+    const duration=Number(document.getElementById("pmDuration")?.value);
+    const assigned=(document.getElementById("pmAssigned")?.value||"").trim();
+    if(!title||!factory||!line||!department||!machine||!type||!priority||!date||!time||!assigned){
+      alert("Planlı bakımın zorunlu alanlarını eksiksiz doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!catalogLines(factory).includes(line)||!catalogDepartments(factory,line).includes(department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika, hat ya da bölüm seçildi.");
+      return;
+    }
+    const selectableMachines=catalogMachines(factory,line,department);
+    if(!selectableMachines.includes(machine)&&String(editing?.machine||"")!==String(machine)){
+      alert("Seçilen makine bu fabrika, hat ve bölümde bulunmuyor.");
+      return;
+    }
+    if(!MAINTENANCE_TYPES.includes(type)||!MAINTENANCE_PRIORITIES.includes(priority)){
+      alert("Geçersiz bakım türü veya öncelik seçildi.");
+      return;
+    }
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)){
+      alert("Geçerli bir tarih ve saat girin.");
+      return;
+    }
+    if(!Number.isFinite(duration)||duration<15){
+      alert("Tahmini süre en az 15 dakika olmalıdır.");
+      return;
+    }
     const ids=s.plannedMaintenances.map(x=>Number(x.id)||0);
     const values={
-      title:document.getElementById("pmTitle").value.trim(),
-      factory:pmFactory.value,line:pmLine.value,
-      department,machine:pmMachine.value,
-      type:document.getElementById("pmType").value,
-      priority:document.getElementById("pmPriority").value,
-      date:document.getElementById("pmDate").value,
-      time:document.getElementById("pmTime").value,
-      duration:Number(document.getElementById("pmDuration").value)||60,
-      assigned:document.getElementById("pmAssigned").value.trim(),
+      title,
+      factory,line,
+      department,machine,
+      type,
+      priority,
+      date,
+      time,
+      duration:Number(duration.toFixed(0)),
+      assigned,
       description:document.getElementById("pmDescription").value.trim()
     };
     if(editing){
@@ -9179,7 +9661,7 @@ function startEtiliSmart(){
     <h2 style="margin-top:0">ETİLİSMART açılırken bir hata oluştu</h2>
     <p>Tarayıcıdaki eski kayıtları temizleyip sayfayı yenileyin.</p>
     <button id="resetEtiliSmart" style="border:0;border-radius:10px;padding:11px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>
-    <pre style="white-space:pre-wrap;color:#a00">${String(error.message||error)}</pre>
+    <pre style="white-space:pre-wrap;color:#a00">${esc(error.message||error)}</pre>
   </div>`;
   const resetButton=document.getElementById("resetEtiliSmart");
   if(resetButton){

@@ -5,6 +5,7 @@ const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 const AUTH_VERSION="pc-v4";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
 const USER_STORE_KEY="etilismart_users_v2";
+const DELETED_PERSONNEL_KEY="etilismart_deleted_personnel_ids_v1";
 const FACTORY_DEPARTMENT_FOREMEN={
   "4401":{"password":"1801","name":"1. Fabrika Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Masse Bölümü"},
   "4402":{"password":"1802","name":"1. Fabrika Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},
@@ -26,21 +27,61 @@ const PRODUCTION_MANAGER_USERS={
 const DEVELOPER_USERS={
   "9001":{"password":"9001","name":"Mert Yaman","role":"Yazılımcı","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"}
 };
+const VALID_ACCOUNT_ROLES=new Set([...ROLES,"Elektrik Bakım Formeni","Mekanik Bakım Formeni","Fabrika Müdürü"]);
+let DELETED_PERSONNEL_IDS=new Set(storageJsonArray(localStorage,DELETED_PERSONNEL_KEY,[]).map(String));
 const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
 function removeLegacyUsers(users){
   REMOVED_LEGACY_USER_IDS.forEach(id=>delete users[id]);
   return users;
 }
 const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS});
+const PROTECTED_USERS=Object.fromEntries(
+  Object.entries(DEFAULT_USERS)
+    .filter(([,account])=>account.role!=="Bakım Personeli")
+    .map(([id,account])=>[id,JSON.parse(JSON.stringify(account))])
+);
+function validStoredUsers(saved){
+  const valid={};
+  Object.entries(saved||{}).forEach(([id,account])=>{
+    if(!/^\d{4}$/.test(String(id))||!account||typeof account!=="object"||Array.isArray(account))return;
+    const name=String(account.name||"").trim();
+    const password=String(account.password||"").trim();
+    const role=String(account.role||"").trim();
+    const factories=Array.isArray(account.factories)
+      ?[...new Set(account.factories.filter(factory=>Object.prototype.hasOwnProperty.call(FACTORIES,factory)))]
+      :[];
+    if(!name||!/^\d{4}$/.test(password)||!VALID_ACCOUNT_ROLES.has(role)||!factories.length)return;
+    valid[id]={
+      ...account,
+      password,
+      name,
+      role,
+      factories,
+      department:String(account.department||"").trim(),
+      team:String(account.team||"").trim()
+    };
+  });
+  return valid;
+}
+function saveDeletedPersonnelIds(){
+  storageSet(localStorage,DELETED_PERSONNEL_KEY,JSON.stringify([...DELETED_PERSONNEL_IDS]));
+}
 function loadAppUsers(){
-  const saved=safeJson(storageGet(localStorage,USER_STORE_KEY,"null"),null);
-  if(saved&&typeof saved==="object"){
-    const merged=removeLegacyUsers({...JSON.parse(JSON.stringify(DEMO_USERS)),...saved,...JSON.parse(JSON.stringify(FACTORY_DEPARTMENT_FOREMEN)),...JSON.parse(JSON.stringify(PRODUCTION_MANAGER_USERS)),...JSON.parse(JSON.stringify(DEVELOPER_USERS))});
+  const saved=storageJsonRecord(localStorage,USER_STORE_KEY,null);
+  if(saved){
+    const merged=removeLegacyUsers({...JSON.parse(JSON.stringify(DEMO_USERS)),...validStoredUsers(saved),...PROTECTED_USERS});
+    DELETED_PERSONNEL_IDS.forEach(id=>{
+      if(merged[id]?.role==="Bakım Personeli")delete merged[id];
+    });
     storageSet(localStorage,USER_STORE_KEY,JSON.stringify(merged));
     return merged;
   }
-  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(DEFAULT_USERS));
-  return JSON.parse(JSON.stringify(DEFAULT_USERS));
+  const initial=JSON.parse(JSON.stringify(DEFAULT_USERS));
+  DELETED_PERSONNEL_IDS.forEach(id=>{
+    if(initial[id]?.role==="Bakım Personeli")delete initial[id];
+  });
+  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(initial));
+  return initial;
 }
 let APP_USERS=loadAppUsers();
 function saveAppUsers(){storageSet(localStorage,USER_STORE_KEY,JSON.stringify(APP_USERS));}
@@ -117,7 +158,7 @@ function managedPersonnelEntries(){
     .sort((a,b)=>a[1].name.localeCompare(b[1].name,"tr"));
 }
 function faultParticipants(fault){
-  return [...new Set(Array.isArray(fault?.participants)?fault.participants.filter(Boolean):[])];
+  return [...new Set(Array.isArray(fault?.participants)?fault.participants.filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()):[])];
 }
 function normalizeFaultParticipants(){
   let changed=false;
@@ -169,7 +210,11 @@ function canClaimFault(fault){
   if(!fault||fault.status==="done"||fault.assignmentState==="accepted")return false;
   if(!currentMaintenanceAccountForFault(fault)||!isCurrentMaintenanceUserActiveForFault(fault))return false;
   const assigned=String(fault.assignedTo||"").trim();
-  return !assigned||["Atama Bekliyor","Bakım Ekibi"].includes(assigned)||assigned===s.user?.name;
+  const activeNames=activeMaintenanceForFault(fault);
+  return !assigned
+    ||["Atama Bekliyor","Bakım Ekibi"].includes(assigned)
+    ||assigned===s.user?.name
+    ||!activeNames.includes(assigned);
 }
 function claimFaultByCurrentUser(fault){
   if(!canClaimFault(fault))return {ok:false,message:"Bu arızayı üstlenme yetkiniz yok veya arıza başka bir personele atanmış."};
@@ -213,7 +258,7 @@ function saveMaintenanceLogs(){
   storageSet(localStorage,MAINTENANCE_LOG_KEY,JSON.stringify(s.maintenanceLogs||[]));
 }
 function maintenanceLogParticipants(log){
-  return [...new Set(Array.isArray(log?.participants)?log.participants.filter(Boolean):[])];
+  return [...new Set(Array.isArray(log?.participants)?log.participants.filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()):[])];
 }
 function maintenanceWorkPeople(factory){
   const roles=["Bakım Personeli","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni","Bakım Müdürü"];
@@ -237,11 +282,7 @@ function canSelfJoinFault(fault){
   if(!fault||fault.status==="done"||s.user?.role!=="Bakım Personeli")return false;
   if(fault.assignmentState!=="accepted")return false;
   if(faultParticipants(fault).includes(s.user?.name))return false;
-  const account=APP_USERS[s.user.id];
-  if(!account)return false;
-  const sameFactory=(account.factories||[]).some(f=>shiftFactoryName(f)===shiftFactoryName(fault.factory));
-  const sameTeam=account.team===maintenanceDisciplineForFault(fault);
-  return sameFactory&&sameTeam;
+  return isCurrentMaintenanceUserActiveForFault(fault);
 }
 function shiftLabelForDate(date=new Date()){
   const h=date.getHours();
@@ -359,13 +400,28 @@ function deleteMaintenancePersonnelAccount(id){
   if(!permissions().manageAllPersonnel)return {ok:false,message:"Personel silme yetkisi yalnızca Bakım Müdüründedir."};
 
   delete APP_USERS[id];
+  DELETED_PERSONNEL_IDS.add(String(id));
+  saveDeletedPersonnelIds();
   saveAppUsers();
 
   // Silinen personeli açık ve geçmiş arıza katılımcılarından kaldır.
   s.faults.forEach(f=>{
     const remaining=faultParticipants(f).filter(name=>name!==account.name);
     f.participants=remaining;
-    if(f.assignedTo===account.name)f.assignedTo=remaining[0]||"";
+    if(f.assignedTo===account.name){
+      f.assignedTo=remaining[0]||"Atama Bekliyor";
+      f.assignmentState=remaining.length?"accepted":"pending";
+      f.claimedBy=remaining[0]||"";
+      f.claimedAt=remaining.length?(f.claimedAt||new Date().toISOString()):null;
+      if(!remaining.length&&f.status!=="done")f.status="open";
+    }
+  });
+
+  s.workItems.forEach(item=>{
+    if(item.kind==="workorder"&&item.assignedTo===account.name){
+      item.assignedTo="";
+      if(item.status==="assigned")item.status="open";
+    }
   });
 
   // Vardiya planındaki kayıtlarını kaldır.
@@ -390,7 +446,15 @@ function deleteMaintenancePersonnelAccount(id){
     });
   }
 
+  if(typeof SHIFT_OVERRIDES==="object"&&SHIFT_OVERRIDES){
+    Object.keys(SHIFT_OVERRIDES)
+      .filter(key=>key.split("|")[3]===String(id))
+      .forEach(key=>delete SHIFT_OVERRIDES[key]);
+    storageSet(localStorage,SHIFT_OVERRIDE_KEY,JSON.stringify(SHIFT_OVERRIDES));
+  }
+
   save();
+  saveWorkItems();
   return {ok:true,name:account.name};
 }
 
@@ -442,7 +506,7 @@ function personnelDetailModal(){
         <section class="personnel-detail-card"><div class="section-modern-head"><div><h3>En Çok Müdahale Edilen Makineler</h3><p>Atanan arızalara göre</p></div></div><div class="top-machine-list">${p.topMachines.length?p.topMachines.map(([name,count],i)=>`<div><span>${i+1}</span><b>${esc(name)}</b><strong>${count} iş</strong></div>`).join(""):'<p class="muted">Henüz kayıt bulunmuyor.</p>'}</div></section>
         <section class="personnel-detail-card"><div class="section-modern-head"><div><h3>Performans Özeti</h3><p>Mevcut kayıtlar üzerinden</p></div></div><div class="profile-performance"><div class="profile-score-ring"><span>%${score}</span></div><dl><div><dt>Çözüm oranı</dt><dd>%${p.assigned?Math.round(p.completed/p.assigned*100):0}</dd></div><div><dt>Duruşlu arıza</dt><dd>${p.stopped}</dd></div><div><dt>Açık iş yükü</dt><dd>${p.active}</dd></div></dl></div></section>
         <section class="personnel-detail-card wide"><div class="section-modern-head"><div><h3>Yapılan İş Kayıtları</h3><p>Arıza ve iş emri dışında kaydedilen çalışmalar</p></div></div><div class="maintenance-log-person-list">${workLogs.map(log=>`<article><div><small>${new Date(log.performedAt||log.createdAt).toLocaleDateString("tr-TR")} · ${esc(log.factory)}</small><b>${esc(log.title)}</b><span>${esc(log.location||"-")}</span></div><p>${esc(log.description)}</p><strong>${maintenanceLogParticipants(log).map(esc).join(" · ")}</strong></article>`).join("")||'<div class="compact-empty"><span>✎</span><p>Bu personele ait yapılan iş kaydı bulunmuyor.</p></div>'}</div></section>
-        <section class="personnel-detail-card wide"><div class="section-modern-head"><div><h3>Son 10 Arıza Kaydı</h3><p>Personele atanmış veya müdahale ettiği işler</p></div></div><div class="table-wrap"><table><thead><tr><th>Kayıt</th><th>Makine</th><th>Konu</th><th>Durum</th><th>Açılış</th><th>Süre</th></tr></thead><tbody>${recent.map(f=>`<tr class="personnel-fault-link" data-fault-id="${f.id}"><td>#${esc(f.id)}</td><td>${esc(f.machine)}</td><td>${esc(f.subject)}</td><td><span class="status ${f.status}">${statusLabel(f.status)}</span></td><td>${fmtDate(f.createdAt)}</td><td>${durationText(f)}</td></tr>`).join("")||'<tr><td colspan="6">Henüz atanmış arıza bulunmuyor.</td></tr>'}</tbody></table></div></section>
+        <section class="personnel-detail-card wide"><div class="section-modern-head"><div><h3>Son 10 Arıza Kaydı</h3><p>Personele atanmış veya müdahale ettiği işler</p></div></div><div class="table-wrap"><table><thead><tr><th>Kayıt</th><th>Makine</th><th>Konu</th><th>Durum</th><th>Açılış</th><th>Süre</th></tr></thead><tbody>${recent.map(f=>`<tr class="personnel-fault-link" data-fault-id="${esc(f.id)}"><td>#${esc(f.id)}</td><td>${esc(f.machine)}</td><td>${esc(f.subject)}</td><td><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span></td><td>${fmtDate(f.createdAt)}</td><td>${durationText(f)}</td></tr>`).join("")||'<tr><td colspan="6">Henüz atanmış arıza bulunmuyor.</td></tr>'}</tbody></table></div></section>
       </div>
     </div>
   </div>`;

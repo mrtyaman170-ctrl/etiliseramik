@@ -3,7 +3,13 @@ function updateClockAndDurations(){
   if(d)d.textContent=x.date;if(t)t.textContent=x.time;if(v)v.textContent=x.shift.name;
   document.querySelectorAll(".duration").forEach(el=>{const f=s.faults.find(x=>x.id==el.dataset.id);if(f)el.textContent=durationText(f)});
 }
-function render(){window.__etiliStarted=true;document.getElementById("app").innerHTML=s.login?app():login();bind();updateClockAndDurations()}
+function render(){
+  window.__etiliStarted=true;
+  document.body.classList.remove("mobile-menu-open");
+  document.getElementById("app").innerHTML=s.login?app():login();
+  bind();
+  updateClockAndDurations();
+}
 function bind(){
   const appRoot=document.getElementById("app");
   if(appRoot)appRoot.addEventListener("click",event=>{
@@ -24,6 +30,17 @@ function bind(){
     s.workDetailId=String(item.id);
     render();
   });
+
+  const mobileMenuToggle=document.getElementById("mobileMenuToggle");
+  const mobileMenuClose=document.getElementById("mobileMenuClose");
+  const mobileNavOverlay=document.getElementById("mobileNavOverlay");
+  const setMobileMenu=open=>{
+    document.body.classList.toggle("mobile-menu-open",open);
+    mobileMenuToggle?.setAttribute("aria-expanded",open?"true":"false");
+  };
+  if(mobileMenuToggle)mobileMenuToggle.onclick=()=>setMobileMenu(!document.body.classList.contains("mobile-menu-open"));
+  if(mobileMenuClose)mobileMenuClose.onclick=()=>setMobileMenu(false);
+  if(mobileNavOverlay)mobileNavOverlay.onclick=()=>setMobileMenu(false);
 
   document.querySelectorAll("[data-p]").forEach(b=>{
     if(b.hasAttribute("data-work-detail-id"))return;
@@ -100,6 +117,10 @@ function bind(){
     const to=document.getElementById("faultHandoverTo")?.value||"";
     const note=document.getElementById("faultHandoverNote")?.value.trim()||"";
     if(!to||!note){alert("Devredilecek personeli ve devir notunu giriniz.");return}
+    if(!nextShiftMembersForFault(fault).includes(to)){
+      alert("Seçilen personel bu arızanın sonraki vardiya ekibinde bulunmuyor.");
+      return;
+    }
     if(!Array.isArray(fault.handovers))fault.handovers=[];
     fault.handovers.push({from:s.user?.name||"Bilinmeyen Kullanıcı",to,note,at:new Date().toISOString(),fromShift:currentShiftLabel(),toShift:nextShiftLabel()});
     fault.participants=[...new Set([...faultParticipants(fault),to])];
@@ -135,12 +156,21 @@ function bind(){
   if(maintenanceLogForm)maintenanceLogForm.onsubmit=e=>{
     e.preventDefault();
     if(!canAddMaintenanceLog())return;
-    const participants=[...document.querySelectorAll(".maintenance-log-person:checked")].map(x=>x.value);
+    const factory=document.getElementById("maintenanceLogFactory")?.value||"";
+    const title=(document.getElementById("maintenanceLogTitle")?.value||"").trim();
+    const location=(document.getElementById("maintenanceLogLocation")?.value||"").trim();
+    const description=(document.getElementById("maintenanceLogDescription")?.value||"").trim();
+    const performedDate=document.getElementById("maintenanceLogDate")?.value||"";
+    const validPeople=maintenanceWorkPeople(factory).map(person=>person.name);
+    const participants=[...new Set([...document.querySelectorAll(".maintenance-log-person:checked")].map(x=>x.value))]
+      .filter(name=>validPeople.includes(name));
+    if(!dailyControlFactories().includes(factory)||!/^\d{4}-\d{2}-\d{2}$/.test(performedDate)){
+      alert("Geçerli bir fabrika ve çalışma tarihi seçiniz.");
+      return;
+    }
     if(!participants.length){alert("İşe dahil olan en az bir personel seçiniz.");return}
-    const title=document.getElementById("maintenanceLogTitle").value.trim();
-    const description=document.getElementById("maintenanceLogDescription").value.trim();
-    if(!title||!description)return;
-    s.maintenanceLogs.push({id:`MW-${Date.now()}`,factory:document.getElementById("maintenanceLogFactory").value,title,location:document.getElementById("maintenanceLogLocation").value.trim(),description,participants,performedAt:`${document.getElementById("maintenanceLogDate").value}T12:00:00`,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
+    if(!title||!description){alert("İş başlığı ve yapılan iş açıklamasını giriniz.");return}
+    s.maintenanceLogs.push({id:`MW-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,factory,title,location,description,participants,performedAt:`${performedDate}T12:00:00`,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
     saveMaintenanceLogs();s.maintenanceLogModal=false;render();
   };
 
@@ -537,20 +567,50 @@ function bind(){
       const title=(document.getElementById("workDetailTitle")?.value||"").trim();
       const description=(document.getElementById("workDetailDescription")?.value||"").trim();
       const location=(document.getElementById("workDetailLocation")?.value||"").trim();
+      const factory=document.getElementById("workDetailFactory")?.value||"";
+      const department=(document.getElementById("workDetailDepartment")?.value||"").trim();
+      const assignedTeam=document.getElementById("workDetailTeam")?.value||item.assignedTeam;
 
-      if(!title||!description||!location){
-        alert("Başlık, yer ve açıklama alanları boş bırakılamaz.");
+      if(!title||!description||!location||!department){
+        alert("Başlık, bölüm, yer ve açıklama alanları boş bırakılamaz.");
+        return;
+      }
+      if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+        alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+        return;
+      }
+      if(s.user?.role==="Bölüm Formeni"&&department!==s.user.department){
+        alert("Yalnızca kendi bölümünüzdeki kayıtları düzenleyebilirsiniz.");
+        return;
+      }
+      if(!["Elektrik Bakım","Mekanik Bakım"].includes(assignedTeam)){
+        alert("Geçerli bir bakım ekibi seçin.");
         return;
       }
 
-      item.factory=document.getElementById("workDetailFactory")?.value||item.factory;
-      item.department=(document.getElementById("workDetailDepartment")?.value||"").trim();
+      if(!isRequest){
+        const planStart=document.getElementById("workDetailPlanStart")?.value||"";
+        const planEnd=document.getElementById("workDetailPlanEnd")?.value||"";
+        const assignedTo=document.getElementById("workDetailAssignedTo")?.value||"";
+        const validPeople=workMaintenanceOptions(factory,assignedTeam);
+        if(!planStart||!planEnd||planEnd<planStart){
+          alert("Planlanan bitiş tarihi başlangıç tarihinden önce olamaz.");
+          return;
+        }
+        if(assignedTo&&!validPeople.includes(assignedTo)){
+          alert("Seçilen personel bu fabrika ve bakım ekibinde bulunmuyor.");
+          return;
+        }
+      }
+
+      item.factory=factory;
+      item.department=department;
       item.location=location;
       item.category=document.getElementById("workDetailCategory")?.value||item.category;
       item.title=title;
       item.priority=document.getElementById("workDetailPriority")?.value||item.priority;
       item.description=description;
-      item.assignedTeam=document.getElementById("workDetailTeam")?.value||item.assignedTeam;
+      item.assignedTeam=assignedTeam;
 
       if(isRequest){
         item.requestedDate=document.getElementById("workDetailRequestedDate")?.value||"";
@@ -564,13 +624,17 @@ function bind(){
 
     if(canProgressEdit&&!isRequest){
       const nextStatus=document.getElementById("workDetailStatus")?.value||item.status;
+      if(!["open","assigned","progress","material","approval","done","cancelled"].includes(nextStatus)){
+        alert("Geçersiz iş emri durumu seçildi.");
+        return;
+      }
       item.workDescription=(document.getElementById("workDetailResult")?.value||"").trim();
       item.status=nextStatus;
 
       if(nextStatus==="done"){
         item.completedAt=item.completedAt||new Date().toISOString();
         item.completedBy=s.user?.name||"Bilinmeyen Kullanıcı";
-        const source=s.workItems.find(x=>x.id===item.sourceRequestId);
+        const source=findWorkItemById(item.sourceRequestId);
         if(source){
           source.status="done";
           source.completedAt=item.completedAt;
@@ -578,7 +642,7 @@ function bind(){
       }else{
         item.completedAt=null;
         item.completedBy="";
-        const source=s.workItems.find(x=>x.id===item.sourceRequestId);
+        const source=findWorkItemById(item.sourceRequestId);
         if(source&&source.status==="done")source.status="converted";
       }
     }
@@ -630,8 +694,26 @@ function bind(){
   if(workRequestForm)workRequestForm.onsubmit=e=>{
     e.preventDefault();
     if(!permissions().createRequest)return;
-    const category=document.getElementById("wrCategory").value;
-    s.workItems.push({id:nextWorkId("request"),kind:"request",factory:document.getElementById("wrFactory").value,department:s.user?.department||document.getElementById("wrDepartment").value,location:document.getElementById("wrLocation").value.trim(),title:document.getElementById("wrTitle").value.trim(),category,priority:document.getElementById("wrPriority").value,description:document.getElementById("wrDescription").value.trim(),requestedDate:document.getElementById("wrRequestedDate").value,status:"new",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:workTeamForCategory(category),assignedTo:"",sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
+    const factory=document.getElementById("wrFactory")?.value||"";
+    const department=(s.user?.role==="Bölüm Formeni"?s.user.department:document.getElementById("wrDepartment")?.value||"").trim();
+    const location=(document.getElementById("wrLocation")?.value||"").trim();
+    const title=(document.getElementById("wrTitle")?.value||"").trim();
+    const category=document.getElementById("wrCategory")?.value||"";
+    const description=(document.getElementById("wrDescription")?.value||"").trim();
+    const requestedDate=document.getElementById("wrRequestedDate")?.value||"";
+    if(!factory||!department||!location||!title||!category||!description){
+      alert("Fabrika, bölüm, yer, kategori, başlık ve açıklama alanlarını doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+      return;
+    }
+    if(s.user?.role==="Bölüm Formeni"&&department!==s.user.department){
+      alert("Yalnızca kendi bölümünüz için iş talebi oluşturabilirsiniz.");
+      return;
+    }
+    s.workItems.push({id:nextWorkId("request"),kind:"request",factory,department,location,title,category,priority:document.getElementById("wrPriority").value,description,requestedDate,status:"new",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:workTeamForCategory(category),assignedTo:"",sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
     saveWorkItems();s.workCreateMode="";s.workTab="requests";render();
   };
 
@@ -641,19 +723,51 @@ function bind(){
   const directWorkOrderForm=document.getElementById("directWorkOrderForm");
   if(directWorkOrderForm)directWorkOrderForm.onsubmit=e=>{
     e.preventDefault();if(!permissions().createDirectWorkOrder)return;
-    const assignedTo=woAssigned.value;
-    s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:woFactory.value,department:document.getElementById("woDepartment").value,location:document.getElementById("woLocation").value.trim(),title:document.getElementById("woTitle").value.trim(),category:document.getElementById("woCategory").value,priority:document.getElementById("woPriority").value,description:document.getElementById("woDescription").value.trim(),requestedDate:"",planStart:document.getElementById("woStart").value,planEnd:document.getElementById("woEnd").value,status:assignedTo?"assigned":"open",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:woTeam.value,assignedTo,sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
+    const factory=woFactory?.value||"";
+    const department=document.getElementById("woDepartment")?.value||"";
+    const location=(document.getElementById("woLocation")?.value||"").trim();
+    const title=(document.getElementById("woTitle")?.value||"").trim();
+    const category=document.getElementById("woCategory")?.value||"";
+    const description=(document.getElementById("woDescription")?.value||"").trim();
+    const planStart=document.getElementById("woStart")?.value||"";
+    const planEnd=document.getElementById("woEnd")?.value||"";
+    const team=woTeam?.value||"";
+    const assignedTo=woAssigned?.value||"";
+    if(!factory||!department||!location||!title||!category||!description||!planStart||!planEnd){
+      alert("Fabrika, bölüm, yer, kategori, başlık, açıklama ve plan tarihlerini doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+      return;
+    }
+    if(planEnd<planStart){
+      alert("Planlanan bitiş tarihi başlangıç tarihinden önce olamaz.");
+      return;
+    }
+    if(!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+      alert("Geçerli bir bakım ekibi seçin.");
+      return;
+    }
+    if(assignedTo&&!workMaintenanceOptions(factory,team).includes(assignedTo)){
+      alert("Seçilen personel bu fabrika ve bakım ekibinde bulunmuyor.");
+      return;
+    }
+    s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory,department,location,title,category,priority:document.getElementById("woPriority").value,description,requestedDate:"",planStart,planEnd,status:assignedTo?"assigned":"open",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:team,assignedTo,sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
     saveWorkItems();s.workCreateMode="";s.workTab="orders";render();
   };
 
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{
     const item=findWorkItemById(btn.dataset.workId);if(!item)return;
     const action=btn.dataset.workRequestAction;
+    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","cancelled"].includes(action))return;
     const actor=s.user?.name||"Bilinmeyen Kullanıcı";
     const at=new Date().toISOString();
     if(action==="cancelled"&&permissions().createRequest&&item.createdBy===s.user?.name){item.status="cancelled";item.cancelledBy=actor;item.cancelledAt=at;saveWorkItems();render();return}
     if(!canManageWorkRequest(item))return;
     if(action==="convert"){
+      const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
+      if(linked){item.status="converted";saveWorkItems();s.workTab="orders";render();return}
       const team=item.assignedTeam||workTeamForCategory(item.category);const people=workMaintenanceOptions(item.factory,team);const assignedTo=people[0]||"";
       s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:assignedTo?"assigned":"open",createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,workDescription:"",completedAt:null,usedMaterials:[]});
       item.status="converted";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
@@ -666,11 +780,11 @@ function bind(){
     saveWorkItems();render();
   });
 
-  document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=s.workItems.find(x=>x.id===sel.dataset.workId);if(item&&canManageWorkRequest(item)){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
-  document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=s.workItems.find(x=>x.id===sel.dataset.workId);if(item&&canUpdateWorkOrder(item)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;const source=s.workItems.find(x=>x.id===item.sourceRequestId);if(source&&sel.value==="done")source.status="done";saveWorkItems();render()}});
-  document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=document.querySelector(`.work-result-text[data-work-id="${CSS.escape(item.id)}"]`);item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
-  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
-  document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=s.workItems.find(x=>x.id===btn.dataset.removeWorkMaterial);if(!item||!canUpdateWorkOrder(item))return;item.usedMaterials.splice(Number(btn.dataset.index),1);saveWorkItems();render()});
+  document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canManageWorkRequest(item)&&(!sel.value||workMaintenanceOptions(item.factory,item.assignedTeam).includes(sel.value))){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
+  document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canUpdateWorkOrder(item)&&["open","assigned","progress","material","approval","done","cancelled"].includes(sel.value)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;item.completedBy=sel.value==="done"?(s.user?.name||""):"";const source=findWorkItemById(item.sourceRequestId);if(source){if(sel.value==="done"){source.status="done";source.completedAt=item.completedAt}else if(source.status==="done"){source.status="converted";source.completedAt=null}}saveWorkItems();render()}});
+  document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=[...document.querySelectorAll(".work-result-text")].find(el=>String(el.dataset.workId)===String(item.id));item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
+  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||!Number.isFinite(qty)||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
+  document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.removeWorkMaterial);const index=Number(btn.dataset.index);if(!item||!canUpdateWorkOrder(item)||!Array.isArray(item.usedMaterials)||!Number.isInteger(index)||index<0||index>=item.usedMaterials.length)return;item.usedMaterials.splice(index,1);saveWorkItems();render()});
 
   const materialCatalogAddForm=document.getElementById("materialCatalogAddForm");
   if(materialCatalogAddForm)materialCatalogAddForm.onsubmit=e=>{
@@ -740,9 +854,21 @@ function bind(){
     const material=materialById(id);if(!material)return;
     const code=document.getElementById("materialEditCode").value.trim().toLocaleUpperCase("tr-TR");
     const name=document.getElementById("materialEditName").value.trim();
-    const duplicate=MATERIALS.find(x=>x.id!==id&&String(x.code).toLocaleUpperCase("tr-TR")===code);
+    const category=(document.getElementById("materialEditCategory")?.value||"").trim();
+    const unit=(document.getElementById("materialEditUnit")?.value||"").trim();
+    const stock=Number(document.getElementById("materialEditStock")?.value);
+    const minStock=Number(document.getElementById("materialEditMinStock")?.value);
+    if(!code||!name||!category||!unit){
+      alert("Malzeme kodu, adı, kategori ve birim alanları boş bırakılamaz.");
+      return;
+    }
+    if(!Number.isFinite(stock)||stock<0||!Number.isFinite(minStock)||minStock<0){
+      alert("Stok değerleri sıfır veya sıfırdan büyük olmalıdır.");
+      return;
+    }
+    const duplicate=MATERIALS.find(x=>String(x.id)!==String(id)&&String(x.code||"").trim().toLocaleUpperCase("tr-TR")===code);
     if(duplicate){alert(`Bu malzeme kodu zaten kullanılıyor: ${duplicate.name}`);return}
-    Object.assign(material,{code,name,category:document.getElementById("materialEditCategory").value,unit:document.getElementById("materialEditUnit").value,stock:Number(document.getElementById("materialEditStock").value||0),minStock:Number(document.getElementById("materialEditMinStock").value||0),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
+    Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
     saveMaterials();s.materialEditId=null;render();
   };
   function deleteMaterialByButton(btn){
@@ -850,7 +976,7 @@ function bind(){
   const faultModalStatus=document.getElementById("faultModalStatus");
   if(faultModalStatus)faultModalStatus.onchange=()=>{
     const fault=s.faults.find(x=>Number(x.id)===Number(s.faultModalId));
-    if(!fault||!permissions().editStatus)return;
+    if(!fault||!canUpdateFaultStatus(fault)||!["open","progress","done"].includes(faultModalStatus.value))return;
     const nextStatus=faultModalStatus.value;
     const solution=(document.getElementById("faultSolutionText")?.value||"").trim();
     fault.solutionText=solution;
@@ -1034,11 +1160,21 @@ function bind(){
     const factory=document.getElementById("personnelFactory").value;
     const team=document.getElementById("personnelTeam").value;
     if(!/^\d{4}$/.test(newId)||!/^\d{4}$/.test(password)){alert("ID ve şifre tam olarak 4 haneli olmalıdır.");return}
+    if(!name){alert("Personelin adını ve soyadını girin.");return}
+    if(!["1. Fabrika","2. Fabrika"].includes(factory)||!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+      alert("Geçerli bir fabrika ve bakım ekibi seçin.");
+      return;
+    }
     if(APP_USERS[newId]&&newId!==original){alert("Bu kullanıcı ID zaten kullanılıyor.");return}
     const factories=factory==="1. Fabrika"?["1. Fabrika"]:["2. Fabrika A Blok","2. Fabrika B Blok"];
     const candidate={password,name,role:"Bakım Personeli",factories,department:"",team};
     if(!canManagePersonnelAccount(candidate)){alert("Yalnızca kendi fabrikanızdaki ve ekibinizdeki bakım personellerini yönetebilirsiniz.");return}
-    if(original&&original!==newId)delete APP_USERS[original];
+    if(original&&original!==newId){
+      delete APP_USERS[original];
+      DELETED_PERSONNEL_IDS.add(String(original));
+    }
+    DELETED_PERSONNEL_IDS.delete(String(newId));
+    saveDeletedPersonnelIds();
     APP_USERS[newId]=candidate;
     saveAppUsers();
     render();
@@ -1104,12 +1240,28 @@ function bind(){
       render();
       return;
     }
-    if(roleIsDepartmentLimited()&&s.user?.department&&depEl.value!==s.user.department){
+    const factory=factoryEl?.value||"";
+    const line=lineEl?.value||"";
+    const department=depEl?.value||"";
+    const machine=machineEl?.value||"";
+    const type=document.getElementById("type")?.value||"";
+    const subject=(document.getElementById("subject")?.value||"").trim();
+    const description=(document.getElementById("desc")?.value||"").trim();
+    if(roleIsDepartmentLimited()&&s.user?.department&&department!==s.user.department){
       alert("Yalnızca kendi bölümünüz için arıza kaydı açabilirsiniz.");
       return;
     }
+    if(!userFactories().includes(factory)||!catalogLines(factory).includes(line)||!catalogDepartments(factory,line).includes(department)||!catalogMachines(factory,line,department).includes(machine)){
+      alert("Geçersiz veya yetki alanınız dışında fabrika, hat, bölüm ya da makine seçildi.");
+      return;
+    }
+    if(!TYPES.includes(type)||!subject||!description){
+      alert("Arıza tipi, konusu ve açıklamasını eksiksiz girin.");
+      return;
+    }
     const now=new Date().toISOString();
-    const fault={id:Math.max(...s.faults.map(x=>x.id))+1,factory:factoryEl.value,line:lineEl.value,department:depEl.value,machine:machineEl.value,type:document.getElementById("type").value,subject:document.getElementById("subject").value,description:document.getElementById("desc").value,stopped:document.getElementById("stopped").checked,photoName:document.getElementById("photo").files[0]?.name||"",status:"open",openedBy:s.user?.name||"Bilinmeyen Kullanıcı",assignedTo:"",assignmentState:"pending",claimedBy:"",claimedAt:null,assignmentHistory:[],participants:[],solutionText:"",solutionBy:"",solutionAt:null,createdAt:now,closedAt:null};
+    const numericFaultIds=s.faults.map(item=>Number(item.id)).filter(Number.isFinite);
+    const fault={id:Math.max(1000,...numericFaultIds)+1,factory,line,department,machine,type,subject,description,stopped:!!document.getElementById("stopped")?.checked,photoName:document.getElementById("photo")?.files?.[0]?.name||"",status:"open",openedBy:s.user?.name||"Bilinmeyen Kullanıcı",assignedTo:"",assignmentState:"pending",claimedBy:"",claimedAt:null,assignmentHistory:[],participants:[],solutionText:"",solutionBy:"",solutionAt:null,createdAt:now,closedAt:null};
     const activePeople=activeMaintenanceForFault(fault);
     fault.assignedTo=deterministicPerson(activePeople,fault.id,31)||"Atama Bekliyor";
     fault.assignmentHistory.push({action:"assigned",from:"",to:fault.assignedTo,by:"Sistem",at:now,shift:currentShiftLabel()});
@@ -1119,7 +1271,7 @@ function bind(){
   };
   document.querySelectorAll(".status-sel").forEach(x=>x.onchange=()=>{
     const fault=s.faults.find(y=>y.id==x.dataset.id);
-    if(!fault||!canUpdateFaultStatus(fault))return;
+    if(!fault||!canUpdateFaultStatus(fault)||!["open","progress","done"].includes(x.value))return;
     fault.status=x.value;
     if(x.value==="progress"&&(!fault.assignedTo||fault.assignedTo==="Atama Bekliyor")){
       fault.assignedTo=deterministicPerson(activeMaintenanceForFault(fault),fault.id,19)||"Atama Bekliyor";
@@ -1139,7 +1291,8 @@ function bind(){
   });
   document.querySelectorAll(".personnel-sel").forEach(x=>x.onchange=()=>{
     const fault=s.faults.find(y=>y.id==x.dataset.personnelId);
-    if(fault&&canRedirectFault(fault)){
+    const validTargets=fault?["Atama Bekliyor",...maintenanceOptionsForFault(fault)]:[];
+    if(fault&&canRedirectFault(fault)&&validTargets.includes(x.value)){
       const previous=fault.assignedTo||"Atama Bekliyor";
       fault.assignedTo=x.value;
       fault.assignmentState="pending";
@@ -1242,8 +1395,11 @@ function bind(){
     pmMachine.innerHTML=opts(catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),"Makine seçiniz","");
   };
   if(pmDepartment&&pmMachine){
-    const initialMachines=catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value);
-    pmMachine.innerHTML=opts(initialMachines,"Makine seçiniz","");
+    const initialSelected=pmMachine.dataset.selected||"";
+    const initialMachines=[
+      ...new Set([...catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),initialSelected].filter(Boolean))
+    ];
+    pmMachine.innerHTML=opts(initialMachines,"Makine seçiniz",initialSelected);
   }
   const pmForm=document.getElementById("plannedForm");
   if(pmForm)pmForm.onsubmit=e=>{
@@ -1253,17 +1409,52 @@ function bind(){
     if(!editing&&!canCreatePlannedMaintenance()){alert("Planlı bakım oluşturma yetkiniz yok.");return}
     const department=s.user?.role==="Bölüm Formeni"?s.user.department:pmDepartment.value;
     if(s.user?.role==="Bölüm Formeni"&&department!==s.user.department){alert("Yalnızca kendi bölümünüz için işlem yapabilirsiniz.");return}
+    const title=(document.getElementById("pmTitle")?.value||"").trim();
+    const factory=pmFactory?.value||"";
+    const line=pmLine?.value||"";
+    const machine=pmMachine?.value||"";
+    const type=document.getElementById("pmType")?.value||"";
+    const priority=document.getElementById("pmPriority")?.value||"";
+    const date=document.getElementById("pmDate")?.value||"";
+    const time=document.getElementById("pmTime")?.value||"";
+    const duration=Number(document.getElementById("pmDuration")?.value);
+    const assigned=(document.getElementById("pmAssigned")?.value||"").trim();
+    if(!title||!factory||!line||!department||!machine||!type||!priority||!date||!time||!assigned){
+      alert("Planlı bakımın zorunlu alanlarını eksiksiz doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!catalogLines(factory).includes(line)||!catalogDepartments(factory,line).includes(department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika, hat ya da bölüm seçildi.");
+      return;
+    }
+    const selectableMachines=catalogMachines(factory,line,department);
+    if(!selectableMachines.includes(machine)&&String(editing?.machine||"")!==String(machine)){
+      alert("Seçilen makine bu fabrika, hat ve bölümde bulunmuyor.");
+      return;
+    }
+    if(!MAINTENANCE_TYPES.includes(type)||!MAINTENANCE_PRIORITIES.includes(priority)){
+      alert("Geçersiz bakım türü veya öncelik seçildi.");
+      return;
+    }
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)){
+      alert("Geçerli bir tarih ve saat girin.");
+      return;
+    }
+    if(!Number.isFinite(duration)||duration<15){
+      alert("Tahmini süre en az 15 dakika olmalıdır.");
+      return;
+    }
     const ids=s.plannedMaintenances.map(x=>Number(x.id)||0);
     const values={
-      title:document.getElementById("pmTitle").value.trim(),
-      factory:pmFactory.value,line:pmLine.value,
-      department,machine:pmMachine.value,
-      type:document.getElementById("pmType").value,
-      priority:document.getElementById("pmPriority").value,
-      date:document.getElementById("pmDate").value,
-      time:document.getElementById("pmTime").value,
-      duration:Number(document.getElementById("pmDuration").value)||60,
-      assigned:document.getElementById("pmAssigned").value.trim(),
+      title,
+      factory,line,
+      department,machine,
+      type,
+      priority,
+      date,
+      time,
+      duration:Number(duration.toFixed(0)),
+      assigned,
       description:document.getElementById("pmDescription").value.trim()
     };
     if(editing){
@@ -1315,7 +1506,7 @@ function startEtiliSmart(){
     <h2 style="margin-top:0">ETİLİSMART açılırken bir hata oluştu</h2>
     <p>Tarayıcıdaki eski kayıtları temizleyip sayfayı yenileyin.</p>
     <button id="resetEtiliSmart" style="border:0;border-radius:10px;padding:11px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>
-    <pre style="white-space:pre-wrap;color:#a00">${String(error.message||error)}</pre>
+    <pre style="white-space:pre-wrap;color:#a00">${esc(error.message||error)}</pre>
   </div>`;
   const resetButton=document.getElementById("resetEtiliSmart");
   if(resetButton){

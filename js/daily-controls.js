@@ -50,8 +50,21 @@ const DAILY_CONTROL_CUSTOM_CATALOG_KEY="etilismart_custom_daily_controls_v1";
 const DAILY_CONTROL_DELETED_CATALOG_KEY="etilismart_deleted_daily_controls_v1";
 let CUSTOM_DAILY_CONTROL_ASSETS=[];
 let DELETED_DAILY_CONTROL_ASSETS=[];
-try{CUSTOM_DAILY_CONTROL_ASSETS=JSON.parse(localStorage.getItem(DAILY_CONTROL_CUSTOM_CATALOG_KEY)||"[]")||[]}catch(e){CUSTOM_DAILY_CONTROL_ASSETS=[]}
-try{DELETED_DAILY_CONTROL_ASSETS=JSON.parse(localStorage.getItem(DAILY_CONTROL_DELETED_CATALOG_KEY)||"[]")||[]}catch(e){DELETED_DAILY_CONTROL_ASSETS=[]}
+CUSTOM_DAILY_CONTROL_ASSETS=storageJsonRecordArray(localStorage,DAILY_CONTROL_CUSTOM_CATALOG_KEY,[])
+  .filter(asset=>typeof asset.id==="string"
+    &&["1. Fabrika","2. Fabrika"].includes(asset.factory)
+    &&typeof asset.name==="string"&&asset.name.trim()
+    &&["compressor","generator","ups","compensation","gas","water","other"].includes(asset.type)
+    &&["Elektrik Bakım","Mekanik Bakım"].includes(asset.team))
+  .map(asset=>({
+    ...asset,
+    id:asset.id.trim(),
+    name:asset.name.trim(),
+    special:["water","gas"].includes(asset.type),
+    contractorMonthly:false,
+    custom:true
+  }));
+DELETED_DAILY_CONTROL_ASSETS=storageJsonArray(localStorage,DAILY_CONTROL_DELETED_CATALOG_KEY,[]).filter(id=>typeof id==="string");
 CUSTOM_DAILY_CONTROL_ASSETS.forEach(asset=>{
   if(asset?.id&&!DAILY_CONTROL_ASSETS.some(item=>item.id===asset.id))DAILY_CONTROL_ASSETS.push(asset);
 });
@@ -59,12 +72,21 @@ for(let index=DAILY_CONTROL_ASSETS.length-1;index>=0;index--){
   if(DELETED_DAILY_CONTROL_ASSETS.includes(DAILY_CONTROL_ASSETS[index].id))DAILY_CONTROL_ASSETS.splice(index,1);
 }
 function saveDailyControlCatalog(){
-  localStorage.setItem(DAILY_CONTROL_CUSTOM_CATALOG_KEY,JSON.stringify(CUSTOM_DAILY_CONTROL_ASSETS));
-  localStorage.setItem(DAILY_CONTROL_DELETED_CATALOG_KEY,JSON.stringify(DELETED_DAILY_CONTROL_ASSETS));
+  storageSet(localStorage,DAILY_CONTROL_CUSTOM_CATALOG_KEY,JSON.stringify(CUSTOM_DAILY_CONTROL_ASSETS));
+  storageSet(localStorage,DAILY_CONTROL_DELETED_CATALOG_KEY,JSON.stringify(DELETED_DAILY_CONTROL_ASSETS));
 }
 function addDailyControlToCatalog({factory,name,type,team}){
   const clean=String(name||"").trim();
+  if(!canManageDailyControlCatalog()||!dailyControlFactories().includes(factory)){
+    return {ok:false,message:"Bu fabrika için günlük kontrol tanımlama yetkiniz bulunmuyor."};
+  }
   if(!clean)return {ok:false,message:"Kontrol adı boş bırakılamaz."};
+  if(!["compressor","generator","ups","compensation","gas","water","other"].includes(type)){
+    return {ok:false,message:"Geçerli bir kontrol türü seçiniz."};
+  }
+  if(!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+    return {ok:false,message:"Geçerli bir sorumlu bakım ekibi seçiniz."};
+  }
   if(DAILY_CONTROL_ASSETS.some(item=>item.factory===factory&&item.name.toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){
     return {ok:false,message:"Bu fabrikada aynı isimde bir günlük kontrol zaten bulunuyor."};
   }
@@ -877,57 +899,69 @@ function dailyChecksPage(){
   </details>`:""}
 
   ${activeTab==="daily"?`
-    <section class="daily-duty-banner">
-      <div><small>EKİPMAN KONTROL VARDİYASI</small><b>08:00 – 16:00</b><span>Kompresör, jeneratör, UPS, kompanzasyon, su ve gaz kontrolleri.</span></div>
-      <div class="daily-duty-team"><small>ELEKTRİK BAKIM</small><b>${electricalDuty.length?esc(electricalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
-      <div class="daily-duty-team"><small>MEKANİK BAKIM</small><b>${mechanicalDuty.length?esc(mechanicalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
-    </section>
-
-    <section class="utility-time-banner ${windowState.inWindow?"open":"closed"}">
-      <div><span>◷</span><div><small>SU VE GAZ RUTİN DEĞER ALMA SAATİ</small><b>08:00 – 09:00</b><p>Bakım personeli su ve gaz sayaçlarını yalnızca bu saat aralığında kaydedebilir.</p></div></div>
-      <strong>${windowState.inWindow?"Giriş Açık":windowState.beforeWindow?"Henüz Başlamadı":"Süre Doldu"}</strong>
-    </section>
-
-    <section class="daily-control-kpis">
+    <section class="daily-control-kpis daily-control-kpis-compact">
       <article><small>GÜNLÜK KONTROL</small><b>${stats.total}</b><span>trafo ve kesici hariç</span></article>
       <article><small>YAPILDI</small><b>${stats.done}</b><span>fotoğraflı kontrol</span></article>
       <article><small>YAPILMADI</small><b>${stats.pending}</b><span>bekleyen kontrol</span></article>
       <article><small>TAMAMLANMA</small><b>%${stats.percent}</b><span>${selectedIsToday?"bugünkü durum":"seçilen tarih"}</span></article>
     </section>
 
-    <section class="daily-section-card">
+    <section class="daily-section-card daily-primary-section">
       <div class="section-modern-head">
-        <div><h2>08:00–09:00 Su ve Gaz Sayaçları</h2><p>Su için üç kümülatif sayaç, gaz için tek gelen sayaç değeri ve fotoğraf zorunludur.</p></div>
+        <div><h2>Su ve Gaz Sayaçları</h2><p>Değer girmek, grafikleri görmek veya düzenlemek için kartın üzerine tıklayın.</p></div>
+        <span class="daily-inline-status ${windowState.inWindow?"open":"closed"}"><b>08:00–09:00</b>${windowState.inWindow?"Giriş Açık":windowState.beforeWindow?"Henüz Başlamadı":"Süre Doldu"}</span>
       </div>
       <div class="daily-reading-grid">${specialAssets.map(specialCard).join("")}</div>
     </section>
 
-    ${utilityOutput}
-    ${utilityStatistics}
-
-    <section class="daily-section-card">
+    <section class="daily-section-card daily-primary-section">
       <div class="daily-list-heading">
-        <div><h2>Bakım Ekibi Günlük Kontrol Listesi</h2><p>Her kontrol için sonuç seçimi ve kontrol fotoğrafı zorunludur.</p></div>
+        <div><h2>Günlük Kontrol Listesi</h2><p>Detay ve yetkili işlemler için kontrol kartına tıklayın.</p></div>
         <select id="dailyControlCategory">${categories.map(category=>`<option ${category===s.dailyControlCategory?"selected":""}>${esc(category)}</option>`).join("")}</select>
       </div>
       <div class="daily-check-list">${visibleAssets.map(assetCard).join("")}</div>
     </section>
 
-    <section class="daily-section-card">
-      <div class="section-modern-head"><div><h2>Son 7 Günlük Kontrol Geçmişi</h2><p>${esc(factory)} günlük tamamlanma özeti.</p></div></div>
-      <div class="table-wrap">
-        <table class="daily-history-table">
-          <thead><tr><th>Tarih</th><th>Yapıldı</th><th>Yapılmadı</th><th>Toplam</th><th>Tamamlanma</th></tr></thead>
-          <tbody>${history.map(row=>`<tr>
-            <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}</td>
-            <td><b class="daily-history-done">${row.done}</b></td>
-            <td><b class="daily-history-pending">${row.pending}</b></td>
-            <td>${row.total}</td>
-            <td><div class="daily-history-progress"><i style="width:${row.percent}%"></i><span>%${row.percent}</span></div></td>
-          </tr>`).join("")}</tbody>
-        </table>
+    <details class="daily-secondary-panel">
+      <summary><span>◷</span><div><b>Günün Sorumluları ve Kontrol Saatleri</b><small>08:00–16:00 ekipleri ve sayaç giriş zamanını görüntüleyin.</small></div><i>⌄</i></summary>
+      <div class="daily-secondary-content">
+        <section class="daily-duty-banner">
+          <div><small>EKİPMAN KONTROL VARDİYASI</small><b>08:00 – 16:00</b><span>Kompresör, jeneratör, UPS, kompanzasyon, su ve gaz kontrolleri.</span></div>
+          <div class="daily-duty-team"><small>ELEKTRİK BAKIM</small><b>${electricalDuty.length?esc(electricalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
+          <div class="daily-duty-team"><small>MEKANİK BAKIM</small><b>${mechanicalDuty.length?esc(mechanicalDuty.join(" · ")):"Atanmış personel yok"}</b></div>
+        </section>
+        <section class="utility-time-banner ${windowState.inWindow?"open":"closed"}">
+          <div><span>◷</span><div><small>SU VE GAZ RUTİN DEĞER ALMA SAATİ</small><b>08:00 – 09:00</b><p>Bakım personeli su ve gaz sayaçlarını yalnızca bu saat aralığında kaydedebilir.</p></div></div>
+          <strong>${windowState.inWindow?"Giriş Açık":windowState.beforeWindow?"Henüz Başlamadı":"Süre Doldu"}</strong>
+        </section>
       </div>
-    </section>
+    </details>
+
+    <details class="daily-secondary-panel">
+      <summary><span>▥</span><div><b>Su ve Gaz Raporları</b><small>Günlük çıktı, dönem toplamları, grafikler ve sayaç geçmişi.</small></div><i>⌄</i></summary>
+      <div class="daily-secondary-content daily-utility-reports">
+        ${utilityOutput}
+        ${utilityStatistics}
+      </div>
+    </details>
+
+    <details class="daily-secondary-panel">
+      <summary><span>↺</span><div><b>Son 7 Günlük Kontrol Geçmişi</b><small>${esc(factory)} tamamlanma oranlarını görüntüleyin.</small></div><i>⌄</i></summary>
+      <div class="daily-secondary-content">
+        <div class="table-wrap">
+          <table class="daily-history-table">
+            <thead><tr><th>Tarih</th><th>Yapıldı</th><th>Yapılmadı</th><th>Toplam</th><th>Tamamlanma</th></tr></thead>
+            <tbody>${history.map(row=>`<tr>
+              <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}</td>
+              <td><b class="daily-history-done">${row.done}</b></td>
+              <td><b class="daily-history-pending">${row.pending}</b></td>
+              <td>${row.total}</td>
+              <td><div class="daily-history-progress"><i style="width:${row.percent}%"></i><span>%${row.percent}</span></div></td>
+            </tr>`).join("")}</tbody>
+          </table>
+        </div>
+      </div>
+    </details>
   `:`
     <section class="contractor-info-banner">
       <div><span>⚠</span><div><b>Trafo ve kesiciler günlük bakım ekibi kontrolüne dahil değildir.</b><p>Bu ekipmanların kontrolleri ayda bir defa yetkili taşeron tarafından yapılır; rapor numarası, sonuç ve fotoğraf sisteme kaydedilir.</p></div></div>

@@ -93,7 +93,7 @@ function deleteWorkItemById(id){
   }
 
   if(item.kind==="request"){
-    const linked=s.workItems.find(x=>x.kind==="workorder"&&x.sourceRequestId===item.id);
+    const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
     if(linked){
       return {
         ok:false,
@@ -103,7 +103,7 @@ function deleteWorkItemById(id){
   }
 
   if(item.kind==="workorder"&&item.sourceRequestId){
-    const request=s.workItems.find(x=>x.id===item.sourceRequestId);
+    const request=findWorkItemById(item.sourceRequestId);
     if(request){
       request.status="approved";
       request.convertedBy="";
@@ -112,7 +112,7 @@ function deleteWorkItemById(id){
     }
   }
 
-  s.workItems=s.workItems.filter(x=>x.id!==id);
+  s.workItems=s.workItems.filter(x=>String(x.id)!==String(id));
   saveWorkItems();
   return {ok:true,item};
 }
@@ -124,7 +124,7 @@ function visibleWorkItems(){
   if(s.user?.role==="Bakım Personeli")items=items.filter(x=>x.kind==="workorder"&&x.assignedTo===s.user.name);
   return items.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 }
-function workMaterials(item){return Array.isArray(item?.usedMaterials)?item.usedMaterials:[]}
+function workMaterials(item){return safeRecordArray(item?.usedMaterials,[])}
 
 /* İş talebi ve iş emri ekranları */
 function workManagementPage(){
@@ -168,8 +168,8 @@ function workManagementPage(){
       <div class="work-form-actions full"><button type="submit" class="primary">İş Emrini Oluştur</button></div>
     </form>
   </section>`:"";
-  const requestCards=requests.map(item=>`<article class="work-card request-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0">
-    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,"request")}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="work-open-detail" data-work-detail-id="${esc(item.id)}">Talep Detayını Aç ›</button></div></div>
+  const requestCards=requests.map(item=>`<article class="work-card request-card clickable-work-card priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0">
+    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status,"request"))}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="work-open-detail" data-work-detail-id="${esc(item.id)}">Talep Detayını Aç ›</button></div></div>
     <p class="work-description">${esc(item.description)}</p>
     <div class="work-meta"><span>Talep Eden: <b>${esc(item.createdBy)}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span><span>İstenen Tarih: <b>${esc(item.requestedDate||"-")}</b></span><span>Ekip: <b>${esc(item.assignedTeam||workTeamForCategory(item.category))}</b></span></div>
     <div class="work-request-audit"><span><small>İSTEYEN</small><b>${esc(item.createdBy||"Bilinmiyor")}</b><em>${fmtDate(item.createdAt)}</em></span>${item.reviewedBy?`<span><small>İNCELEYEN</small><b>${esc(item.reviewedBy)}</b><em>${fmtDate(item.reviewedAt)}</em></span>`:""}${item.approvedBy?`<span class="approved"><small>ONAYLAYAN</small><b>${esc(item.approvedBy)}</b><em>${fmtDate(item.approvedAt)}</em></span>`:""}${item.rejectedBy?`<span class="rejected"><small>REDDEDEN</small><b>${esc(item.rejectedBy)}</b><em>${fmtDate(item.rejectedAt)}</em></span>`:""}${item.convertedBy?`<span><small>İŞ EMRİNE ÇEVİREN</small><b>${esc(item.convertedBy)}</b><em>${fmtDate(item.convertedAt)}</em></span>`:""}</div>
@@ -179,11 +179,11 @@ function workManagementPage(){
     const canUpdate=canUpdateWorkOrder(item);
     const materials=workMaterials(item);
     const people=workMaintenanceOptions(item.factory,item.assignedTeam);
-    return `<article class="work-card order-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
-      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status)}</b><small>${fmtDate(item.createdAt)}</small></div></div>
+    return `<article class="work-card order-card clickable-work-card priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
+      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b><small>${fmtDate(item.createdAt)}</small></div></div>
       <p class="work-description">${esc(item.description)}</p>
       <div class="work-meta"><span>Ekip: <b>${esc(item.assignedTeam)}</b></span><span>Sorumlu: <b>${esc(item.assignedTo||"Atama Bekliyor")}</b></span><span>Plan: <b>${esc(item.planStart||"-")} → ${esc(item.planEnd||"-")}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span></div>
-      <div class="work-material-chips">${materials.map((m,index)=>{const catalog=materialById(m.materialId);return `<span>${esc(catalog?.name||m.name||"Malzeme")} · ${m.quantity} ${esc(m.unit||catalog?.unit||"Adet")}${canUpdate?`<button data-remove-work-material="${item.id}" data-index="${index}">×</button>`:""}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
+      <div class="work-material-chips">${materials.map((m,index)=>{const catalog=materialById(m.materialId);return `<span>${esc(catalog?.name||m.name||"Malzeme")} · ${esc(m.quantity)} ${esc(m.unit||catalog?.unit||"Adet")}${canUpdate?`<button data-remove-work-material="${esc(item.id)}" data-index="${index}">×</button>`:""}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
       ${item.completedAt?`<div class="work-completed">Tamamlanma: ${fmtDate(item.completedAt)}</div>`:""}
     </article>`;
   }).join("")||'<div class="card empty-panel"><h3>İş emri bulunamadı</h3><p>Yetki alanınızda henüz iş emri yok.</p></div>';
@@ -249,7 +249,7 @@ function workDetailModal(){
       </div>
 
       <div class="work-detail-summary">
-        <article><small>DURUM</small><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,isRequest?"request":"workorder")}</b></article>
+        <article><small>DURUM</small><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status,isRequest?"request":"workorder"))}</b></article>
         <article><small>ÖNCELİK</small><b>${esc(item.priority||"-")}</b></article>
         <article><small>BAKIM EKİBİ</small><b>${esc(assignedTeam||"-")}</b></article>
         <article><small>SORUMLU</small><b>${esc(item.assignedTo||"Atama bekliyor")}</b></article>
@@ -386,7 +386,7 @@ function workDetailModal(){
         <div class="work-material-chips">
           ${materials.map((material,index)=>{
             const catalog=materialById(material.materialId);
-            return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${material.quantity} ${esc(material.unit||catalog?.unit||"Adet")}${canProgressEdit?`<button data-remove-work-material="${esc(item.id)}" data-index="${index}">×</button>`:""}</span>`;
+            return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${esc(material.quantity)} ${esc(material.unit||catalog?.unit||"Adet")}${canProgressEdit?`<button data-remove-work-material="${esc(item.id)}" data-index="${index}">×</button>`:""}</span>`;
           }).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}
         </div>
       </section>`:""}
