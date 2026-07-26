@@ -1946,6 +1946,34 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .qr-output-actions{display:grid}
 }
 
+
+/* İş emri ve talep detay erişim düzeltmesi */
+.work-open-detail{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:3px;
+  padding:7px 10px;
+  border:1px solid #b8cedd;
+  border-radius:9px;
+  background:#edf6fc;
+  color:#2f6f9e;
+  font-size:7.5px;
+  font-weight:900;
+  cursor:pointer;
+}
+.work-open-detail:hover{background:#dfeef8}
+.work-detail-backdrop{z-index:6000}
+.work-detail-modal{position:relative;z-index:6001}
+.clickable-work-card{position:relative}
+.clickable-work-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius:inherit;
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -2847,6 +2875,9 @@ function generateWorkItems(){
   ];
 }
 function saveWorkItems(){storageSet(localStorage,WORK_KEY,JSON.stringify(s.workItems))}
+function findWorkItemById(id){
+  return s.workItems.find(item=>String(item.id)===String(id));
+}
 function workTeamForCategory(category){
   const c=String(category||"").toLocaleLowerCase("tr-TR");
   if(c.includes("mekanik")||c.includes("bariyer")||c.includes("kaynak")||c.includes("pnömatik")||c.includes("hidrolik"))return "Mekanik Bakım";
@@ -2903,7 +2934,7 @@ function canDeleteWorkItem(item){
     &&["new","reviewing","cancelled"].includes(item.status);
 }
 function deleteWorkItemById(id){
-  const item=s.workItems.find(x=>x.id===id);
+  const item=findWorkItemById(id);
   if(!item)return {ok:false,message:"Kayıt bulunamadı."};
   if(!canDeleteWorkItem(item))return {ok:false,message:"Bu kaydı silme yetkiniz bulunmuyor."};
 
@@ -6574,7 +6605,7 @@ function workManagementPage(){
     </form>
   </section>`:"";
   const requestCards=requests.map(item=>`<article class="work-card request-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0">
-    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,"request")}</b><small>${fmtDate(item.createdAt)}</small><em>Detay için tıklayın ›</em></div></div>
+    <div class="work-card-head"><div><span>${esc(item.id)} · ${esc(item.category)}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status,"request")}</b><small>${fmtDate(item.createdAt)}</small><button type="button" class="work-open-detail" data-work-detail-id="${esc(item.id)}">Talep Detayını Aç ›</button></div></div>
     <p class="work-description">${esc(item.description)}</p>
     <div class="work-meta"><span>Talep Eden: <b>${esc(item.createdBy)}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span><span>İstenen Tarih: <b>${esc(item.requestedDate||"-")}</b></span><span>Ekip: <b>${esc(item.assignedTeam||workTeamForCategory(item.category))}</b></span></div>
     <div class="work-request-audit"><span><small>İSTEYEN</small><b>${esc(item.createdBy||"Bilinmiyor")}</b><em>${fmtDate(item.createdAt)}</em></span>${item.reviewedBy?`<span><small>İNCELEYEN</small><b>${esc(item.reviewedBy)}</b><em>${fmtDate(item.reviewedAt)}</em></span>`:""}${item.approvedBy?`<span class="approved"><small>ONAYLAYAN</small><b>${esc(item.approvedBy)}</b><em>${fmtDate(item.approvedAt)}</em></span>`:""}${item.rejectedBy?`<span class="rejected"><small>REDDEDEN</small><b>${esc(item.rejectedBy)}</b><em>${fmtDate(item.rejectedAt)}</em></span>`:""}${item.convertedBy?`<span><small>İŞ EMRİNE ÇEVİREN</small><b>${esc(item.convertedBy)}</b><em>${fmtDate(item.convertedAt)}</em></span>`:""}</div>
@@ -6584,8 +6615,8 @@ function workManagementPage(){
     const canUpdate=canUpdateWorkOrder(item);
     const materials=workMaterials(item);
     const people=workMaintenanceOptions(item.factory,item.assignedTeam);
-    return `<article class="work-card order-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0">
-      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status)}</b><small>${fmtDate(item.createdAt)}</small><em>Detay için tıklayın ›</em></div></div>
+    return `<article class="work-card order-card clickable-work-card priority-${item.priority.toLocaleLowerCase("tr-TR")}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
+      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${workStatusClass(item.status)}">${workStatusLabel(item.status)}</b><small>${fmtDate(item.createdAt)}</small></div></div>
       <p class="work-description">${esc(item.description)}</p>
       <div class="work-meta"><span>Ekip: <b>${esc(item.assignedTeam)}</b></span><span>Sorumlu: <b>${esc(item.assignedTo||"Atama Bekliyor")}</b></span><span>Plan: <b>${esc(item.planStart||"-")} → ${esc(item.planEnd||"-")}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span></div>
       <div class="work-material-chips">${materials.map((m,index)=>{const catalog=materialById(m.materialId);return `<span>${esc(catalog?.name||m.name||"Malzeme")} · ${m.quantity} ${esc(m.unit||catalog?.unit||"Adet")}${canUpdate?`<button data-remove-work-material="${item.id}" data-index="${index}">×</button>`:""}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
@@ -6604,7 +6635,7 @@ function workManagementPage(){
 
 function workDetailModal(){
   if(!s.workDetailId)return "";
-  const item=s.workItems.find(x=>x.id===s.workDetailId);
+  const item=findWorkItemById(s.workDetailId);
   if(!item)return "";
 
   const isRequest=item.kind==="request";
@@ -6642,7 +6673,7 @@ function workDetailModal(){
     ["TAMAMLAYAN",item.completedBy,item.completedAt]
   ].filter(([,name])=>name);
 
-  return `<div class="modal-bg work-detail-backdrop" id="workDetailBackdrop">
+  return `<div class="modal-backdrop work-detail-backdrop" id="workDetailBackdrop">
     <div class="modal work-detail-modal">
       <div class="modal-head">
         <div>
@@ -7240,7 +7271,28 @@ function updateClockAndDurations(){
 }
 function render(){window.__etiliStarted=true;document.getElementById("app").innerHTML=s.login?app():login();bind();updateClockAndDurations()}
 function bind(){
+  const appRoot=document.getElementById("app");
+  if(appRoot)appRoot.addEventListener("click",event=>{
+    const detailTarget=event.target.closest("[data-work-detail-id]");
+    if(!detailTarget)return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const item=findWorkItemById(detailTarget.dataset.workDetailId);
+    if(!item){
+      alert("İş emri veya talep kaydı bulunamadı. Sayfayı yenileyip tekrar deneyin.");
+      return;
+    }
+
+    markNotificationsSeen("work");
+    s.page="work";
+    s.workTab=item.kind==="request"?"requests":"orders";
+    s.workDetailId=String(item.id);
+    render();
+  });
+
   document.querySelectorAll("[data-p]").forEach(b=>{
+    if(b.hasAttribute("data-work-detail-id"))return;
     const openPage=()=>{
       const nextPage=b.dataset.p;
       markNotificationsSeen(nextPage);
@@ -7640,28 +7692,13 @@ function bind(){
     popup.document.close();
   };
 
-  document.querySelectorAll("[data-work-detail-id]").forEach(btn=>{
-    const openWorkDetail=e=>{
-      if(e){
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      const id=btn.dataset.workDetailId;
-      if(!s.workItems.some(item=>item.id===id))return;
-      markNotificationsSeen("work");
-      s.page="work";
-      s.workDetailId=id;
-      render();
+
+  document.querySelectorAll("[data-work-detail-id][role=\"button\"]").forEach(card=>{
+    card.onkeydown=event=>{
+      if(event.key!=="Enter"&&event.key!==" ")return;
+      event.preventDefault();
+      card.click();
     };
-    btn.onclick=openWorkDetail;
-    if(btn.getAttribute("role")==="button"){
-      btn.onkeydown=e=>{
-        if(e.key==="Enter"||e.key===" "){
-          e.preventDefault();
-          openWorkDetail(e);
-        }
-      };
-    }
   });
 
   const closeWorkDetail=()=>{
@@ -7680,7 +7717,7 @@ function bind(){
   const workDetailAssignedTo=document.getElementById("workDetailAssignedTo");
   const refreshWorkDetailPeople=()=>{
     if(!workDetailAssignedTo||!workDetailTeam||!workDetailFactory)return;
-    const item=s.workItems.find(x=>x.id===s.workDetailId);
+    const item=findWorkItemById(s.workDetailId);
     const selected=workDetailAssignedTo.value||item?.assignedTo||"";
     const people=workMaintenanceOptions(workDetailFactory.value,workDetailTeam.value);
     workDetailAssignedTo.innerHTML='<option value="">Atama bekliyor</option>'+
@@ -7694,7 +7731,7 @@ function bind(){
   const workDetailForm=document.getElementById("workDetailForm");
   if(workDetailForm)workDetailForm.onsubmit=e=>{
     e.preventDefault();
-    const item=s.workItems.find(x=>x.id===workDetailForm.dataset.workId);
+    const item=findWorkItemById(workDetailForm.dataset.workId);
     if(!item)return;
 
     const isRequest=item.kind==="request";
@@ -7760,7 +7797,7 @@ function bind(){
 
   const deleteWorkDetail=document.getElementById("deleteWorkDetail");
   if(deleteWorkDetail)deleteWorkDetail.onclick=()=>{
-    const item=s.workItems.find(x=>x.id===s.workDetailId);
+    const item=findWorkItemById(s.workDetailId);
     if(!item)return;
 
     if(deleteWorkDetail.dataset.confirmDelete!=="yes"){
@@ -7815,7 +7852,7 @@ function bind(){
   };
 
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{
-    const item=s.workItems.find(x=>x.id===btn.dataset.workId);if(!item)return;
+    const item=findWorkItemById(btn.dataset.workId);if(!item)return;
     const action=btn.dataset.workRequestAction;
     const actor=s.user?.name||"Bilinmeyen Kullanıcı";
     const at=new Date().toISOString();
@@ -7836,8 +7873,8 @@ function bind(){
 
   document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=s.workItems.find(x=>x.id===sel.dataset.workId);if(item&&canManageWorkRequest(item)){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
   document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=s.workItems.find(x=>x.id===sel.dataset.workId);if(item&&canUpdateWorkOrder(item)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;const source=s.workItems.find(x=>x.id===item.sourceRequestId);if(source&&sel.value==="done")source.status="done";saveWorkItems();render()}});
-  document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=s.workItems.find(x=>x.id===btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=document.querySelector(`.work-result-text[data-work-id="${CSS.escape(item.id)}"]`);item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
-  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=s.workItems.find(x=>x.id===form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
+  document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=document.querySelector(`.work-result-text[data-work-id="${CSS.escape(item.id)}"]`);item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
+  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
   document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=s.workItems.find(x=>x.id===btn.dataset.removeWorkMaterial);if(!item||!canUpdateWorkOrder(item))return;item.usedMaterials.splice(Number(btn.dataset.index),1);saveWorkItems();render()});
 
   const materialCatalogAddForm=document.getElementById("materialCatalogAddForm");
