@@ -963,6 +963,33 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .chart-local-controls{width:100%}.chart-local-controls .field{flex:1}.chart-local-controls select,.chart-local-controls input{width:100%}
 }
 
+
+/* === Planlı Bakım Takvimi === */
+.maintenance-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.maintenance-kpis article{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e1e6ed;border-radius:16px;padding:14px;box-shadow:0 6px 20px rgba(23,35,53,.05)}
+.maintenance-kpis i{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;font-style:normal;font-size:20px}.maintenance-kpis i.blue{background:#e4f0ff;color:#2478cb}.maintenance-kpis i.amber{background:#fff2cd;color:#946b00}.maintenance-kpis i.red{background:#ffe6e9;color:#d53749}.maintenance-kpis i.green{background:#e3f7ed;color:#158554}
+.maintenance-kpis small,.maintenance-kpis b{display:block}.maintenance-kpis small{font-size:9px;color:#818a96;font-weight:900;letter-spacing:.5px}.maintenance-kpis b{font-size:24px;margin-top:4px}
+.maintenance-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.maintenance-calendar-card,.upcoming-maintenance-panel{background:#fff;border:1px solid #dfe5ec;border-radius:20px;box-shadow:0 8px 26px rgba(22,34,52,.055)}
+.maintenance-calendar-card{overflow:hidden}.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border-bottom:1px solid #e7eaf0}.calendar-toolbar>div:first-child{display:flex;gap:6px}.calendar-toolbar button{min-width:34px;height:34px;border:1px solid #dce2e9;background:#fff;border-radius:9px;font-weight:800}.calendar-toolbar h2{font-size:17px;text-transform:capitalize;margin:0}.calendar-legend{display:flex;gap:9px;flex-wrap:wrap}.calendar-legend span{font-size:9px;color:#727c89}.calendar-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.calendar-legend .planned{background:#2f80d0}.calendar-legend .progress{background:#e3a814}.calendar-legend .done{background:#19a667}
+.calendar-weekdays,.maintenance-calendar{display:grid;grid-template-columns:repeat(7,1fr)}.calendar-weekdays{background:#f4f6f9;border-bottom:1px solid #e1e6ec}.calendar-weekdays b{text-align:center;padding:10px;font-size:9px;color:#727c88;text-transform:uppercase}
+.calendar-day{min-height:124px;padding:8px;border-right:1px solid #e8ebef;border-bottom:1px solid #e8ebef;background:#fff;cursor:default}.calendar-day:nth-child(7n){border-right:0}.calendar-day.outside{background:#fafbfc;color:#a8afb8}.calendar-day.today{background:#fffbec;box-shadow:inset 0 0 0 2px #efbd31}
+.calendar-day-number{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.calendar-day-number>span{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;font-size:11px;font-weight:800}.calendar-day.today .calendar-day-number>span{background:#efb51d;color:#171b22}.calendar-day-number b{display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:#eef2f7;color:#596473;font-size:8px}
+.calendar-events{display:grid;gap:4px}.calendar-event{width:100%;display:flex;align-items:center;gap:5px;border:0;border-left:3px solid #2f80d0;background:#edf5ff;border-radius:5px;padding:5px 6px;text-align:left;min-width:0}.calendar-event.progress{border-left-color:#e3a814;background:#fff7dc}.calendar-event.done{border-left-color:#19a667;background:#e9f9f1}.calendar-event.cancelled{border-left-color:#8e97a4;background:#f1f3f5;text-decoration:line-through}.calendar-event time{font-size:8px;font-weight:900}.calendar-event span{font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.calendar-events>small{font-size:8px;color:#6f7884}
+.upcoming-maintenance-panel{padding:15px}.upcoming-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.upcoming-head h3,.upcoming-head p{margin:0}.upcoming-head h3{font-size:15px}.upcoming-head p{font-size:10px;color:#7d8692;margin-top:3px}.upcoming-head>span{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#fff0b6;font-weight:900}
+.upcoming-list{display:grid;gap:9px}.upcoming-item{display:grid;grid-template-columns:45px minmax(0,1fr);gap:10px;position:relative;border:1px solid #e5e8ed;border-radius:14px;padding:10px;background:#fbfcfd}.upcoming-date{width:45px;height:48px;border-radius:11px;background:#202b40;color:#fff;display:grid;place-items:center;align-content:center}.upcoming-date b,.upcoming-date small{display:block;text-align:center}.upcoming-date b{font-size:18px}.upcoming-date small{font-size:8px;text-transform:uppercase;color:#d5dce6}
+.upcoming-copy{min-width:0}.upcoming-copy>div{display:flex;justify-content:space-between;gap:6px}.upcoming-copy b{font-size:11px}.upcoming-copy span{font-size:9px;font-weight:800;color:#2478cb}.upcoming-copy p{font-size:10px;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.upcoming-copy small{display:block;font-size:8.5px;color:#7a8491}.upcoming-copy em{display:inline-block;margin-top:6px;font-style:normal;font-size:8px;font-weight:900;background:#fff2ca;color:#815e00;border-radius:999px;padding:3px 6px}
+.upcoming-item .pm-status{grid-column:1/-1;min-height:32px;font-size:10px;padding:5px 7px}
+.planned-modal{width:min(860px,96vw)}.planned-modal .formgrid{margin-top:5px}
+@media(max-width:1150px){.maintenance-layout{grid-template-columns:1fr}.upcoming-maintenance-panel{position:static}.upcoming-list{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){
+  .maintenance-kpis{grid-template-columns:repeat(2,1fr)}
+  .calendar-toolbar{align-items:flex-start;flex-wrap:wrap}.calendar-toolbar h2{order:-1;width:100%}
+  .maintenance-calendar-card{overflow-x:auto}.calendar-weekdays,.maintenance-calendar{min-width:850px}
+  .upcoming-list{grid-template-columns:1fr}
+}
+@media(max-width:520px){.maintenance-kpis article{padding:11px}.maintenance-kpis b{font-size:21px}.maintenance-kpis i{width:38px;height:38px}.maintenance-title .primary{width:100%}}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -1026,12 +1053,34 @@ const DEMO_USERS={
   "9999":{password:"9999",name:"2. Fabrika Bakım Personeli",role:"Bakım Personeli",factories:["2. Fabrika A Blok","2. Fabrika B Blok"],department:""}
 };
 const ROLE_PERMISSIONS={
-  "Genel Müdür":{dashboard:true,newFault:true,faults:true,report:true,layout:true,editStatus:true,allFactories:true},
-  "Fabrika Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,editStatus:true},
-  "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,editStatus:true,departmentOnly:true},
-  "Bakım Personeli":{dashboard:true,newFault:true,faults:true,report:false,layout:true,editStatus:true},
-  "Operatör":{dashboard:true,newFault:true,faults:false,report:false,layout:false,editStatus:false,departmentOnly:true}
+  "Genel Müdür":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,editPlanned:true,editStatus:true,allFactories:true},
+  "Fabrika Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,editPlanned:true,editStatus:true},
+  "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,editPlanned:true,editStatus:true,departmentOnly:true},
+  "Bakım Personeli":{dashboard:true,newFault:true,faults:true,report:false,layout:true,planned:true,editPlanned:true,editStatus:true},
+  "Operatör":{dashboard:true,newFault:true,faults:false,report:false,layout:false,planned:true,editPlanned:false,editStatus:false,departmentOnly:true}
 };
+
+
+const PM_KEY="etilismart_planned_maintenance_v1";
+const MAINTENANCE_TYPES=["Periyodik Bakım","Yağlama","Elektrik Kontrolü","Mekanik Kontrol","Kalibrasyon","Temizlik","Revizyon","Güvenlik Kontrolü"];
+const MAINTENANCE_PRIORITIES=["Düşük","Normal","Yüksek","Kritik"];
+function dateOnly(d){
+  const x=new Date(d);
+  return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`;
+}
+function addDays(base,days){
+  const d=new Date(base);d.setDate(d.getDate()+days);return d;
+}
+function generatePlannedMaintenances(){
+  const now=new Date();
+  return [
+    {id:1,title:"Spray Dryer periyodik kontrol",factory:"2. Fabrika A Blok",line:"1. Hat",department:"Masse Bölümü",machine:"Spray Dryer",type:"Periyodik Bakım",priority:"Yüksek",date:dateOnly(addDays(now,1)),time:"09:00",duration:120,assigned:"Mekanik Bakım Ekibi",status:"planned",description:"Nozul, fan, brülör, sıcaklık sensörleri ve filtre kontrolü."},
+    {id:2,title:"Pres hidrolik sistem kontrolü",factory:"1. Fabrika",line:"2. Hat",department:"Pres Bölümü",machine:"Presler",type:"Mekanik Kontrol",priority:"Normal",date:dateOnly(addDays(now,3)),time:"13:30",duration:90,assigned:"Mekanik Bakım Ekibi",status:"planned",description:"Yağ seviyesi, kaçak, basınç ve hortum kontrolleri."},
+    {id:3,title:"Fırın pano termal kontrolü",factory:"2. Fabrika B Blok",line:"1. Hat",department:"Fırınlar",machine:"Fırın",type:"Elektrik Kontrolü",priority:"Kritik",date:dateOnly(addDays(now,5)),time:"08:30",duration:180,assigned:"Elektrik Bakım Ekibi",status:"planned",description:"Pano bağlantıları, kontaktörler ve termal kamera kontrolü."},
+    {id:4,title:"Dijital baskı kalibrasyonu",factory:"1. Fabrika",line:"1. Hat",department:"Sır Bantları",machine:"Dijital Baskı",type:"Kalibrasyon",priority:"Normal",date:dateOnly(addDays(now,8)),time:"10:00",duration:60,assigned:"Otomasyon Ekibi",status:"planned",description:"Baskı kafası ve eksen kalibrasyonu."},
+    {id:5,title:"Paketleme sensör temizliği",factory:"2. Fabrika A Blok",line:"2. Hat",department:"Paketleme",machine:"Paketleme",type:"Temizlik",priority:"Düşük",date:dateOnly(addDays(now,-2)),time:"15:00",duration:45,assigned:"Vardiya Bakım Ekibi",status:"done",description:"Fotosel ve sensör yüzeylerinin temizliği."}
+  ];
+}
 
 const MACHINE_QR_REGISTRY={
   "F2A-H1-MAS-SD-001":{
@@ -1127,6 +1176,10 @@ let s={
   user:sessionIsCurrent?storedUser:null,
   page:"dashboard",
   faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
+  plannedMaintenances:safeJson(storageGet(localStorage,PM_KEY,"null"),null)||generatePlannedMaintenances(),
+  calendarDate:new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString(),
+  plannedModal:false,
+  plannedSelectedDate:"",
   dashboardFactory:"Tümü",
   reportFactory:"Tümü",
   reportStart:"",
@@ -1268,6 +1321,7 @@ function nav(page,label){
 }
 
 function save(){storageSet(localStorage,K,JSON.stringify(s.faults))}
+function savePlanned(){storageSet(localStorage,PM_KEY,JSON.stringify(s.plannedMaintenances))}
 function isOperator(){
   return s.user?.role==="Operatör";
 }
@@ -1281,6 +1335,7 @@ function canAccess(page){
   if(page==="faults")return !!p.faults;
   if(page==="report")return !!p.report;
   if(page==="layout")return !!p.layout;
+  if(page==="planned")return !!p.planned;
   return false;
 }
 function roleHasCharts(){
@@ -1987,6 +2042,104 @@ function machineModal(){
     ${body}
   </div></div>`;
 }
+
+function maintenanceStatusLabel(status){
+  return status==="done"?"Tamamlandı":status==="cancelled"?"İptal":status==="progress"?"Devam Ediyor":"Planlandı";
+}
+function maintenanceStatusClass(status){
+  return status==="done"?"done":status==="cancelled"?"cancelled":status==="progress"?"progress":"planned";
+}
+function visibleMaintenances(){
+  let items=[...s.plannedMaintenances].filter(x=>userCanSeeFactory(x.factory));
+  if(roleIsDepartmentLimited()&&s.user?.department)items=items.filter(x=>x.department===s.user.department);
+  return items;
+}
+function calendarMonthLabel(date){
+  return new Date(date).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});
+}
+function plannedMaintenanceModal(){
+  if(!s.plannedModal)return "";
+  const factories=userFactories();
+  const defaultFactory=factories[0]||"1. Fabrika";
+  const defaultLine=(FACTORIES[defaultFactory]||["1. Hat"])[0];
+  const selectedDate=s.plannedSelectedDate||dateOnly(new Date());
+  return `<div class="modal-backdrop planned-modal-bg"><div class="modal planned-modal">
+    <div class="modal-head"><div><h2>Yeni Planlı Bakım</h2><p>Takvime yeni bakım görevi ekleyin.</p></div><button type="button" class="planned-close">×</button></div>
+    <form id="plannedForm" class="formgrid">
+      <div class="field full"><label>Bakım Başlığı</label><input id="pmTitle" required placeholder="Örn. Spray Dryer periyodik kontrol"></div>
+      <div class="field"><label>Fabrika</label><select id="pmFactory" required>${opts(factories,"Fabrika seçiniz",defaultFactory)}</select></div>
+      <div class="field"><label>Hat</label><select id="pmLine" required>${opts(FACTORIES[defaultFactory]||[],"Hat seçiniz",defaultLine)}</select></div>
+      <div class="field"><label>Bölüm</label><select id="pmDepartment" required>${opts(Object.keys(STRUCTURE),"Bölüm seçiniz",s.user?.department||"")}</select></div>
+      <div class="field"><label>Makine</label><select id="pmMachine" required><option value="">Önce bölüm seçiniz</option></select></div>
+      <div class="field"><label>Bakım Türü</label><select id="pmType" required>${opts(MAINTENANCE_TYPES,"Tür seçiniz","Periyodik Bakım")}</select></div>
+      <div class="field"><label>Öncelik</label><select id="pmPriority" required>${opts(MAINTENANCE_PRIORITIES,"Öncelik seçiniz","Normal")}</select></div>
+      <div class="field"><label>Tarih</label><input id="pmDate" type="date" value="${selectedDate}" required></div>
+      <div class="field"><label>Saat</label><input id="pmTime" type="time" value="09:00" required></div>
+      <div class="field"><label>Tahmini Süre (dk)</label><input id="pmDuration" type="number" min="15" step="15" value="60" required></div>
+      <div class="field"><label>Atanan Ekip / Kişi</label><input id="pmAssigned" placeholder="Örn. Elektrik Bakım Ekibi" required></div>
+      <div class="field full"><label>Açıklama</label><textarea id="pmDescription" placeholder="Yapılacak işlemler, kontrol noktaları ve notlar..."></textarea></div>
+      <div class="actions full"><button type="button" class="secondary planned-close">İptal</button><button class="primary">Takvime Ekle</button></div>
+    </form>
+  </div></div>`;
+}
+function plannedMaintenancePage(){
+  const current=new Date(s.calendarDate);
+  const year=current.getFullYear(),month=current.getMonth();
+  const firstDay=new Date(year,month,1);
+  const startOffset=(firstDay.getDay()+6)%7;
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const previousDays=new Date(year,month,0).getDate();
+  const items=visibleMaintenances();
+  const today=dateOnly(new Date());
+  const upcoming=items.filter(x=>x.date>=today&&x.status!=="done"&&x.status!=="cancelled").sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const overdue=items.filter(x=>x.date<today&&x.status!=="done"&&x.status!=="cancelled");
+  const doneThisMonth=items.filter(x=>x.status==="done"&&new Date(x.date).getMonth()===month&&new Date(x.date).getFullYear()===year);
+  const cells=[];
+  for(let i=0;i<42;i++){
+    const dayNum=i-startOffset+1;
+    let cellDate,inside=true,label=dayNum;
+    if(dayNum<1){label=previousDays+dayNum;cellDate=new Date(year,month-1,label);inside=false}
+    else if(dayNum>daysInMonth){label=dayNum-daysInMonth;cellDate=new Date(year,month+1,label);inside=false}
+    else cellDate=new Date(year,month,dayNum);
+    const key=dateOnly(cellDate);
+    const dayItems=items.filter(x=>x.date===key).sort((a,b)=>a.time.localeCompare(b.time));
+    cells.push(`<div class="calendar-day ${inside?"":"outside"} ${key===today?"today":""}" data-calendar-date="${key}">
+      <div class="calendar-day-number"><span>${label}</span>${dayItems.length?`<b>${dayItems.length}</b>`:""}</div>
+      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${x.id}" title="${esc(x.title)}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
+    </div>`);
+  }
+  return `${clockBlock()}
+  <section class="desktop-page-title maintenance-title">
+    <div><span>BAKIM PLANLAMA</span><h1>Planlı Bakımlar</h1><p>Bakım görevlerini takvim üzerinde planlayın, takip edin ve tamamlayın.</p></div>
+    ${permissions().editPlanned?'<button class="primary" id="addPlannedMaintenance">+ Yeni Bakım Planla</button>':""}
+  </section>
+  <section class="maintenance-kpis">
+    <article><i class="blue">▦</i><div><small>BU AY PLANLANAN</small><b>${items.filter(x=>new Date(x.date).getMonth()===month&&new Date(x.date).getFullYear()===year).length}</b></div></article>
+    <article><i class="amber">◷</i><div><small>YAKLAŞAN BAKIM</small><b>${upcoming.length}</b></div></article>
+    <article><i class="red">!</i><div><small>GECİKEN</small><b>${overdue.length}</b></div></article>
+    <article><i class="green">✓</i><div><small>BU AY TAMAMLANAN</small><b>${doneThisMonth.length}</b></div></article>
+  </section>
+  <section class="maintenance-layout">
+    <article class="maintenance-calendar-card">
+      <div class="calendar-toolbar">
+        <div><button type="button" id="calendarPrev">‹</button><button type="button" id="calendarToday">Bugün</button><button type="button" id="calendarNext">›</button></div>
+        <h2>${esc(calendarMonthLabel(current))}</h2>
+        <div class="calendar-legend"><span><i class="planned"></i>Planlandı</span><span><i class="progress"></i>Devam Ediyor</span><span><i class="done"></i>Tamamlandı</span></div>
+      </div>
+      <div class="calendar-weekdays">${["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(x=>`<b>${x}</b>`).join("")}</div>
+      <div class="maintenance-calendar">${cells.join("")}</div>
+    </article>
+    <aside class="upcoming-maintenance-panel">
+      <div class="upcoming-head"><div><h3>Yaklaşan Bakımlar</h3><p>Sıradaki planlı görevler</p></div><span>${upcoming.length}</span></div>
+      <div class="upcoming-list">${upcoming.slice(0,8).map(x=>`<article class="upcoming-item priority-${x.priority.toLowerCase().replace("ü","u").replace("ş","s")}">
+        <div class="upcoming-date"><b>${new Date(x.date+"T00:00:00").getDate()}</b><small>${new Date(x.date+"T00:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></div>
+        <div class="upcoming-copy"><div><b>${esc(x.machine)}</b><span>${esc(x.time)}</span></div><p>${esc(x.title)}</p><small>${esc(x.factory)} · ${esc(x.line)}</small><em>${esc(x.priority)}</em></div>
+        ${permissions().editPlanned?`<select class="pm-status" data-id="${x.id}"><option value="planned" ${x.status==="planned"?"selected":""}>Planlandı</option><option value="progress" ${x.status==="progress"?"selected":""}>Devam Ediyor</option><option value="done" ${x.status==="done"?"selected":""}>Tamamlandı</option><option value="cancelled" ${x.status==="cancelled"?"selected":""}>İptal</option></select>`:""}
+      </article>`).join("")||'<div class="compact-empty"><span>✓</span><p>Yaklaşan planlı bakım bulunmuyor.</p></div>'}</div>
+    </aside>
+  </section>
+  ${plannedMaintenanceModal()}`;
+}
 function page(){
   if(!canAccess(s.page))s.page="dashboard";
   if(s.page==="new")return newf();
@@ -2000,6 +2153,7 @@ function page(){
   </section>
   ${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),!!permissions().editStatus)}`;
   if(s.page==="layout")return layoutPage();
+  if(s.page==="planned")return plannedMaintenancePage();
   if(s.page==="report")return reportPage();
   return dashboard();
 }
@@ -2009,6 +2163,7 @@ function allowedNavItems(){
     ["new","+","Arıza Aç"],
     ["faults","≡","Arızalar"],
     ["report","▥","Grafikler"],
+    ["planned","▦","Planlı Bakım"],
     ["layout","⌘","Hat Planı"]
   ];
   return items.filter(([page])=>canAccess(page));
@@ -2110,6 +2265,50 @@ function bind(){
   const rf=document.getElementById("reportFactory"),rs=document.getElementById("reportStart"),re=document.getElementById("reportEnd");if(rf)rf.onchange=()=>{s.reportFactory=rf.value;render()};if(rs)rs.onchange=()=>{s.reportStart=rs.value;render()};if(re)re.onchange=()=>{s.reportEnd=re.value;render()};
   const cr=document.getElementById("clearReport");if(cr)cr.onclick=()=>{s.reportFactory="Tümü";s.reportStart="";s.reportEnd="";render()};
   const lf=document.getElementById("layoutFactory"),ll=document.getElementById("layoutLine");if(lf)lf.onchange=()=>{s.layoutFactory=lf.value;s.layoutLine=(FACTORIES[lf.value]||[])[0]||"";render()};if(ll)ll.onchange=()=>{s.layoutLine=ll.value;render()};
+  const addPm=document.getElementById("addPlannedMaintenance");
+  if(addPm)addPm.onclick=()=>{s.plannedSelectedDate=dateOnly(new Date());s.plannedModal=true;render()};
+  const calPrev=document.getElementById("calendarPrev");
+  if(calPrev)calPrev.onclick=()=>{const d=new Date(s.calendarDate);d.setMonth(d.getMonth()-1);s.calendarDate=d.toISOString();render()};
+  const calNext=document.getElementById("calendarNext");
+  if(calNext)calNext.onclick=()=>{const d=new Date(s.calendarDate);d.setMonth(d.getMonth()+1);s.calendarDate=d.toISOString();render()};
+  const calToday=document.getElementById("calendarToday");
+  if(calToday)calToday.onclick=()=>{const d=new Date();s.calendarDate=new Date(d.getFullYear(),d.getMonth(),1).toISOString();render()};
+  document.querySelectorAll("[data-calendar-date]").forEach(day=>day.ondblclick=()=>{
+    if(!permissions().editPlanned)return;
+    s.plannedSelectedDate=day.dataset.calendarDate;s.plannedModal=true;render();
+  });
+  document.querySelectorAll(".planned-close").forEach(x=>x.onclick=()=>{s.plannedModal=false;render()});
+  const pmBg=document.querySelector(".planned-modal-bg");
+  if(pmBg)pmBg.onclick=e=>{if(e.target===pmBg){s.plannedModal=false;render()}};
+  const pmFactory=document.getElementById("pmFactory"),pmLine=document.getElementById("pmLine");
+  if(pmFactory)pmFactory.onchange=()=>{pmLine.innerHTML=opts(FACTORIES[pmFactory.value]||[],"Hat seçiniz",(FACTORIES[pmFactory.value]||[])[0]||"")};
+  const pmDepartment=document.getElementById("pmDepartment"),pmMachine=document.getElementById("pmMachine");
+  if(pmDepartment)pmDepartment.onchange=()=>{pmMachine.innerHTML=opts(STRUCTURE[pmDepartment.value]||[],"Makine seçiniz","")};
+  const pmForm=document.getElementById("plannedForm");
+  if(pmForm)pmForm.onsubmit=e=>{
+    e.preventDefault();
+    const ids=s.plannedMaintenances.map(x=>Number(x.id)||0);
+    s.plannedMaintenances.push({
+      id:(ids.length?Math.max(...ids):0)+1,
+      title:document.getElementById("pmTitle").value.trim(),
+      factory:pmFactory.value,line:pmLine.value,
+      department:pmDepartment.value,machine:pmMachine.value,
+      type:document.getElementById("pmType").value,
+      priority:document.getElementById("pmPriority").value,
+      date:document.getElementById("pmDate").value,
+      time:document.getElementById("pmTime").value,
+      duration:Number(document.getElementById("pmDuration").value)||60,
+      assigned:document.getElementById("pmAssigned").value.trim(),
+      status:"planned",
+      description:document.getElementById("pmDescription").value.trim()
+    });
+    savePlanned();s.plannedModal=false;render();
+  };
+  document.querySelectorAll(".pm-status").forEach(x=>x.onchange=()=>{
+    const item=s.plannedMaintenances.find(y=>String(y.id)===String(x.dataset.id));
+    if(item){item.status=x.value;savePlanned();render()}
+  });
+
   document.querySelectorAll("[data-machine]").forEach(b=>b.onclick=()=>{s.machineModal={factory:b.dataset.mf,line:b.dataset.ml,machine:b.dataset.machine};s.machineTab="overview";render()});
   document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{s.machineTab=b.dataset.tab;render()});
   const mc=document.getElementById("modalClose");if(mc)mc.onclick=()=>{s.machineModal=null;render()};
