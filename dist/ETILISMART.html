@@ -1650,6 +1650,15 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .daily-check-list{display:grid;gap:9px}
 .daily-check-card{display:grid;grid-template-columns:44px 1fr 150px;gap:12px;align-items:center;padding:12px;border:1px solid #e2e7eb;border-radius:14px;background:#fbfcfd}
 .daily-check-card.done{border-color:#bce0ca;background:#f8fdf9}
+.daily-check-card.daily-status-only-card{grid-template-columns:44px 1fr auto;min-height:64px}
+.daily-status-only-card{position:relative}
+.daily-status-only-card .daily-check-main small,.daily-status-only-card .daily-check-main h3{display:block;margin:0}
+.daily-status-only-card .daily-check-main small{font-size:7px;color:#81909b}
+.daily-status-only-card .daily-check-main h3{margin-top:3px;font-size:11px;color:#2c3a46}
+.daily-reading-card.daily-status-only-card{display:block;min-height:64px}
+.daily-reading-card.daily-status-only-card .daily-reading-head{margin:0}
+.daily-status-only-card:after{position:absolute;right:13px;bottom:6px;content:"Detay için tıklayın";font-size:6px;font-weight:750;color:#a0abb3;opacity:0;transition:opacity .16s}
+.daily-status-only-card:hover:after{opacity:1}
 .daily-check-card[data-daily-detail-asset-id],.daily-reading-card[data-daily-detail-asset-id],.contractor-check-card[data-daily-detail-asset-id]{cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
 .daily-check-card[data-daily-detail-asset-id]:hover,.daily-reading-card[data-daily-detail-asset-id]:hover,.contractor-check-card[data-daily-detail-asset-id]:hover{transform:translateY(-1px);border-color:#9fc0d9;box-shadow:0 8px 20px rgba(47,117,181,.1)}
 .daily-check-card[data-daily-detail-asset-id]:focus-visible,.daily-reading-card[data-daily-detail-asset-id]:focus-visible,.contractor-check-card[data-daily-detail-asset-id]:focus-visible{outline:3px solid rgba(47,117,181,.24);outline-offset:2px}
@@ -1810,7 +1819,7 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .contractor-note{grid-column:1/-1}
 .contractor-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:7px}
 .contractor-record-meta{display:flex;justify-content:space-between;gap:10px;margin-top:10px;padding-top:8px;border-top:1px dashed #d8e1e6;font-size:7.5px;color:#74818c}
-.daily-control-detail-modal{width:min(880px,96vw)}
+.daily-control-detail-modal{width:min(1180px,96vw)}
 .daily-detail-hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:11px}
 .daily-detail-hero article,.daily-detail-grid article{padding:12px;border:1px solid #e0e7ec;border-radius:13px;background:#fbfcfd}
 .daily-detail-hero small,.daily-detail-hero b,.daily-detail-grid small,.daily-detail-grid b,.daily-detail-grid span{display:block}
@@ -1825,6 +1834,23 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .daily-detail-info b,.daily-detail-info span{display:block}
 .daily-detail-info.done{background:#eaf7ef;color:#276c45}
 .daily-detail-info.pending{background:#fff4e5;color:#8c5c24}
+.daily-detail-chart-section,.daily-detail-editor{margin-top:12px;padding:14px;border:1px solid #dce5eb;border-radius:15px;background:#f9fbfc}
+.daily-detail-section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:11px}
+.daily-detail-section-head small,.daily-detail-section-head h3,.daily-detail-section-head p{display:block;margin:0}
+.daily-detail-section-head small{font-size:7px;font-weight:950;letter-spacing:.65px;color:#4d82a8}
+.daily-detail-section-head h3{margin-top:3px;font-size:12px;color:#2b4050}
+.daily-detail-section-head p{margin-top:4px;font-size:8px;color:#798792}
+.utility-detail-chart-grid{display:grid;gap:9px}
+.utility-detail-chart-grid.water{grid-template-columns:repeat(3,minmax(0,1fr))}
+.utility-detail-chart-grid.gas{grid-template-columns:minmax(0,1fr)}
+.utility-detail-chart-grid .utility-trend-card{background:#fff}
+.daily-detail-regular-form{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;align-items:start}
+.daily-detail-regular-form .field{margin:0}
+.daily-detail-regular-form label{display:block;margin-bottom:5px;font-size:7.5px;font-weight:900;color:#6d7c87}
+.daily-detail-regular-form select,.daily-detail-regular-form textarea,.daily-detail-regular-form input{width:100%}
+.daily-detail-regular-form textarea{min-height:72px;resize:vertical}
+.daily-detail-editor-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px}
+.daily-detail-utility-form{padding:1px}
 .daily-control-detail-modal>.modal-actions{justify-content:flex-end;margin-top:13px}
 .control-photo-viewer{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:rgba(15,25,34,.78)}
 .control-photo-dialog{width:min(920px,96vw);max-height:92vh;padding:12px;border-radius:16px;background:#fff;box-shadow:0 25px 70px rgba(0,0,0,.35)}
@@ -1836,6 +1862,7 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .daily-check-entry{grid-template-columns:1fr}
   .utility-record-summary{grid-template-columns:repeat(3,1fr)}
   .utility-stat-kpis,.utility-stat-insights{grid-template-columns:1fr 1fr}
+  .utility-detail-chart-grid.water{grid-template-columns:1fr}
   .contractor-check-list{grid-template-columns:1fr}
 }
 @media(max-width:760px){
@@ -1846,6 +1873,10 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .utility-statistics-head{display:grid}
   .utility-statistics-head>label{width:100%}
   .utility-trend-grid{grid-template-columns:1fr}
+  .daily-detail-regular-form{grid-template-columns:1fr}
+  .daily-detail-editor-actions{grid-column:auto;display:grid}
+  .daily-detail-editor-actions button{width:100%}
+  .daily-detail-chart-section,.daily-detail-editor{padding:11px}
   .contractor-check-form{grid-template-columns:1fr}
   .contractor-note,.contractor-actions{grid-column:auto}
   .contractor-record-meta{display:grid}
@@ -3091,6 +3122,14 @@ function dailyResultLabel(value){
     fault:"Arıza / uygunsuzluk tespit edildi"
   })[value]||"Belirtilmedi";
 }
+function dailyResultOptions(record){
+  return `
+    <option value="">Kontrol sonucu seçiniz</option>
+    <option value="normal" ${record?.result==="normal"?"selected":""}>Normal</option>
+    <option value="cleaned" ${record?.result==="cleaned"?"selected":""}>Temizlik / küçük müdahale yapıldı</option>
+    <option value="warning" ${record?.result==="warning"?"selected":""}>Takip edilmesi gereken durum var</option>
+    <option value="fault" ${record?.result==="fault"?"selected":""}>Arıza / uygunsuzluk tespit edildi</option>`;
+}
 function dailyControlDetailModal(){
   const detail=s.dailyControlDetail;
   if(!detail?.assetId)return "";
@@ -3112,11 +3151,16 @@ function dailyControlDetailModal(){
   const assignees=isContractor?[]:dailyDutyMembers(asset.factory,asset.team,period);
   const consumption=!isContractor&&asset.special?utilityConsumption(asset,period,record):null;
   const canAct=isContractor?canRecordContractorCheck(asset):(asset.special?canCompleteUtilityAsset(asset,period):canCompleteDailyAsset(asset,period));
+  const canDelete=!isContractor&&canManageDailyControlCatalog();
   const detailKind=isContractor
     ?"AYLIK TAŞERON KONTROLÜ"
     :asset.special
       ?"GÜNLÜK SAYAÇ KONTROLÜ"
       :"GÜNLÜK EKİPMAN KONTROLÜ";
+  const windowState=!isContractor&&asset.special?utilityWindowState(period):null;
+  const managerOverride=!isContractor&&asset.special&&dailyAssetCanBeManaged(asset)&&!windowState.inWindow;
+  const statsDays=[7,14,30].includes(Number(s.utilityStatsDays))?Number(s.utilityStatsDays):14;
+  const utilityRows=!isContractor&&asset.special?utilityStatisticsRows(asset.factory,period,statsDays):[];
 
   const utilityDetails=!isContractor&&asset.type==="water"?`
     <article><small>GELEN SU SAYACI</small><b>${record?.readings?.incoming??"-"} m³</b><span>Günlük kullanım: ${consumption?.incoming??"-"} m³</span></article>
@@ -3124,6 +3168,75 @@ function dailyControlDetailModal(){
     <article><small>B BLOK SU SAYACI</small><b>${record?.readings?.bBlock??"-"} m³</b><span>Günlük kullanım: ${consumption?.bBlock??"-"} m³</span></article>
   `:!isContractor&&asset.type==="gas"?`
     <article><small>GELEN GAZ SAYACI</small><b>${record?.readings?.incoming??"-"} m³</b><span>Günlük kullanım: ${consumption?.incoming??"-"} m³</span></article>
+  `:"";
+
+  const utilityCharts=!isContractor&&asset.special?`
+    <section class="daily-detail-chart-section">
+      <div class="daily-detail-section-head">
+        <div><small>SAYAÇ İSTATİSTİĞİ</small><h3>Son ${statsDays} Günlük Tüketim Grafiği</h3><p>Grafikler kümülatif sayaçların geçerli günlük farklarından oluşur.</p></div>
+      </div>
+      <div class="utility-detail-chart-grid ${asset.type==="water"?"water":"gas"}">
+        ${asset.type==="water"?`
+          ${utilityTrendChart(utilityRows,row=>row.water?.incoming,"İşletmeye Gelen Su","water")}
+          ${utilityTrendChart(utilityRows,row=>row.water?.aBlock,"A Blok Kullanılan Su","water")}
+          ${utilityTrendChart(utilityRows,row=>row.water?.bBlock,"B Blok Kullanılan Su","water")}
+        `:utilityTrendChart(utilityRows,row=>row.gas?.incoming,"İşletmeye Gelen Gaz","gas")}
+      </div>
+    </section>
+  `:"";
+
+  const regularEditor=!isContractor&&!asset.special&&canAct?`
+    <section class="daily-detail-editor">
+      <div class="daily-detail-section-head">
+        <div><small>YETKİLİ İŞLEM</small><h3>${done?"Kontrol Kaydını Düzenle":"Kontrolü Tamamla"}</h3><p>Sonuç, açıklama ve kontrol fotoğrafını bu pencereden kaydedin.</p></div>
+      </div>
+      <form class="daily-detail-regular-form" data-asset-id="${esc(asset.id)}">
+        <div class="field">
+          <label>Kontrol sonucu *</label>
+          <select class="daily-check-result" data-asset-id="${esc(asset.id)}">${dailyResultOptions(record)}</select>
+        </div>
+        <div class="field">
+          <label>Kontrol notu</label>
+          <textarea class="daily-check-note" data-asset-id="${esc(asset.id)}" rows="3" placeholder="İsteğe bağlı açıklama">${esc(record?.note||"")}</textarea>
+        </div>
+        <div class="field">
+          <label>Kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label>
+          <input class="daily-check-photo" data-asset-id="${esc(asset.id)}" type="file" accept="image/*" capture="environment" ${record?.photoStored?"":"required"}>
+        </div>
+        <div class="daily-detail-editor-actions">
+          ${done?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`:""}
+          <button type="button" class="primary complete-daily-check" data-asset-id="${esc(asset.id)}">${done?"Kontrolü Güncelle":"Fotoğraflı Kontrolü Kaydet"}</button>
+        </div>
+      </form>
+    </section>
+  `:"";
+
+  const utilityEditor=!isContractor&&asset.special&&canAct?`
+    <section class="daily-detail-editor">
+      <div class="daily-detail-section-head">
+        <div><small>YETKİLİ SAYAÇ İŞLEMİ</small><h3>${done?"Sayaç Kaydını Düzenle":"Sayaç Değerlerini Kaydet"}</h3><p>Bakım personeli için rutin giriş saati 08:00–09:00'dur; yetkili yöneticiler saat dışında düzeltme yapabilir.</p></div>
+      </div>
+      <div class="utility-window-status ${windowState.inWindow?"open":managerOverride?"override":"closed"}">
+        <b>${windowState.inWindow?"Rutin ölçüm saati açık":managerOverride?"Yetkili saat dışı düzeltme":"Rutin ölçüm saati kapalı"}</b>
+        <span>${windowState.inWindow?"08:00–09:00 arasında zamanında kayıt alınır.":managerOverride?"Bu işlem saat dışı yetkili giriş olarak kaydedilir.":"Mevcut kullanıcı bu saatte sayaç kaydı giremez."}</span>
+      </div>
+      <form class="daily-reading-form daily-detail-utility-form" data-asset-id="${esc(asset.id)}">
+        ${asset.type==="water"?`
+          <div class="field"><label>Depoya gelen su sayacı (m³) *</label><input class="water-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç"></div>
+          <div class="field"><label>A Blok kullanılan su sayacı (m³) *</label><input class="water-meter-a" type="number" min="0" step="0.01" value="${esc(record?.readings?.aBlock??"")}" placeholder="Toplam sayaç"></div>
+          <div class="field"><label>B Blok kullanılan su sayacı (m³) *</label><input class="water-meter-b" type="number" min="0" step="0.01" value="${esc(record?.readings?.bBlock??"")}" placeholder="Toplam sayaç"></div>
+        `:`
+          <div class="field"><label>İşletmeye gelen gaz sayacı (m³) *</label><input class="gas-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç"></div>
+        `}
+        <div class="field"><label>Kontrol sonucu *</label><select class="daily-reading-result">${dailyResultOptions(record)}</select></div>
+        <div class="field"><label>Kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="daily-reading-photo" type="file" accept="image/*" capture="environment" ${record?.photoStored?"":"required"}></div>
+        <div class="field daily-reading-note"><label>Kontrol notu</label><input class="daily-reading-note-input" value="${esc(record?.note||"")}" placeholder="İsteğe bağlı açıklama"></div>
+        <div class="daily-reading-actions">
+          ${done?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`:""}
+          <button type="submit" class="primary">${done?"Değerleri Güncelle":"Kaydet ve Yapıldı İşaretle"}</button>
+        </div>
+      </form>
+    </section>
   `:"";
 
   return `<div class="modal-backdrop" id="dailyControlDetailBackdrop">
@@ -3158,11 +3271,16 @@ function dailyControlDetailModal(){
         <b>${done?"Kontrol kaydı tamamlandı.":"Bu kontrol henüz tamamlanmadı."}</b>
         <span>${done
           ?record?.photoStored?"Fotoğraflı kontrol kaydı oluşturuldu.":"Kontrol kaydında fotoğraf bulunmuyor."
-          :canAct?"Kontrolü ana kart üzerindeki alanlardan tamamlayabilirsiniz.":"Bu kayıt mevcut yetkinizle salt okunur görüntüleniyor."}</span>
+          :canAct?"Kontrolü aşağıdaki yetkili işlem alanından tamamlayabilirsiniz.":"Bu kayıt mevcut yetkinizle salt okunur görüntüleniyor."}</span>
       </div>
+
+      ${utilityCharts}
+      ${regularEditor}
+      ${utilityEditor}
 
       <div class="modal-actions">
         ${done&&record?.photoStored?`<button type="button" class="secondary view-control-photo" data-photo-key="${esc(photoKey)}" data-photo-title="${esc(asset.name)}">▣ Kontrol Fotoğrafını Gör</button>`:""}
+        ${canDelete?`<button type="button" class="danger delete-daily-control ${asset.special?"special-delete-control":""}" data-delete-daily-control="${esc(asset.id)}">${asset.special?"Bu Günlük Kontrolü Sil":"Kontrolü Sil"}</button>`:""}
         <button type="button" class="primary" id="closeDailyControlDetailBottom">Kapat</button>
       </div>
     </div>
@@ -3459,128 +3577,35 @@ function dailyChecksPage(){
   const selectedIsToday=dailyCheckDateKey(date)===today;
   const windowState=utilityWindowState(date);
 
-  const resultOptions=record=>`
-    <option value="">Kontrol sonucu seçiniz</option>
-    <option value="normal" ${record?.result==="normal"?"selected":""}>Normal</option>
-    <option value="cleaned" ${record?.result==="cleaned"?"selected":""}>Temizlik / küçük müdahale yapıldı</option>
-    <option value="warning" ${record?.result==="warning"?"selected":""}>Takip edilmesi gereken durum var</option>
-    <option value="fault" ${record?.result==="fault"?"selected":""}>Arıza / uygunsuzluk tespit edildi</option>`;
-
-  const resultLabel=value=>({
-    normal:"Normal",
-    cleaned:"Temizlik / küçük müdahale yapıldı",
-    warning:"Takip edilmesi gereken durum var",
-    fault:"Arıza / uygunsuzluk tespit edildi"
-  })[value]||"Belirtilmedi";
+  const resultOptions=dailyResultOptions;
+  const resultLabel=dailyResultLabel;
 
   const photoButton=(key,title)=>`<button type="button" class="photo-view-button view-control-photo" data-photo-key="${esc(key)}" data-photo-title="${esc(title)}">▣ Kontrol Fotoğrafını Gör</button>`;
 
   const assetCard=asset=>{
     const record=dailyCheckRecord(date,factory,asset.id);
     const done=record?.status==="done";
-    const canEdit=canCompleteDailyAsset(asset,date);
-    const assignees=dailyDutyMembers(factory,asset.team,date);
-    const photoKey=dailyCheckKey(date,factory,asset.id);
 
-    return `<article class="daily-check-card photo-required ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
+    return `<article class="daily-check-card daily-status-only-card ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
       <div class="daily-check-main">
-        <div class="daily-check-title">
-          <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3></div>
-          <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
-        </div>
-        <div class="daily-check-meta">
-          <span><b>Sorumlu ekip:</b> ${esc(asset.team)}</span>
-          <span><b>08–16 personeli:</b> ${assignees.length?esc(assignees.join(", ")):"Atanmış personel yok"}</span>
-        </div>
-        ${done?`
-          <div class="daily-check-completed">
-            <b>${esc(record.checkedBy||"Bilinmeyen Kullanıcı")}</b>
-            <span>${fmtDate(record.checkedAt)}</span>
-            <strong class="control-result ${esc(record.result||"normal")}">${esc(resultLabel(record.result))}</strong>
-            ${record.note?`<p>${esc(record.note)}</p>`:""}
-          </div>
-          ${photoButton(photoKey,asset.name)}
-        `:canEdit?`
-          <div class="daily-check-entry">
-            <select class="daily-check-result" data-asset-id="${esc(asset.id)}">${resultOptions(record)}</select>
-            <input class="daily-check-note" data-asset-id="${esc(asset.id)}" placeholder="Kontrol notu (isteğe bağlı)">
-            <label class="control-photo-input"><span>Kontrol fotoğrafı *</span><input class="daily-check-photo" data-asset-id="${esc(asset.id)}" type="file" accept="image/*" capture="environment" required></label>
-          </div>
-        `:""}
+        <small>${esc(dailyAssetTypeLabel(asset.type))}</small>
+        <h3>${esc(asset.name)}</h3>
       </div>
-      <div class="daily-check-actions">
-        ${canEdit
-          ?done
-            ?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`
-            :`<button type="button" class="primary complete-daily-check" data-asset-id="${esc(asset.id)}">Fotoğraflı Kontrolü Kaydet</button>`
-          :`<small>${selectedIsToday?"Yalnızca ilgili 08–16 personeli işaretleyebilir.":"Geçmiş kayıt salt okunurdur."}</small>`}
-        ${canManageDailyControlCatalog()?`<button type="button" class="danger delete-daily-control" data-delete-daily-control="${esc(asset.id)}">Kontrolü Sil</button>`:""}
-      </div>
+      <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
     </article>`;
   };
 
   const specialCard=asset=>{
     const record=dailyCheckRecord(date,factory,asset.id);
     const done=record?.status==="done";
-    const canEdit=canCompleteUtilityAsset(asset,date);
-    const managerOverride=dailyAssetCanBeManaged(asset)&&!windowState.inWindow;
-    const isWater=asset.type==="water";
-    const assignees=dailyDutyMembers(factory,asset.team,date);
-    const photoKey=dailyCheckKey(date,factory,asset.id);
-    const consumption=utilityConsumption(asset,date,record);
 
-    const timingMessage=windowState.inWindow
-      ?"Rutin ölçüm saati açık: 08:00–09:00"
-      :windowState.beforeWindow
-        ?"Rutin ölçüm saati henüz başlamadı."
-        :windowState.afterWindow
-          ?"Rutin ölçüm saati sona erdi."
-          :"Geçmiş tarih kaydı";
-
-    return `<article class="daily-reading-card photo-required ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
+    return `<article class="daily-reading-card daily-status-only-card ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="daily-reading-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
-        <div><small>${esc(factory)}</small><h3>${esc(asset.name)}</h3><p>Rutin değer alma saati: 08:00–09:00 · ${esc(assignees.join(", ")||"Atanmış personel yok")}</p></div>
+        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3></div>
         <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
       </div>
-
-      <div class="utility-window-status ${windowState.inWindow?"open":managerOverride?"override":"closed"}">
-        <b>${esc(timingMessage)}</b>
-        <span>${managerOverride?"Yetkili kullanıcı saat dışında düzeltme kaydı girebilir.":"Bakım personeli yalnızca 08:00–09:00 arasında veri girebilir."}</span>
-      </div>
-
-      <form class="daily-reading-form" data-asset-id="${esc(asset.id)}">
-        ${isWater?`
-          <div class="field"><label>Depoya gelen su sayacı (m³) *</label><input class="water-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-          <div class="field"><label>A Blok kullanılan su sayacı (m³) *</label><input class="water-meter-a" type="number" min="0" step="0.01" value="${esc(record?.readings?.aBlock??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-          <div class="field"><label>B Blok kullanılan su sayacı (m³) *</label><input class="water-meter-b" type="number" min="0" step="0.01" value="${esc(record?.readings?.bBlock??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-        `:`
-          <div class="field"><label>İşletmeye gelen gaz sayacı (m³) *</label><input class="gas-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-        `}
-        <div class="field"><label>Kontrol sonucu *</label><select class="daily-reading-result" ${canEdit?"":"disabled"}>${resultOptions(record)}</select></div>
-        <div class="field"><label>Kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="daily-reading-photo" type="file" accept="image/*" capture="environment" ${canEdit&&!record?.photoStored?"required":""} ${canEdit?"":"disabled"}></div>
-        <div class="field daily-reading-note"><label>Kontrol notu</label><input class="daily-reading-note-input" value="${esc(record?.note||"")}" placeholder="İsteğe bağlı açıklama" ${canEdit?"":"disabled"}></div>
-        <div class="daily-reading-actions">
-          ${canEdit?`<button type="submit" class="primary">${done?"Değerleri Güncelle":"Kaydet ve Yapıldı İşaretle"}</button>${done?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`:""}`:""}
-        </div>
-      </form>
-
-      ${done?`
-        <div class="utility-record-summary">
-          <div><small>KAYIT ZAMANI</small><b>${fmtDate(record.checkedAt)}</b><span>${esc(utilityEntryTimingLabel(record))}</span></div>
-          <div><small>KAYDEDEN</small><b>${esc(record.checkedBy||"Bilinmeyen Kullanıcı")}</b><span>${esc(resultLabel(record.result))}</span></div>
-          ${isWater?`
-            <div><small>İŞLETMEYE GELEN SU</small><b>${consumption?.incoming??"-"} m³</b><span>önceki güne göre</span></div>
-            <div><small>A BLOK KULLANILAN SU</small><b>${consumption?.aBlock??"-"} m³</b><span>önceki güne göre</span></div>
-            <div><small>B BLOK KULLANILAN SU</small><b>${consumption?.bBlock??"-"} m³</b><span>önceki güne göre</span></div>
-          `:`
-            <div><small>İŞLETMEYE GELEN GAZ</small><b>${consumption?.incoming??"-"} m³</b><span>önceki güne göre</span></div>
-          `}
-        </div>
-        ${photoButton(photoKey,asset.name)}
-      `:""}
-      ${canManageDailyControlCatalog()?`<button type="button" class="danger delete-daily-control special-delete-control" data-delete-daily-control="${esc(asset.id)}">Bu Günlük Kontrolü Sil</button>`:""}
     </article>`;
   };
 
@@ -8088,15 +8113,17 @@ function bind(){
     const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===btn.dataset.assetId);
     if(!asset||!canCompleteDailyAsset(asset,s.dailyControlDate))return;
 
-    const result=document.querySelector(`.daily-check-result[data-asset-id="${CSS.escape(asset.id)}"]`)?.value||"";
-    const note=document.querySelector(`.daily-check-note[data-asset-id="${CSS.escape(asset.id)}"]`)?.value.trim()||"";
-    const photo=document.querySelector(`.daily-check-photo[data-asset-id="${CSS.escape(asset.id)}"]`)?.files?.[0];
+    const existing=dailyCheckRecord(s.dailyControlDate,asset.factory,asset.id);
+    const editor=btn.closest(".daily-detail-regular-form");
+    const result=editor?.querySelector(".daily-check-result")?.value||"";
+    const note=editor?.querySelector(".daily-check-note")?.value.trim()||"";
+    const photo=editor?.querySelector(".daily-check-photo")?.files?.[0];
 
     if(!result){
       alert("Kontrol sonucunu seçiniz.");
       return;
     }
-    if(!photo){
+    if(!photo&&!existing?.photoStored){
       alert("Kontrolü tamamlamak için fotoğraf eklemelisiniz.");
       return;
     }
@@ -8105,7 +8132,7 @@ function bind(){
     btn.textContent="Fotoğraf Kaydediliyor...";
     try{
       const key=dailyCheckKey(s.dailyControlDate,asset.factory,asset.id);
-      await saveControlPhoto(key,photo);
+      if(photo)await saveControlPhoto(key,photo);
       s.dailyChecks[key]={
         status:"done",
         checkedBy:s.user?.name||"Bilinmeyen Kullanıcı",
@@ -8113,7 +8140,7 @@ function bind(){
         note,
         result,
         readings:{},
-        photoStored:true,
+        photoStored:!!photo||!!existing?.photoStored,
         shift:"08-16"
       };
       saveDailyChecks();
@@ -8122,7 +8149,7 @@ function bind(){
       console.error(error);
       alert("Fotoğraf veya kontrol kaydı kaydedilemedi.");
       btn.disabled=false;
-      btn.textContent="Fotoğraflı Kontrolü Kaydet";
+      btn.textContent=existing?"Kontrolü Güncelle":"Fotoğraflı Kontrolü Kaydet";
     }
   });
 
@@ -8150,17 +8177,21 @@ function bind(){
 
     let readings={};
     if(asset.type==="water"){
-      const incoming=Number(form.querySelector(".water-meter-incoming")?.value);
-      const aBlock=Number(form.querySelector(".water-meter-a")?.value);
-      const bBlock=Number(form.querySelector(".water-meter-b")?.value);
-      if(![incoming,aBlock,bBlock].every(Number.isFinite)||[incoming,aBlock,bBlock].some(x=>x<0)){
+      const incomingRaw=form.querySelector(".water-meter-incoming")?.value.trim()||"";
+      const aBlockRaw=form.querySelector(".water-meter-a")?.value.trim()||"";
+      const bBlockRaw=form.querySelector(".water-meter-b")?.value.trim()||"";
+      const incoming=Number(incomingRaw);
+      const aBlock=Number(aBlockRaw);
+      const bBlock=Number(bBlockRaw);
+      if(!incomingRaw||!aBlockRaw||!bBlockRaw||![incoming,aBlock,bBlock].every(Number.isFinite)||[incoming,aBlock,bBlock].some(x=>x<0)){
         alert("Depoya gelen, A Blok ve B Blok su sayaç değerlerini eksiksiz giriniz.");
         return;
       }
       readings={incoming,aBlock,bBlock};
     }else{
-      const incoming=Number(form.querySelector(".gas-meter-incoming")?.value);
-      if(!Number.isFinite(incoming)||incoming<0){
+      const incomingRaw=form.querySelector(".gas-meter-incoming")?.value.trim()||"";
+      const incoming=Number(incomingRaw);
+      if(!incomingRaw||!Number.isFinite(incoming)||incoming<0){
         alert("İşletmeye gelen gaz sayaç değerini giriniz.");
         return;
       }
@@ -8243,7 +8274,8 @@ function bind(){
 
   document.querySelectorAll(".undo-daily-check").forEach(btn=>btn.onclick=async()=>{
     const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===btn.dataset.assetId);
-    if(!asset||!canCompleteDailyAsset(asset,s.dailyControlDate))return;
+    const canUndo=asset?.special?canCompleteUtilityAsset(asset,s.dailyControlDate):canCompleteDailyAsset(asset,s.dailyControlDate);
+    if(!asset||!canUndo)return;
     if(btn.dataset.confirmUndo!=="yes"){
       btn.dataset.confirmUndo="yes";
       btn.textContent="Tekrar Tıkla: Geri Al";

@@ -249,15 +249,17 @@ function bind(){
     const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===btn.dataset.assetId);
     if(!asset||!canCompleteDailyAsset(asset,s.dailyControlDate))return;
 
-    const result=document.querySelector(`.daily-check-result[data-asset-id="${CSS.escape(asset.id)}"]`)?.value||"";
-    const note=document.querySelector(`.daily-check-note[data-asset-id="${CSS.escape(asset.id)}"]`)?.value.trim()||"";
-    const photo=document.querySelector(`.daily-check-photo[data-asset-id="${CSS.escape(asset.id)}"]`)?.files?.[0];
+    const existing=dailyCheckRecord(s.dailyControlDate,asset.factory,asset.id);
+    const editor=btn.closest(".daily-detail-regular-form");
+    const result=editor?.querySelector(".daily-check-result")?.value||"";
+    const note=editor?.querySelector(".daily-check-note")?.value.trim()||"";
+    const photo=editor?.querySelector(".daily-check-photo")?.files?.[0];
 
     if(!result){
       alert("Kontrol sonucunu seçiniz.");
       return;
     }
-    if(!photo){
+    if(!photo&&!existing?.photoStored){
       alert("Kontrolü tamamlamak için fotoğraf eklemelisiniz.");
       return;
     }
@@ -266,7 +268,7 @@ function bind(){
     btn.textContent="Fotoğraf Kaydediliyor...";
     try{
       const key=dailyCheckKey(s.dailyControlDate,asset.factory,asset.id);
-      await saveControlPhoto(key,photo);
+      if(photo)await saveControlPhoto(key,photo);
       s.dailyChecks[key]={
         status:"done",
         checkedBy:s.user?.name||"Bilinmeyen Kullanıcı",
@@ -274,7 +276,7 @@ function bind(){
         note,
         result,
         readings:{},
-        photoStored:true,
+        photoStored:!!photo||!!existing?.photoStored,
         shift:"08-16"
       };
       saveDailyChecks();
@@ -283,7 +285,7 @@ function bind(){
       console.error(error);
       alert("Fotoğraf veya kontrol kaydı kaydedilemedi.");
       btn.disabled=false;
-      btn.textContent="Fotoğraflı Kontrolü Kaydet";
+      btn.textContent=existing?"Kontrolü Güncelle":"Fotoğraflı Kontrolü Kaydet";
     }
   });
 
@@ -311,17 +313,21 @@ function bind(){
 
     let readings={};
     if(asset.type==="water"){
-      const incoming=Number(form.querySelector(".water-meter-incoming")?.value);
-      const aBlock=Number(form.querySelector(".water-meter-a")?.value);
-      const bBlock=Number(form.querySelector(".water-meter-b")?.value);
-      if(![incoming,aBlock,bBlock].every(Number.isFinite)||[incoming,aBlock,bBlock].some(x=>x<0)){
+      const incomingRaw=form.querySelector(".water-meter-incoming")?.value.trim()||"";
+      const aBlockRaw=form.querySelector(".water-meter-a")?.value.trim()||"";
+      const bBlockRaw=form.querySelector(".water-meter-b")?.value.trim()||"";
+      const incoming=Number(incomingRaw);
+      const aBlock=Number(aBlockRaw);
+      const bBlock=Number(bBlockRaw);
+      if(!incomingRaw||!aBlockRaw||!bBlockRaw||![incoming,aBlock,bBlock].every(Number.isFinite)||[incoming,aBlock,bBlock].some(x=>x<0)){
         alert("Depoya gelen, A Blok ve B Blok su sayaç değerlerini eksiksiz giriniz.");
         return;
       }
       readings={incoming,aBlock,bBlock};
     }else{
-      const incoming=Number(form.querySelector(".gas-meter-incoming")?.value);
-      if(!Number.isFinite(incoming)||incoming<0){
+      const incomingRaw=form.querySelector(".gas-meter-incoming")?.value.trim()||"";
+      const incoming=Number(incomingRaw);
+      if(!incomingRaw||!Number.isFinite(incoming)||incoming<0){
         alert("İşletmeye gelen gaz sayaç değerini giriniz.");
         return;
       }
@@ -404,7 +410,8 @@ function bind(){
 
   document.querySelectorAll(".undo-daily-check").forEach(btn=>btn.onclick=async()=>{
     const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===btn.dataset.assetId);
-    if(!asset||!canCompleteDailyAsset(asset,s.dailyControlDate))return;
+    const canUndo=asset?.special?canCompleteUtilityAsset(asset,s.dailyControlDate):canCompleteDailyAsset(asset,s.dailyControlDate);
+    if(!asset||!canUndo)return;
     if(btn.dataset.confirmUndo!=="yes"){
       btn.dataset.confirmUndo="yes";
       btn.textContent="Tekrar Tıkla: Geri Al";

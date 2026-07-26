@@ -1649,6 +1649,15 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .daily-check-list{display:grid;gap:9px}
 .daily-check-card{display:grid;grid-template-columns:44px 1fr 150px;gap:12px;align-items:center;padding:12px;border:1px solid #e2e7eb;border-radius:14px;background:#fbfcfd}
 .daily-check-card.done{border-color:#bce0ca;background:#f8fdf9}
+.daily-check-card.daily-status-only-card{grid-template-columns:44px 1fr auto;min-height:64px}
+.daily-status-only-card{position:relative}
+.daily-status-only-card .daily-check-main small,.daily-status-only-card .daily-check-main h3{display:block;margin:0}
+.daily-status-only-card .daily-check-main small{font-size:7px;color:#81909b}
+.daily-status-only-card .daily-check-main h3{margin-top:3px;font-size:11px;color:#2c3a46}
+.daily-reading-card.daily-status-only-card{display:block;min-height:64px}
+.daily-reading-card.daily-status-only-card .daily-reading-head{margin:0}
+.daily-status-only-card:after{position:absolute;right:13px;bottom:6px;content:"Detay için tıklayın";font-size:6px;font-weight:750;color:#a0abb3;opacity:0;transition:opacity .16s}
+.daily-status-only-card:hover:after{opacity:1}
 .daily-check-card[data-daily-detail-asset-id],.daily-reading-card[data-daily-detail-asset-id],.contractor-check-card[data-daily-detail-asset-id]{cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
 .daily-check-card[data-daily-detail-asset-id]:hover,.daily-reading-card[data-daily-detail-asset-id]:hover,.contractor-check-card[data-daily-detail-asset-id]:hover{transform:translateY(-1px);border-color:#9fc0d9;box-shadow:0 8px 20px rgba(47,117,181,.1)}
 .daily-check-card[data-daily-detail-asset-id]:focus-visible,.daily-reading-card[data-daily-detail-asset-id]:focus-visible,.contractor-check-card[data-daily-detail-asset-id]:focus-visible{outline:3px solid rgba(47,117,181,.24);outline-offset:2px}
@@ -1809,7 +1818,7 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .contractor-note{grid-column:1/-1}
 .contractor-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:7px}
 .contractor-record-meta{display:flex;justify-content:space-between;gap:10px;margin-top:10px;padding-top:8px;border-top:1px dashed #d8e1e6;font-size:7.5px;color:#74818c}
-.daily-control-detail-modal{width:min(880px,96vw)}
+.daily-control-detail-modal{width:min(1180px,96vw)}
 .daily-detail-hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:11px}
 .daily-detail-hero article,.daily-detail-grid article{padding:12px;border:1px solid #e0e7ec;border-radius:13px;background:#fbfcfd}
 .daily-detail-hero small,.daily-detail-hero b,.daily-detail-grid small,.daily-detail-grid b,.daily-detail-grid span{display:block}
@@ -1824,6 +1833,23 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .daily-detail-info b,.daily-detail-info span{display:block}
 .daily-detail-info.done{background:#eaf7ef;color:#276c45}
 .daily-detail-info.pending{background:#fff4e5;color:#8c5c24}
+.daily-detail-chart-section,.daily-detail-editor{margin-top:12px;padding:14px;border:1px solid #dce5eb;border-radius:15px;background:#f9fbfc}
+.daily-detail-section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:11px}
+.daily-detail-section-head small,.daily-detail-section-head h3,.daily-detail-section-head p{display:block;margin:0}
+.daily-detail-section-head small{font-size:7px;font-weight:950;letter-spacing:.65px;color:#4d82a8}
+.daily-detail-section-head h3{margin-top:3px;font-size:12px;color:#2b4050}
+.daily-detail-section-head p{margin-top:4px;font-size:8px;color:#798792}
+.utility-detail-chart-grid{display:grid;gap:9px}
+.utility-detail-chart-grid.water{grid-template-columns:repeat(3,minmax(0,1fr))}
+.utility-detail-chart-grid.gas{grid-template-columns:minmax(0,1fr)}
+.utility-detail-chart-grid .utility-trend-card{background:#fff}
+.daily-detail-regular-form{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;align-items:start}
+.daily-detail-regular-form .field{margin:0}
+.daily-detail-regular-form label{display:block;margin-bottom:5px;font-size:7.5px;font-weight:900;color:#6d7c87}
+.daily-detail-regular-form select,.daily-detail-regular-form textarea,.daily-detail-regular-form input{width:100%}
+.daily-detail-regular-form textarea{min-height:72px;resize:vertical}
+.daily-detail-editor-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px}
+.daily-detail-utility-form{padding:1px}
 .daily-control-detail-modal>.modal-actions{justify-content:flex-end;margin-top:13px}
 .control-photo-viewer{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:rgba(15,25,34,.78)}
 .control-photo-dialog{width:min(920px,96vw);max-height:92vh;padding:12px;border-radius:16px;background:#fff;box-shadow:0 25px 70px rgba(0,0,0,.35)}
@@ -1835,6 +1861,7 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .daily-check-entry{grid-template-columns:1fr}
   .utility-record-summary{grid-template-columns:repeat(3,1fr)}
   .utility-stat-kpis,.utility-stat-insights{grid-template-columns:1fr 1fr}
+  .utility-detail-chart-grid.water{grid-template-columns:1fr}
   .contractor-check-list{grid-template-columns:1fr}
 }
 @media(max-width:760px){
@@ -1845,6 +1872,10 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .utility-statistics-head{display:grid}
   .utility-statistics-head>label{width:100%}
   .utility-trend-grid{grid-template-columns:1fr}
+  .daily-detail-regular-form{grid-template-columns:1fr}
+  .daily-detail-editor-actions{grid-column:auto;display:grid}
+  .daily-detail-editor-actions button{width:100%}
+  .daily-detail-chart-section,.daily-detail-editor{padding:11px}
   .contractor-check-form{grid-template-columns:1fr}
   .contractor-note,.contractor-actions{grid-column:auto}
   .contractor-record-meta{display:grid}

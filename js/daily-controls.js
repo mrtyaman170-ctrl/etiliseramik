@@ -235,6 +235,14 @@ function dailyResultLabel(value){
     fault:"Arıza / uygunsuzluk tespit edildi"
   })[value]||"Belirtilmedi";
 }
+function dailyResultOptions(record){
+  return `
+    <option value="">Kontrol sonucu seçiniz</option>
+    <option value="normal" ${record?.result==="normal"?"selected":""}>Normal</option>
+    <option value="cleaned" ${record?.result==="cleaned"?"selected":""}>Temizlik / küçük müdahale yapıldı</option>
+    <option value="warning" ${record?.result==="warning"?"selected":""}>Takip edilmesi gereken durum var</option>
+    <option value="fault" ${record?.result==="fault"?"selected":""}>Arıza / uygunsuzluk tespit edildi</option>`;
+}
 function dailyControlDetailModal(){
   const detail=s.dailyControlDetail;
   if(!detail?.assetId)return "";
@@ -256,11 +264,16 @@ function dailyControlDetailModal(){
   const assignees=isContractor?[]:dailyDutyMembers(asset.factory,asset.team,period);
   const consumption=!isContractor&&asset.special?utilityConsumption(asset,period,record):null;
   const canAct=isContractor?canRecordContractorCheck(asset):(asset.special?canCompleteUtilityAsset(asset,period):canCompleteDailyAsset(asset,period));
+  const canDelete=!isContractor&&canManageDailyControlCatalog();
   const detailKind=isContractor
     ?"AYLIK TAŞERON KONTROLÜ"
     :asset.special
       ?"GÜNLÜK SAYAÇ KONTROLÜ"
       :"GÜNLÜK EKİPMAN KONTROLÜ";
+  const windowState=!isContractor&&asset.special?utilityWindowState(period):null;
+  const managerOverride=!isContractor&&asset.special&&dailyAssetCanBeManaged(asset)&&!windowState.inWindow;
+  const statsDays=[7,14,30].includes(Number(s.utilityStatsDays))?Number(s.utilityStatsDays):14;
+  const utilityRows=!isContractor&&asset.special?utilityStatisticsRows(asset.factory,period,statsDays):[];
 
   const utilityDetails=!isContractor&&asset.type==="water"?`
     <article><small>GELEN SU SAYACI</small><b>${record?.readings?.incoming??"-"} m³</b><span>Günlük kullanım: ${consumption?.incoming??"-"} m³</span></article>
@@ -268,6 +281,75 @@ function dailyControlDetailModal(){
     <article><small>B BLOK SU SAYACI</small><b>${record?.readings?.bBlock??"-"} m³</b><span>Günlük kullanım: ${consumption?.bBlock??"-"} m³</span></article>
   `:!isContractor&&asset.type==="gas"?`
     <article><small>GELEN GAZ SAYACI</small><b>${record?.readings?.incoming??"-"} m³</b><span>Günlük kullanım: ${consumption?.incoming??"-"} m³</span></article>
+  `:"";
+
+  const utilityCharts=!isContractor&&asset.special?`
+    <section class="daily-detail-chart-section">
+      <div class="daily-detail-section-head">
+        <div><small>SAYAÇ İSTATİSTİĞİ</small><h3>Son ${statsDays} Günlük Tüketim Grafiği</h3><p>Grafikler kümülatif sayaçların geçerli günlük farklarından oluşur.</p></div>
+      </div>
+      <div class="utility-detail-chart-grid ${asset.type==="water"?"water":"gas"}">
+        ${asset.type==="water"?`
+          ${utilityTrendChart(utilityRows,row=>row.water?.incoming,"İşletmeye Gelen Su","water")}
+          ${utilityTrendChart(utilityRows,row=>row.water?.aBlock,"A Blok Kullanılan Su","water")}
+          ${utilityTrendChart(utilityRows,row=>row.water?.bBlock,"B Blok Kullanılan Su","water")}
+        `:utilityTrendChart(utilityRows,row=>row.gas?.incoming,"İşletmeye Gelen Gaz","gas")}
+      </div>
+    </section>
+  `:"";
+
+  const regularEditor=!isContractor&&!asset.special&&canAct?`
+    <section class="daily-detail-editor">
+      <div class="daily-detail-section-head">
+        <div><small>YETKİLİ İŞLEM</small><h3>${done?"Kontrol Kaydını Düzenle":"Kontrolü Tamamla"}</h3><p>Sonuç, açıklama ve kontrol fotoğrafını bu pencereden kaydedin.</p></div>
+      </div>
+      <form class="daily-detail-regular-form" data-asset-id="${esc(asset.id)}">
+        <div class="field">
+          <label>Kontrol sonucu *</label>
+          <select class="daily-check-result" data-asset-id="${esc(asset.id)}">${dailyResultOptions(record)}</select>
+        </div>
+        <div class="field">
+          <label>Kontrol notu</label>
+          <textarea class="daily-check-note" data-asset-id="${esc(asset.id)}" rows="3" placeholder="İsteğe bağlı açıklama">${esc(record?.note||"")}</textarea>
+        </div>
+        <div class="field">
+          <label>Kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label>
+          <input class="daily-check-photo" data-asset-id="${esc(asset.id)}" type="file" accept="image/*" capture="environment" ${record?.photoStored?"":"required"}>
+        </div>
+        <div class="daily-detail-editor-actions">
+          ${done?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`:""}
+          <button type="button" class="primary complete-daily-check" data-asset-id="${esc(asset.id)}">${done?"Kontrolü Güncelle":"Fotoğraflı Kontrolü Kaydet"}</button>
+        </div>
+      </form>
+    </section>
+  `:"";
+
+  const utilityEditor=!isContractor&&asset.special&&canAct?`
+    <section class="daily-detail-editor">
+      <div class="daily-detail-section-head">
+        <div><small>YETKİLİ SAYAÇ İŞLEMİ</small><h3>${done?"Sayaç Kaydını Düzenle":"Sayaç Değerlerini Kaydet"}</h3><p>Bakım personeli için rutin giriş saati 08:00–09:00'dur; yetkili yöneticiler saat dışında düzeltme yapabilir.</p></div>
+      </div>
+      <div class="utility-window-status ${windowState.inWindow?"open":managerOverride?"override":"closed"}">
+        <b>${windowState.inWindow?"Rutin ölçüm saati açık":managerOverride?"Yetkili saat dışı düzeltme":"Rutin ölçüm saati kapalı"}</b>
+        <span>${windowState.inWindow?"08:00–09:00 arasında zamanında kayıt alınır.":managerOverride?"Bu işlem saat dışı yetkili giriş olarak kaydedilir.":"Mevcut kullanıcı bu saatte sayaç kaydı giremez."}</span>
+      </div>
+      <form class="daily-reading-form daily-detail-utility-form" data-asset-id="${esc(asset.id)}">
+        ${asset.type==="water"?`
+          <div class="field"><label>Depoya gelen su sayacı (m³) *</label><input class="water-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç"></div>
+          <div class="field"><label>A Blok kullanılan su sayacı (m³) *</label><input class="water-meter-a" type="number" min="0" step="0.01" value="${esc(record?.readings?.aBlock??"")}" placeholder="Toplam sayaç"></div>
+          <div class="field"><label>B Blok kullanılan su sayacı (m³) *</label><input class="water-meter-b" type="number" min="0" step="0.01" value="${esc(record?.readings?.bBlock??"")}" placeholder="Toplam sayaç"></div>
+        `:`
+          <div class="field"><label>İşletmeye gelen gaz sayacı (m³) *</label><input class="gas-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç"></div>
+        `}
+        <div class="field"><label>Kontrol sonucu *</label><select class="daily-reading-result">${dailyResultOptions(record)}</select></div>
+        <div class="field"><label>Kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="daily-reading-photo" type="file" accept="image/*" capture="environment" ${record?.photoStored?"":"required"}></div>
+        <div class="field daily-reading-note"><label>Kontrol notu</label><input class="daily-reading-note-input" value="${esc(record?.note||"")}" placeholder="İsteğe bağlı açıklama"></div>
+        <div class="daily-reading-actions">
+          ${done?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`:""}
+          <button type="submit" class="primary">${done?"Değerleri Güncelle":"Kaydet ve Yapıldı İşaretle"}</button>
+        </div>
+      </form>
+    </section>
   `:"";
 
   return `<div class="modal-backdrop" id="dailyControlDetailBackdrop">
@@ -302,11 +384,16 @@ function dailyControlDetailModal(){
         <b>${done?"Kontrol kaydı tamamlandı.":"Bu kontrol henüz tamamlanmadı."}</b>
         <span>${done
           ?record?.photoStored?"Fotoğraflı kontrol kaydı oluşturuldu.":"Kontrol kaydında fotoğraf bulunmuyor."
-          :canAct?"Kontrolü ana kart üzerindeki alanlardan tamamlayabilirsiniz.":"Bu kayıt mevcut yetkinizle salt okunur görüntüleniyor."}</span>
+          :canAct?"Kontrolü aşağıdaki yetkili işlem alanından tamamlayabilirsiniz.":"Bu kayıt mevcut yetkinizle salt okunur görüntüleniyor."}</span>
       </div>
+
+      ${utilityCharts}
+      ${regularEditor}
+      ${utilityEditor}
 
       <div class="modal-actions">
         ${done&&record?.photoStored?`<button type="button" class="secondary view-control-photo" data-photo-key="${esc(photoKey)}" data-photo-title="${esc(asset.name)}">▣ Kontrol Fotoğrafını Gör</button>`:""}
+        ${canDelete?`<button type="button" class="danger delete-daily-control ${asset.special?"special-delete-control":""}" data-delete-daily-control="${esc(asset.id)}">${asset.special?"Bu Günlük Kontrolü Sil":"Kontrolü Sil"}</button>`:""}
         <button type="button" class="primary" id="closeDailyControlDetailBottom">Kapat</button>
       </div>
     </div>
@@ -603,128 +690,35 @@ function dailyChecksPage(){
   const selectedIsToday=dailyCheckDateKey(date)===today;
   const windowState=utilityWindowState(date);
 
-  const resultOptions=record=>`
-    <option value="">Kontrol sonucu seçiniz</option>
-    <option value="normal" ${record?.result==="normal"?"selected":""}>Normal</option>
-    <option value="cleaned" ${record?.result==="cleaned"?"selected":""}>Temizlik / küçük müdahale yapıldı</option>
-    <option value="warning" ${record?.result==="warning"?"selected":""}>Takip edilmesi gereken durum var</option>
-    <option value="fault" ${record?.result==="fault"?"selected":""}>Arıza / uygunsuzluk tespit edildi</option>`;
-
-  const resultLabel=value=>({
-    normal:"Normal",
-    cleaned:"Temizlik / küçük müdahale yapıldı",
-    warning:"Takip edilmesi gereken durum var",
-    fault:"Arıza / uygunsuzluk tespit edildi"
-  })[value]||"Belirtilmedi";
+  const resultOptions=dailyResultOptions;
+  const resultLabel=dailyResultLabel;
 
   const photoButton=(key,title)=>`<button type="button" class="photo-view-button view-control-photo" data-photo-key="${esc(key)}" data-photo-title="${esc(title)}">▣ Kontrol Fotoğrafını Gör</button>`;
 
   const assetCard=asset=>{
     const record=dailyCheckRecord(date,factory,asset.id);
     const done=record?.status==="done";
-    const canEdit=canCompleteDailyAsset(asset,date);
-    const assignees=dailyDutyMembers(factory,asset.team,date);
-    const photoKey=dailyCheckKey(date,factory,asset.id);
 
-    return `<article class="daily-check-card photo-required ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
+    return `<article class="daily-check-card daily-status-only-card ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
       <div class="daily-check-main">
-        <div class="daily-check-title">
-          <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3></div>
-          <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
-        </div>
-        <div class="daily-check-meta">
-          <span><b>Sorumlu ekip:</b> ${esc(asset.team)}</span>
-          <span><b>08–16 personeli:</b> ${assignees.length?esc(assignees.join(", ")):"Atanmış personel yok"}</span>
-        </div>
-        ${done?`
-          <div class="daily-check-completed">
-            <b>${esc(record.checkedBy||"Bilinmeyen Kullanıcı")}</b>
-            <span>${fmtDate(record.checkedAt)}</span>
-            <strong class="control-result ${esc(record.result||"normal")}">${esc(resultLabel(record.result))}</strong>
-            ${record.note?`<p>${esc(record.note)}</p>`:""}
-          </div>
-          ${photoButton(photoKey,asset.name)}
-        `:canEdit?`
-          <div class="daily-check-entry">
-            <select class="daily-check-result" data-asset-id="${esc(asset.id)}">${resultOptions(record)}</select>
-            <input class="daily-check-note" data-asset-id="${esc(asset.id)}" placeholder="Kontrol notu (isteğe bağlı)">
-            <label class="control-photo-input"><span>Kontrol fotoğrafı *</span><input class="daily-check-photo" data-asset-id="${esc(asset.id)}" type="file" accept="image/*" capture="environment" required></label>
-          </div>
-        `:""}
+        <small>${esc(dailyAssetTypeLabel(asset.type))}</small>
+        <h3>${esc(asset.name)}</h3>
       </div>
-      <div class="daily-check-actions">
-        ${canEdit
-          ?done
-            ?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`
-            :`<button type="button" class="primary complete-daily-check" data-asset-id="${esc(asset.id)}">Fotoğraflı Kontrolü Kaydet</button>`
-          :`<small>${selectedIsToday?"Yalnızca ilgili 08–16 personeli işaretleyebilir.":"Geçmiş kayıt salt okunurdur."}</small>`}
-        ${canManageDailyControlCatalog()?`<button type="button" class="danger delete-daily-control" data-delete-daily-control="${esc(asset.id)}">Kontrolü Sil</button>`:""}
-      </div>
+      <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
     </article>`;
   };
 
   const specialCard=asset=>{
     const record=dailyCheckRecord(date,factory,asset.id);
     const done=record?.status==="done";
-    const canEdit=canCompleteUtilityAsset(asset,date);
-    const managerOverride=dailyAssetCanBeManaged(asset)&&!windowState.inWindow;
-    const isWater=asset.type==="water";
-    const assignees=dailyDutyMembers(factory,asset.team,date);
-    const photoKey=dailyCheckKey(date,factory,asset.id);
-    const consumption=utilityConsumption(asset,date,record);
 
-    const timingMessage=windowState.inWindow
-      ?"Rutin ölçüm saati açık: 08:00–09:00"
-      :windowState.beforeWindow
-        ?"Rutin ölçüm saati henüz başlamadı."
-        :windowState.afterWindow
-          ?"Rutin ölçüm saati sona erdi."
-          :"Geçmiş tarih kaydı";
-
-    return `<article class="daily-reading-card photo-required ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
+    return `<article class="daily-reading-card daily-status-only-card ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="daily-reading-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
-        <div><small>${esc(factory)}</small><h3>${esc(asset.name)}</h3><p>Rutin değer alma saati: 08:00–09:00 · ${esc(assignees.join(", ")||"Atanmış personel yok")}</p></div>
+        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3></div>
         <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
       </div>
-
-      <div class="utility-window-status ${windowState.inWindow?"open":managerOverride?"override":"closed"}">
-        <b>${esc(timingMessage)}</b>
-        <span>${managerOverride?"Yetkili kullanıcı saat dışında düzeltme kaydı girebilir.":"Bakım personeli yalnızca 08:00–09:00 arasında veri girebilir."}</span>
-      </div>
-
-      <form class="daily-reading-form" data-asset-id="${esc(asset.id)}">
-        ${isWater?`
-          <div class="field"><label>Depoya gelen su sayacı (m³) *</label><input class="water-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-          <div class="field"><label>A Blok kullanılan su sayacı (m³) *</label><input class="water-meter-a" type="number" min="0" step="0.01" value="${esc(record?.readings?.aBlock??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-          <div class="field"><label>B Blok kullanılan su sayacı (m³) *</label><input class="water-meter-b" type="number" min="0" step="0.01" value="${esc(record?.readings?.bBlock??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-        `:`
-          <div class="field"><label>İşletmeye gelen gaz sayacı (m³) *</label><input class="gas-meter-incoming" type="number" min="0" step="0.01" value="${esc(record?.readings?.incoming??"")}" placeholder="Toplam sayaç" ${canEdit?"":"disabled"}></div>
-        `}
-        <div class="field"><label>Kontrol sonucu *</label><select class="daily-reading-result" ${canEdit?"":"disabled"}>${resultOptions(record)}</select></div>
-        <div class="field"><label>Kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="daily-reading-photo" type="file" accept="image/*" capture="environment" ${canEdit&&!record?.photoStored?"required":""} ${canEdit?"":"disabled"}></div>
-        <div class="field daily-reading-note"><label>Kontrol notu</label><input class="daily-reading-note-input" value="${esc(record?.note||"")}" placeholder="İsteğe bağlı açıklama" ${canEdit?"":"disabled"}></div>
-        <div class="daily-reading-actions">
-          ${canEdit?`<button type="submit" class="primary">${done?"Değerleri Güncelle":"Kaydet ve Yapıldı İşaretle"}</button>${done?`<button type="button" class="secondary undo-daily-check" data-asset-id="${esc(asset.id)}">Kontrolü Geri Al</button>`:""}`:""}
-        </div>
-      </form>
-
-      ${done?`
-        <div class="utility-record-summary">
-          <div><small>KAYIT ZAMANI</small><b>${fmtDate(record.checkedAt)}</b><span>${esc(utilityEntryTimingLabel(record))}</span></div>
-          <div><small>KAYDEDEN</small><b>${esc(record.checkedBy||"Bilinmeyen Kullanıcı")}</b><span>${esc(resultLabel(record.result))}</span></div>
-          ${isWater?`
-            <div><small>İŞLETMEYE GELEN SU</small><b>${consumption?.incoming??"-"} m³</b><span>önceki güne göre</span></div>
-            <div><small>A BLOK KULLANILAN SU</small><b>${consumption?.aBlock??"-"} m³</b><span>önceki güne göre</span></div>
-            <div><small>B BLOK KULLANILAN SU</small><b>${consumption?.bBlock??"-"} m³</b><span>önceki güne göre</span></div>
-          `:`
-            <div><small>İŞLETMEYE GELEN GAZ</small><b>${consumption?.incoming??"-"} m³</b><span>önceki güne göre</span></div>
-          `}
-        </div>
-        ${photoButton(photoKey,asset.name)}
-      `:""}
-      ${canManageDailyControlCatalog()?`<button type="button" class="danger delete-daily-control special-delete-control" data-delete-daily-control="${esc(asset.id)}">Bu Günlük Kontrolü Sil</button>`:""}
     </article>`;
   };
 
