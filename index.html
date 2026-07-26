@@ -1,0 +1,1600 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ETİLİSMART</title><style>:root{--y:#f2b21a;--d:#15181c;--m:#6b7280;--bg:#f4f6f8;--w:#fff;--l:#e5e7eb;--g:#1f9d63;--r:#d64545}*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--d)}button,input,select,textarea{font:inherit}.top{height:68px;background:var(--d);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px}.brand{font-weight:900}.brand span{color:var(--y)}.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 68px)}aside{background:#fff;border-right:1px solid var(--l);padding:18px}.nav{width:100%;border:0;background:transparent;text-align:left;padding:12px;border-radius:10px;margin-bottom:8px}.nav:hover,.nav.active{background:#fff7dc;font-weight:700}main{padding:24px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.head h1{margin:0}.head p{margin:6px 0 0;color:var(--m)}.primary{border:0;background:var(--y);font-weight:800;padding:11px 16px;border-radius:10px}.secondary{border:1px solid var(--l);background:#fff;padding:10px 14px;border-radius:10px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:#fff;border:1px solid var(--l);border-radius:16px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.06)}.label{font-size:13px;color:var(--m)}.value{font-size:30px;font-weight:900;margin-top:8px}.section{margin-top:20px}.table{overflow:auto;background:#fff;border:1px solid var(--l);border-radius:16px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:13px;border-bottom:1px solid var(--l);text-align:left}th{font-size:12px;color:var(--m);background:#fafafa}.status{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}.open{background:#fff0f0;color:#b52d2d}.progress{background:#fff7dc;color:#8a6400}.done{background:#e7f7ef;color:#147348}.form{max-width:850px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:7px}.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{border:1px solid #d9dee5;border-radius:10px;padding:11px;background:#fff}textarea{min-height:110px}.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#121519,#282d33);padding:20px}.loginbox{width:min(430px,100%);background:#fff;border-radius:22px;padding:30px}.logo{width:58px;height:58px;background:var(--y);border-radius:15px;display:grid;place-items:center;font-weight:900;margin-bottom:16px}.notice{padding:12px;background:#eef6ff;color:#1f5f9f;border-radius:10px;font-size:13px;margin:14px 0}.loginbox .field{margin-bottom:14px}.loginbox .primary{width:100%}@media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}.grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){main{padding:16px}.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.head{align-items:flex-start;flex-direction:column;gap:12px}}
+.stop{color:#c62828}.field small{color:var(--m);font-size:12px}.check{justify-content:flex-end;padding-bottom:10px}.check label{display:flex;align-items:center;gap:8px}.check input{width:18px;height:18px}
+
+.livebox{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-bottom:18px;box-shadow:var(--shadow)}
+.livebox strong{display:block;text-transform:capitalize;font-size:14px}
+.livebox span{display:block;font-size:25px;font-weight:900;margin-top:3px}
+.shiftpill{background:#fff7dc;border:1px solid #f5d675;border-radius:13px;padding:9px 14px;text-align:right}
+.shiftpill b,.shiftpill small{display:block}
+.shiftpill small{color:#6b7280;margin-top:3px}
+.login-error{min-height:20px;color:#c62828;font-size:13px;margin-bottom:8px}
+.layoutfilters{display:grid;grid-template-columns:220px 220px 1fr;gap:16px;align-items:end;margin-bottom:18px}
+.legend{display:flex;justify-content:flex-end;gap:18px;padding-bottom:10px;font-size:13px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.dot.running{background:#20a464}.dot.warning{background:#f0a500}.dot.stopped{background:#d64545}
+.plant-map{display:flex;flex-direction:column;gap:16px}
+.dept-block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow)}
+.dept-title{font-weight:900;margin-bottom:13px;display:flex;align-items:center;gap:9px}
+.dept-title span{width:27px;height:27px;border-radius:8px;background:var(--yellow);display:grid;place-items:center;font-size:12px}
+.flow-row{display:flex;align-items:stretch;overflow-x:auto;padding-bottom:5px}
+.machine-card{min-width:145px;max-width:145px;border-radius:12px;padding:12px;border:2px solid #ddd;background:#fafafa}
+.machine-card.running{border-color:#20a464;background:#edfaf4}
+.machine-card.warning{border-color:#f0a500;background:#fff8e5}
+.machine-card.stopped{border-color:#d64545;background:#fff0f0}
+.machine-name{font-size:12px;font-weight:800;line-height:1.3;min-height:46px}
+.machine-status{font-size:11px;margin-top:8px;font-weight:800}
+.machine-card.running .machine-status{color:#14804c}
+.machine-card.warning .machine-status{color:#9b6900}
+.machine-card.stopped .machine-status{color:#b52d2d}
+.arrow{display:grid;place-items:center;min-width:28px;font-size:20px;color:#9aa1aa}
+@media(max-width:800px){
+  .livebox{align-items:flex-start;gap:12px}
+  .livebox span{font-size:20px}
+  .layoutfilters{grid-template-columns:1fr}
+  .legend{justify-content:flex-start;flex-wrap:wrap}
+}
+
+.dashboard-filter{margin-bottom:18px;max-width:300px}
+.report-filter{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end;margin-bottom:18px}
+.report-filter button{height:43px}
+.report-cards .value small{font-size:14px}
+.machine-link{border:0;background:none;padding:0;color:#8a6500;text-decoration:underline;cursor:pointer;font:inherit;font-weight:700}
+.machine-card{cursor:pointer;text-align:left;font-family:inherit}
+.machine-card:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.08)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,20,26,.58);display:flex;align-items:center;justify-content:center;padding:24px;z-index:999}
+.modal{background:#fff;border-radius:18px;width:min(1100px,96vw);max-height:88vh;overflow:auto;padding:20px;box-shadow:0 22px 70px rgba(0,0,0,.28)}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
+.modal-head h2{margin:0}.modal-head p{margin:4px 0 0;color:var(--m)}
+.modal-head button{border:0;background:#f1f3f5;border-radius:10px;width:36px;height:36px;font-size:24px;cursor:pointer}
+.machine-summary{display:flex;gap:16px;margin-bottom:14px}
+.machine-summary span{background:#fff7dc;border:1px solid #f3d46d;border-radius:10px;padding:9px 12px}
+.duration{white-space:nowrap}
+@media(max-width:800px){
+  .report-filter{grid-template-columns:1fr}
+  .modal{padding:12px}
+}
+
+.chartgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}
+.chartgrid.single{grid-template-columns:1fr}
+.chartbox{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.chartbox h4{margin:0 0 8px}
+.chartbox svg{width:100%;height:auto}
+.chartbox text{font-size:11px;fill:#69717c}
+.chartbox .axis{stroke:#cfd5dc;stroke-width:1}
+.chartbox .line{fill:none;stroke:#d7a900;stroke-width:4}
+.chartbox .point{fill:#d7a900}
+.chartbox .bar{fill:#d7a900}
+.chartbox .val{font-weight:700;fill:#333}
+.machine-modal{width:min(1180px,97vw)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{border:1px solid var(--line);background:#f7f8fa;border-radius:10px;padding:9px 13px;cursor:pointer}
+.tabs button.active{background:var(--yellow);border-color:var(--yellow);font-weight:800}
+.machine-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.metric{background:#fafafa;border:1px solid var(--line);border-radius:12px;padding:14px}
+.metric span,.metric b{display:block}
+.metric span{color:var(--m);font-size:12px}
+.metric b{font-size:22px;margin-top:5px}
+.metric.wide{grid-column:span 3}
+.metric.wide b{font-size:16px}
+.machine-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.info-card,.empty-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.info-card h4,.empty-panel h3{margin-top:0}
+@media(max-width:900px){
+  .chartgrid,.machine-info-grid{grid-template-columns:1fr}
+  .machine-kpis{grid-template-columns:1fr 1fr}
+  .metric.wide{grid-column:span 2}
+}
+
+.chart-range{display:grid;grid-template-columns:220px 180px 1fr;gap:14px;align-items:end;margin:18px 0}
+.range-note{color:var(--m);font-size:13px;padding-bottom:10px}
+.scope-badge{display:inline-block;margin-top:8px;background:#fff7dc;border:1px solid #f0d16b;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800}
+.hidden{display:none!important}
+@media(max-width:800px){
+  .chart-range{grid-template-columns:1fr}
+  .range-note{padding-bottom:0}
+}
+
+.section-title-row{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:10px}
+.section-title-row h3{margin:0}
+.section-title-row p{margin:4px 0 0;color:var(--m);font-size:13px}
+.count-badge{background:#fff7dc;border:1px solid #efd36f;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;white-space:nowrap}
+@media(max-width:700px){
+  .section-title-row{align-items:flex-start;flex-direction:column}
+}
+
+.operator-head{align-items:center}
+.operator-new-btn{font-size:16px;padding:13px 18px}
+.operator-grid{margin-top:18px}
+@media(max-width:700px){
+  .operator-head{align-items:stretch}
+  .operator-new-btn{width:100%}
+}
+
+.management-section{margin:24px 0}
+.management-section .chartgrid{grid-template-columns:1fr 1fr}
+@media(max-width:900px){
+  .management-section .chartgrid{grid-template-columns:1fr}
+}
+
+.chart-panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.chart-panel .chartbox{border:0;box-shadow:none;padding:0;margin-top:10px}
+.chart-panel .chartbox>h4{display:none}
+.chart-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.chart-panel-head h4{margin:0}
+.chart-panel-head small{display:block;color:var(--m);margin-top:4px}
+.chart-local-controls{display:grid;grid-template-columns:130px 110px;gap:8px;min-width:250px}
+.chart-local-controls .field label{font-size:11px}
+.chart-local-controls select,.chart-local-controls input{padding:7px 8px;font-size:13px}
+@media(max-width:700px){
+  .chart-panel-head{flex-direction:column}
+  .chart-local-controls{grid-template-columns:1fr 1fr;min-width:0;width:100%}
+}
+
+
+/* QR Kod eklentisi */
+.qr-scan-button,.machine-qr-button{border:0;border-radius:11px;background:#111;color:#fff;font-weight:800;cursor:pointer}
+.qr-scan-button{padding:11px 16px}
+.machine-qr-button{width:auto!important;min-width:52px!important;padding:0 12px!important;font-size:13px!important;background:var(--yellow,#f5b800)!important;color:#111!important}
+.modal-head-actions{display:flex;gap:8px;align-items:center}
+.qr-modal{width:min(720px,96vw)}
+.qr-generator-layout{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:center}
+.qr-code-box{width:250px;min-height:250px;padding:15px;border:1px solid var(--line);border-radius:16px;background:#fff;display:grid;place-items:center}
+.qr-code-box img,.qr-code-box canvas{max-width:220px!important;height:auto!important}
+.qr-help h3{margin-top:0}.qr-help p{color:var(--m);line-height:1.55}
+.qr-reader{width:100%;max-width:480px;margin:0 auto;border-radius:14px;overflow:hidden}
+.qr-message{padding:12px;text-align:center;color:var(--m)}
+.qr-manual{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:8px}
+.qr-manual label{font-weight:700;font-size:13px}
+.qr-manual textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;resize:vertical}
+.qr-filled-info:empty{display:none}.qr-filled-info{margin:0 0 12px;padding:11px 14px;border-radius:11px;background:#e8f7ee;color:#16754d;font-weight:700;font-size:13px}
+@media(max-width:680px){
+  .qr-generator-layout{grid-template-columns:1fr}
+  .qr-code-box{margin:auto}
+  .head .qr-scan-button{width:100%;margin-top:10px}
+}
+@media print{
+  body *{visibility:hidden!important}
+  .qr-modal,.qr-modal *{visibility:visible!important}
+  .qr-modal{position:absolute;left:0;top:0;width:100%;box-shadow:none}
+  .qr-close,#printQr,.qr-help p{display:none!important}
+}
+
+.qr-machine-hero{display:flex;gap:16px;align-items:center;padding:18px;border-radius:16px;background:var(--soft,#f7f7f7);margin-bottom:16px}
+.qr-machine-icon{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:var(--yellow,#f5b800);font-size:30px;color:#111}
+.qr-machine-hero h3{margin:8px 0 4px;font-size:22px}.qr-machine-hero p{margin:0;color:var(--m)}
+.qr-machine-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qr-machine-grid .info-card{padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.qr-machine-grid .info-card span{display:block;color:var(--m);font-size:12px;margin-bottom:7px}
+.qr-machine-grid .info-card b{font-size:15px}
+.qr-last-fault{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:14px}
+.qr-last-fault h4{margin:0 0 10px}.qr-last-fault p{margin:5px 0;color:var(--m)}.qr-last-fault p b{color:var(--text,#111)}
+.qr-machine-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+@media(max-width:680px){
+  .qr-machine-grid{grid-template-columns:repeat(2,1fr)}
+  .qr-machine-actions{flex-direction:column-reverse}
+  .qr-machine-actions button{width:100%}
+}
+
+
+.home-action-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qr-home-button{border:1px solid #111;background:#111;color:#fff;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
+.qr-home-card{display:flex;align-items:center;gap:16px;padding:18px 20px;margin:0 0 18px;border-radius:16px;background:linear-gradient(135deg,#fff7d1,#fff);border:1px solid #f0d56b;box-shadow:0 5px 18px rgba(0,0,0,.05)}
+.qr-home-symbol{width:54px;height:54px;display:grid;place-items:center;border-radius:14px;background:#f5b800;color:#111;font-size:30px;font-weight:900;flex:0 0 auto}
+.qr-home-card div:nth-child(2){display:flex;flex-direction:column;gap:5px;flex:1}
+.qr-home-card b{font-size:17px}.qr-home-card span{font-size:13px;color:var(--m)}
+@media(max-width:680px){
+ .home-action-buttons{width:100%}.home-action-buttons button{flex:1}
+ .qr-home-card{align-items:flex-start;flex-wrap:wrap}.qr-home-card button{width:100%}
+}
+
+
+/* Yönetici mobil görünümü */
+.top-user{display:flex;align-items:center;gap:8px}
+.top-user-role{font-size:12px;color:#c9cdd2}
+.mobile-bottom-nav{display:none}
+
+@media(max-width:900px){
+  body{padding-bottom:76px}
+  .top{
+    height:58px;
+    padding:0 12px;
+    position:sticky;
+    top:0;
+    z-index:50;
+    box-shadow:0 3px 14px rgba(0,0,0,.18)
+  }
+  .brand{font-size:17px}
+  .top-user{gap:7px;min-width:0}
+  .top-user-name{display:none}
+  .top-user-role{
+    display:block;
+    max-width:118px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:#fff;
+    font-size:11px
+  }
+  .top .secondary{padding:7px 9px;font-size:11px;border-color:#444;background:#24282d;color:#fff}
+  .layout{min-height:calc(100vh - 58px)}
+  main{padding:14px 12px 22px}
+  .head{margin-bottom:14px;gap:10px}
+  .head h1{font-size:23px;line-height:1.15}
+  .head p{font-size:13px}
+  .head>.primary,.head>.home-action-buttons{width:100%}
+  .home-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .home-action-buttons button{width:100%;padding:11px 8px;font-size:13px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .card{padding:14px;border-radius:13px;box-shadow:0 4px 14px rgba(0,0,0,.045)}
+  .value{font-size:25px}
+  .label{font-size:12px}
+  .section{margin-top:14px}
+  .dashboard-filter{max-width:none;margin-bottom:12px}
+  .qr-home-card{margin-bottom:12px;padding:14px;gap:12px}
+  .qr-home-symbol{width:46px;height:46px;font-size:24px}
+  .qr-home-card b{font-size:15px}
+  .qr-home-card span{font-size:12px;line-height:1.4}
+  .clock-block{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .clock-block>*:last-child{grid-column:1/-1}
+  .report-filter,.layoutfilters{grid-template-columns:1fr!important;gap:10px!important}
+  .chart-grid,.charts-grid,.machine-info-grid,.machine-kpis{grid-template-columns:1fr!important}
+  .plant-map{overflow:hidden}
+  .dept-block{padding:12px!important}
+  .flow-row{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .machine-card{min-width:135px;max-width:135px}
+  .modal-backdrop{padding:0!important;align-items:flex-end!important}
+  .modal{
+    width:100%!important;
+    max-width:none!important;
+    max-height:92vh!important;
+    border-radius:20px 20px 0 0!important;
+    padding:16px!important;
+    overflow:auto
+  }
+  .modal-head h2{font-size:20px}
+  .tabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .tabs button{flex:0 0 auto}
+  .qr-machine-grid{grid-template-columns:1fr 1fr}
+  .actions{position:sticky;bottom:0;background:#fff;padding-top:10px}
+  .actions button{flex:1}
+  .mobile-bottom-nav{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    height:68px;
+    display:flex;
+    align-items:stretch;
+    background:#fff;
+    border-top:1px solid var(--l);
+    box-shadow:0 -5px 18px rgba(0,0,0,.10);
+    z-index:90;
+    padding-bottom:env(safe-area-inset-bottom)
+  }
+  .mobile-bottom-nav button{
+    flex:1;
+    min-width:0;
+    border:0;
+    background:#fff;
+    color:#777;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    padding:5px 2px
+  }
+  .mobile-bottom-nav button span{font-size:20px;line-height:1}
+  .mobile-bottom-nav button small{font-size:10px;white-space:nowrap}
+  .mobile-bottom-nav button.active{color:#111;background:#fff8df;font-weight:800}
+}
+
+@media(max-width:620px){
+  .formgrid{grid-template-columns:1fr}
+  input,select,textarea{font-size:16px} /* iPhone otomatik yakınlaştırmayı engeller */
+  .table-wrap{padding:0;background:transparent;border:0;box-shadow:none;overflow:visible}
+  .table-wrap table,.table-wrap tbody,.table-wrap tr,.table-wrap td{display:block;width:100%}
+  .table-wrap thead{display:none}
+  .table-wrap tr{
+    background:#fff;
+    border:1px solid var(--l);
+    border-radius:14px;
+    margin-bottom:10px;
+    padding:7px 12px;
+    box-shadow:0 4px 13px rgba(0,0,0,.045)
+  }
+  .table-wrap td{
+    min-height:36px;
+    padding:9px 0 9px 42%;
+    border-bottom:1px dashed #e7e9ec;
+    position:relative;
+    text-align:left;
+    overflow-wrap:anywhere
+  }
+  .table-wrap td:last-child{border-bottom:0}
+  .table-wrap td::before{
+    content:attr(data-label);
+    position:absolute;
+    left:0;
+    top:10px;
+    width:38%;
+    color:var(--m);
+    font-size:11px;
+    font-weight:700
+  }
+  .table-wrap .sel{width:100%;padding:9px}
+  .status{display:inline-block}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid .card{min-width:0}
+  .value{font-size:22px}
+  .head .primary{width:100%}
+  .report-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .report-cards .card:last-child{grid-column:1/-1}
+}
+
+@media(max-width:380px){
+  main{padding-left:9px;padding-right:9px}
+  .grid{gap:7px}
+  .card{padding:11px}
+  .value{font-size:20px}
+  .mobile-bottom-nav button small{font-size:9px}
+}
+
+
+.mobile-top-tabs{display:none}
+@media(max-width:900px){
+  body{padding-bottom:0!important}
+  .mobile-bottom-nav{display:none!important}
+  .mobile-top-tabs{
+    display:flex;
+    position:sticky;
+    top:58px;
+    z-index:49;
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    background:#fff;
+    border-bottom:1px solid var(--l);
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+    padding:7px 8px;
+    gap:6px
+  }
+  .mobile-top-tabs::-webkit-scrollbar{display:none}
+  .mobile-top-tabs button{
+    flex:1 0 auto;
+    min-width:76px;
+    border:1px solid #e2e5e9;
+    background:#fff;
+    color:#5f6670;
+    border-radius:10px;
+    padding:8px 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    cursor:pointer
+  }
+  .mobile-top-tabs button span{font-size:17px;line-height:1}
+  .mobile-top-tabs button small{font-size:11px;font-weight:700;white-space:nowrap}
+  .mobile-top-tabs button.active{
+    background:#fff4c4;
+    border-color:#e8bd35;
+    color:#15181c
+  }
+  .layout{min-height:calc(100vh - 116px)}
+}
+
+
+/* ETİLİSMART mobil revizyon — güvenli sürüm */
+@media(max-width:900px){
+  :root{--mobile-radius:18px}
+  html,body{overflow-x:hidden;background:#f3f5f8}
+  body{padding-bottom:24px!important}
+  .top{
+    min-height:68px!important;
+    height:auto!important;
+    padding:10px 14px!important;
+    position:sticky!important;
+    top:0!important;
+    z-index:100!important;
+    align-items:center!important
+  }
+  .brand{font-size:19px!important;line-height:1}
+  .top-user{margin-left:auto;max-width:58%;justify-content:flex-end}
+  .top-user-role{max-width:128px!important;font-size:11px!important}
+  .top .secondary{padding:8px 10px!important;border-radius:10px!important}
+  .mobile-top-tabs{
+    top:68px!important;
+    padding:8px 10px!important;
+    gap:7px!important;
+    background:rgba(255,255,255,.96)!important;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px)
+  }
+  .mobile-top-tabs button{
+    min-width:82px!important;
+    min-height:48px;
+    border-radius:13px!important;
+    flex-direction:column!important;
+    gap:3px!important;
+    padding:7px 10px!important
+  }
+  .mobile-top-tabs button span{font-size:18px!important}
+  .mobile-top-tabs button small{font-size:10px!important}
+  .mobile-top-tabs button.active{
+    background:#fff4c8!important;
+    border-color:#e4b627!important;
+    box-shadow:0 4px 12px rgba(212,158,0,.13)
+  }
+  main{padding:16px 12px 28px!important;max-width:100%!important}
+  .live-clock{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    background:linear-gradient(135deg,#161a22,#252b36)!important;
+    border-radius:20px!important;
+    padding:15px!important;
+    color:#fff!important;
+    margin-bottom:14px!important
+  }
+  .live-clock>div{
+    min-width:0;
+    padding:9px 10px;
+    border-radius:13px;
+    background:rgba(255,255,255,.06)
+  }
+  .live-greeting{grid-column:1/-1}
+  .live-clock span,.live-clock small{color:#cdd3dc!important}
+  .live-clock b{color:#fff!important;overflow-wrap:anywhere}
+  .head{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    align-items:flex-start!important;
+    gap:11px!important;
+    margin-bottom:13px!important
+  }
+  .head h1{font-size:25px!important;letter-spacing:-.5px;margin-bottom:5px!important}
+  .head p{font-size:13px!important;line-height:1.45}
+  .head>.primary,.head>.home-action-buttons{width:100%!important}
+  .home-action-buttons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}
+  .home-action-buttons button{min-height:47px!important;border-radius:13px!important}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .grid>.card{
+    min-height:112px;
+    padding:15px!important;
+    border-radius:var(--mobile-radius)!important;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between
+  }
+  .card{
+    border-radius:var(--mobile-radius)!important;
+    box-shadow:0 6px 20px rgba(25,33,45,.055)!important;
+    border-color:#e6e9ee!important
+  }
+  .value{font-size:29px!important}
+  .label{font-size:12px!important;line-height:1.35}
+  .qr-home-card{
+    border-radius:18px!important;
+    padding:15px!important;
+    background:linear-gradient(135deg,#fff5c8,#fff)!important
+  }
+  .chartgrid,.chart-grid,.charts-grid{grid-template-columns:1fr!important}
+  .chart-panel,.chart-card{overflow:hidden!important;border-radius:18px!important}
+  .chart-panel svg,.chart-card svg{min-width:620px}
+  .chart-panel>div:last-child,.chart-card>div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .report-filter,.layoutfilters,.layout-control-panel{grid-template-columns:1fr!important}
+  .formgrid{grid-template-columns:1fr!important}
+  input,select,textarea{font-size:16px!important;min-height:48px;border-radius:12px!important}
+  textarea{min-height:110px}
+  .actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}
+  .actions button{min-height:48px!important}
+  .modal-backdrop{padding:0!important;align-items:flex-end!important}
+  .modal{
+    width:100%!important;
+    max-width:none!important;
+    max-height:92vh!important;
+    border-radius:24px 24px 0 0!important;
+    padding:17px!important
+  }
+  .qr-machine-grid{grid-template-columns:1fr 1fr!important}
+  .plant-map{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+  .dept-block{
+    background:#fff!important;
+    border:1px solid #e5e8ed!important;
+    border-radius:18px!important;
+    padding:14px!important;
+    margin-bottom:12px!important;
+    box-shadow:0 6px 18px rgba(25,33,45,.05)!important
+  }
+  .dept-block h3{font-size:16px!important}
+  .flow-row{
+    display:flex!important;
+    gap:9px!important;
+    overflow-x:auto!important;
+    padding:9px 2px 12px!important;
+    scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch
+  }
+  .machine-card{
+    min-width:150px!important;
+    width:150px!important;
+    min-height:132px!important;
+    flex:0 0 150px!important;
+    border-radius:16px!important;
+    scroll-snap-align:start;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    align-items:center!important;
+    text-align:center!important;
+    gap:7px!important;
+    position:relative!important;
+    overflow:hidden!important
+  }
+  .machine-card::before{
+    content:"⚙";
+    display:grid;
+    place-items:center;
+    width:44px;height:44px;
+    border-radius:13px;
+    background:#eef1f5;
+    font-size:24px
+  }
+  .machine-card[data-machine*="Spray"]::before{content:"♨";background:#fff0cb}
+  .machine-card[data-machine*="Fırın"]::before{content:"🔥";background:#ffe3dc}
+  .machine-card[data-machine*="Pres"]::before{content:"▣";background:#e4edff}
+  .machine-card[data-machine*="Silo"]::before{content:"⬡";background:#e8f0f1}
+  .machine-card[data-machine*="Konveyör"],.machine-card[data-machine*="Bant"]::before{content:"⇢";background:#e9f6eb}
+  .machine-card[data-machine*="Dijital"]::before{content:"▦";background:#eee8ff}
+  .machine-card[data-machine*="Paketleme"]::before{content:"▤";background:#fff1d8}
+  .machine-card[data-machine*="Palet"]::before{content:"▥";background:#f4e8d8}
+  .machine-card[data-machine*="Streç"]::before{content:"◎";background:#e5f5f6}
+  aside{display:none!important}
+  .layout{display:block!important}
+}
+
+@media(max-width:620px){
+  .table-wrap{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+  .table-wrap table,.table-wrap tbody,.table-wrap tr,.table-wrap td{display:block!important;width:100%!important}
+  .table-wrap thead{display:none!important}
+  .table-wrap tr{
+    background:#fff!important;border:1px solid #e4e7ec!important;border-radius:17px!important;
+    margin-bottom:10px!important;padding:8px 13px!important;box-shadow:0 5px 16px rgba(25,33,45,.05)!important
+  }
+  .table-wrap td{
+    padding:10px 0 10px 40%!important;
+    min-height:38px!important;
+    position:relative!important;
+    border-bottom:1px dashed #e6e8ec!important
+  }
+  .table-wrap td:last-child{border-bottom:0!important}
+  .table-wrap td::before{
+    content:attr(data-label);position:absolute;left:0;top:11px;width:36%;
+    color:#747c88;font-size:11px;font-weight:800
+  }
+}
+
+
+.app-hero{display:flex;justify-content:space-between;align-items:center;padding:24px;border-radius:24px;background:linear-gradient(135deg,#111827,#293348);color:#fff;margin-bottom:16px;box-shadow:0 14px 35px rgba(17,24,39,.18)}
+.hero-copy h1{margin:7px 0 5px;font-size:30px}.hero-copy p,.hero-meta{margin:0;color:#d8dee8}.hero-version{display:inline-block;font-size:10px;font-weight:900;letter-spacing:1px;color:#1b1b1b;background:#f2b817;border-radius:999px;padding:5px 9px}
+.hero-qr{width:92px;height:78px;border:1px solid rgba(255,255,255,.25);border-radius:17px;background:rgba(255,255,255,.08);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.hero-qr span{font-size:28px}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:17px}.quick-actions button{border:1px solid #e3e6eb;background:#fff;border-radius:17px;padding:15px;display:flex;align-items:center;gap:11px;text-align:left;box-shadow:0 5px 17px rgba(20,30,45,.045)}.quick-actions button>span{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#fff2bd;font-size:22px}.quick-actions b,.quick-actions small{display:block}.quick-actions small{color:#727b88;margin-top:3px}
+.mobile-filter-card{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:12px 14px;margin-bottom:18px}.mobile-filter-card small,.mobile-filter-card b{display:block}.mobile-filter-card small{font-size:10px;color:#8a919c}.mobile-filter-card select{max-width:220px}
+.kpi-title,.section-modern-head{display:flex;align-items:center;justify-content:space-between}.kpi-title h2,.section-modern-head h2{font-size:18px;margin:0}.kpi-title span{font-size:11px;color:#14a665;background:#e6f8ef;padding:5px 9px;border-radius:999px}
+.pro-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:10px 0 22px}.pro-kpi{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:122px;background:#fff;border:1px solid #e5e8ed;border-radius:19px;padding:17px;overflow:hidden;box-shadow:0 7px 21px rgba(20,30,45,.055)}.pro-kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}.pro-kpi.red:before{background:#f04455}.pro-kpi.amber:before{background:#e7a900}.pro-kpi.green:before{background:#19af6c}.pro-kpi.blue:before{background:#2489e8}.pro-kpi small{font-size:11px;font-weight:900}.pro-kpi strong{display:block;font-size:31px;margin:7px 0 2px}.pro-kpi p{margin:0;color:#6f7884;font-size:12px}.pro-kpi i{width:52px;height:52px;display:grid;place-items:center;border-radius:50%;font-style:normal;font-size:25px}.red i{background:#ffe8eb;color:#e33144}.amber i{background:#fff1cc;color:#d59800}.green i{background:#e3f7ec;color:#0fa05c}.blue i{background:#e3f0ff;color:#177bd0}
+.priority-section,.line-preview-card,.trend-preview,.desktop-active-table{margin-top:20px}.section-modern-head p{margin:4px 0 0;color:#7d8590;font-size:12px}.section-modern-head button{border:0;background:transparent;color:#1676cb;font-weight:800}
+.priority-list{display:grid;gap:9px;margin-top:11px}.priority-fault{display:flex;align-items:center;gap:13px;padding:14px;background:#fff;border:1px solid #e4e7ec;border-radius:18px;box-shadow:0 6px 19px rgba(20,30,45,.05);position:relative;overflow:hidden}.priority-fault:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#efb41c}.priority-fault.is-stop:before{background:#f04455}.fault-machine-icon{width:51px;height:51px;flex:0 0 51px;display:grid;place-items:center;border-radius:14px;background:#f1f3f6;font-size:25px}.fault-copy{flex:1;min-width:0}.fault-top{display:flex;justify-content:space-between;gap:8px}.fault-top span{color:#e43c4c;font-weight:800;font-size:12px}.fault-copy small{color:#78808c}.fault-copy p{margin:6px 0;font-size:13px}.fault-copy em{font-style:normal;font-size:9px;font-weight:900;color:#d93042;background:#ffe8eb;padding:4px 7px;border-radius:999px}.fault-chevron{border:0;background:transparent;font-size:30px;color:#89919c}
+.modern-empty{text-align:center;background:#fff;border-radius:18px;padding:28px}.modern-empty span{display:grid;place-items:center;width:45px;height:45px;background:#e5f8ee;color:#13a05c;border-radius:50%;margin:auto;font-size:24px}
+.line-preview-card,.trend-preview{background:#fff;border:1px solid #e5e8ed;border-radius:21px;padding:18px;box-shadow:0 7px 22px rgba(20,30,45,.05)}.mini-process-flow{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:17px 4px 6px}.mini-machine{flex:0 0 105px;min-height:108px;border:1px solid #dde2e8;border-radius:15px;background:#fafbfc;padding:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}.mini-machine i{font-style:normal;font-size:28px}.mini-machine span{font-size:10px;font-weight:800}.mini-machine.warning{border-color:#e6b526;background:#fffaf0}.mini-machine.stopped{border-color:#ee5463;background:#fff4f5}.flow-line{color:#9da5b0}
+.modern-chart-shell{margin-top:10px;overflow-x:auto}.modern-chart-shell .chartbox{border:0!important;box-shadow:none!important;padding:0!important}.modern-chart-shell .chartbox h4{display:none}
+.layout-hero{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#101827,#253148);color:#fff;border-radius:24px;padding:23px;margin-bottom:13px}.layout-hero span{font-size:10px;font-weight:900;color:#f3bc22;letter-spacing:1px}.layout-hero h1{margin:7px 0 5px}.layout-hero p{margin:0;color:#ccd4df}.layout-live-dot{background:rgba(30,206,124,.12);color:#38d98f;border:1px solid rgba(56,217,143,.3);border-radius:999px;padding:8px 12px;font-size:11px;font-weight:900}
+.layout-control-modern{display:grid;grid-template-columns:1fr 1fr auto;gap:11px;background:#fff;border:1px solid #e5e8ed;border-radius:17px;padding:13px;margin-bottom:14px}.layout-control-modern label{font-size:11px;font-weight:800}.layout-control-modern select{display:block;width:100%;margin-top:5px}.layout-status-legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.layout-status-legend span{font-size:10px}.layout-status-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.layout-status-legend .running{background:#21af6b}.layout-status-legend .warning{background:#e8af18}.layout-status-legend .stopped{background:#ef4254}
+.visual-plant-map{display:grid;gap:14px}.visual-department{background:#fff;border:1px solid #e4e7ec;border-radius:21px;padding:17px;box-shadow:0 7px 22px rgba(20,30,45,.05)}.visual-dept-title{display:flex;align-items:center;gap:11px}.visual-dept-title>span{width:38px;height:38px;display:grid;place-items:center;background:#fff1bb;border-radius:12px;font-weight:900}.visual-dept-title h2,.visual-dept-title p{margin:0}.visual-dept-title h2{font-size:17px}.visual-dept-title p{font-size:11px;color:#7b8490}.visual-machine-flow{display:flex;align-items:center;overflow-x:auto;padding:15px 2px 4px}.visual-machine{position:relative;flex:0 0 145px;min-height:155px;border:1px solid #dde2e8;background:#fafbfc;border-radius:18px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.machine-illustration{width:67px;height:67px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(145deg,#eef1f5,#fff);font-size:35px;box-shadow:inset 0 0 0 1px #e4e7eb}.visual-machine b{font-size:12px}.visual-machine small{color:#78818d}.machine-state-dot{position:absolute;right:10px;top:10px;width:10px;height:10px;border-radius:50%;background:#21af6b}.visual-machine.warning{border-color:#e5b526;background:#fffaf0}.visual-machine.warning .machine-state-dot{background:#e5ae15}.visual-machine.stopped{border-color:#ef5261;background:#fff5f6}.visual-machine.stopped .machine-state-dot{background:#ef4254}.visual-connector{display:flex;align-items:center;min-width:45px}.visual-connector span{height:2px;background:#b4bbc4;flex:1}.visual-connector b{color:#8a929d;font-size:22px}
+@media(max-width:900px){.quick-actions{grid-template-columns:repeat(2,1fr)}.pro-kpi-grid{grid-template-columns:repeat(2,1fr)}.desktop-active-table{display:none}.app-hero{padding:18px}.hero-copy h1{font-size:25px}.hero-qr{width:78px}.layout-control-modern{grid-template-columns:1fr 1fr}.layout-status-legend{grid-column:1/-1}.visual-machine{flex-basis:135px}}
+@media(max-width:520px){.app-hero{border-radius:20px}.hero-copy p,.hero-meta{font-size:11px}.hero-qr{width:70px;height:70px}.quick-actions button{padding:11px}.quick-actions button>span{width:34px;height:34px}.pro-kpi{min-height:111px;padding:13px}.pro-kpi i{width:43px;height:43px;font-size:21px}.pro-kpi strong{font-size:27px}.mobile-filter-card select{max-width:155px}.priority-fault{padding:12px}.line-preview-card,.trend-preview{padding:14px}.layout-hero{padding:18px}.layout-hero p{font-size:11px}.layout-live-dot{display:none}.layout-control-modern{grid-template-columns:1fr}.layout-status-legend{grid-column:auto}}
+
+</style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
+<script>
+(function () {
+  window.__etiliStarted = false;
+  window.addEventListener("error", function (event) {
+    var app = document.getElementById("app");
+    if (!app || window.__etiliStarted) return;
+    app.innerHTML =
+      '<div style="max-width:680px;margin:40px auto;padding:22px;font-family:Arial,sans-serif;background:#fff;border:1px solid #ddd;border-radius:16px">' +
+      '<h2 style="margin-top:0">ETİLİSMART başlatılamadı</h2>' +
+      '<p>Hata: ' + String(event.message || "Bilinmeyen hata") + '</p>' +
+      '<button onclick="localStorage.clear();sessionStorage.clear();location.reload()" style="border:0;border-radius:10px;padding:12px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>' +
+      '</div>';
+  });
+  setTimeout(function () {
+    if (window.__etiliStarted) return;
+    var app = document.getElementById("app");
+    if (app && app.textContent.indexOf("yükleniyor") !== -1) {
+      app.innerHTML =
+        '<div style="max-width:680px;margin:40px auto;padding:22px;font-family:Arial,sans-serif;background:#fff;border:1px solid #ddd;border-radius:16px">' +
+        '<h2 style="margin-top:0">ETİLİSMART yükleme süresi aşıldı</h2>' +
+        '<p>Tarayıcı eski dosyayı veya eski kayıtları kullanıyor olabilir.</p>' +
+        '<button onclick="localStorage.clear();sessionStorage.clear();location.reload()" style="border:0;border-radius:10px;padding:12px 16px;background:#f2b21a;font-weight:700">Temizle ve Yeniden Başlat</button>' +
+        '</div>';
+    }
+  }, 2500);
+})();
+</script>
+
+<script>
+const K="etilismart_faults_v5";
+
+const FACTORIES={
+  "1. Fabrika":["1. Hat","2. Hat","3. Hat"],
+  "2. Fabrika B Blok":["1. Hat","2. Hat"],
+  "2. Fabrika A Blok":["1. Hat","2. Hat","3. Hat"]
+};
+
+const STRUCTURE={
+  "Masse Bölümü":["Beşiker","Değirmen Üstü Konveyörler","Değirmenler","Karıştırma Havuzları","Elekler","Spray Dryer","Silo Üstü Konveyör Bantları","Silo","Silo Altı Konveyör Bantları"],
+  "Pres Bölümü":["Presler","Pres Rulo ve Kayışlar","Mengil"],
+  "Sır Bantları":["Konveyör Bantlar","Su Atma","Engop Atma","Sır Atma","Sır Tankları","Dijital Baskı"],
+  "Fırınlar":["Fırın Girişi Elevatör","Fırın Girişi Kayışlar","Fırın Girişi Rulolar","Fırın","Fırın Çıkışı Rulolar","Fırın Çıkışı Kayışlar","Fırın Çıkışı Şematik"],
+  "Polisaj":["Nano","Parlatma","Kareleme","Kalibre","Su Emme","Kayışlar"],
+  "Paketleme":["Kalite Masası","Stoker","Paketleme","Bantlar","Etiket Yazıcı","Deste Birleştirici","Deste Çevirici","Paletizer","Streçleme"]
+};
+
+const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"];
+const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
+
+const MACHINE_QR_REGISTRY={
+  "F2A-H1-MAS-SD-001":{
+    factory:"2. Fabrika A Blok",
+    line:"1. Hat",
+    department:"Masse Bölümü",
+    machine:"Spray Dryer",
+    machineCode:"F2A-H1-MAS-SD-001"
+  }
+};
+
+const SUBJECTS={
+  "Elektrik":["Motor termik attı","Sigorta açtı","Kontaktör çekmiyor","Sensör beslemesi yok","Kablo bağlantısı gevşek","Sürücü alarmı","Faz hatası","Etiket yazıcı enerjisiz"],
+  "Mekanik":["Rulman sesi","Kayış gevşek","Zincir uzaması","Redüktör yağ kaçağı","Rulo sıkışması","Kaplin aşınması","Titreşim yüksek","Mekanik sürtünme"],
+  "Otomasyon":["PLC haberleşme hatası","Encoder senkron hatası","Servo alarmı","HMI bağlantı hatası","Program çevrim hatası","Pozisyon sapması","Profinet bağlantı kesildi","Reçete yüklenemedi"],
+  "Pnömatik":["Hava kaçağı","Piston yavaş","Valf bobini arızalı","Basınç düşük","Vakum oluşmuyor","Regülatör ayarsız"],
+  "Hidrolik":["Yağ basıncı düşük","Hidrolik kaçak","Valf sıkışması","Pompa sesi","Yağ sıcaklığı yüksek","Filtre tıkalı"],
+  "Diğer":["Operatör bildirimi","Temizlik ihtiyacı","Ayar problemi","Malzeme sıkışması","Kalite kaynaklı duruş"]
+};
+
+function seededRandom(seed){
+  let value=seed % 2147483647;
+  return function(){
+    value=value*16807%2147483647;
+    return (value-1)/2147483646;
+  }
+}
+
+function generateHistory(){
+  const rnd=seededRandom(20260725);
+  const factories=Object.keys(FACTORIES);
+  const departments=Object.keys(STRUCTURE);
+  const types=TYPES;
+  const arr=[];
+  let id=2000;
+  const now=new Date();
+
+  for(let i=0;i<260;i++){
+    const factory=factories[Math.floor(rnd()*factories.length)];
+    const line=FACTORIES[factory][Math.floor(rnd()*FACTORIES[factory].length)];
+    const department=departments[Math.floor(rnd()*departments.length)];
+    const machine=STRUCTURE[department][Math.floor(rnd()*STRUCTURE[department].length)];
+    const type=types[Math.floor(rnd()*types.length)];
+    const subjectList=SUBJECTS[type];
+    const subject=subjectList[Math.floor(rnd()*subjectList.length)];
+    const daysAgo=2+Math.floor(rnd()*205);
+    const start=new Date(now);
+    start.setDate(now.getDate()-daysAgo);
+    start.setHours(Math.floor(rnd()*24),Math.floor(rnd()*60),0,0);
+    const duration=5+Math.floor(rnd()*235);
+    const end=new Date(start.getTime()+duration*60000);
+    const stopped=rnd()>0.58;
+    arr.push({
+      id:id++,
+      factory,line,department,machine,type,subject,
+      description:"Geçmiş örnek arıza kaydı. Müdahale tamamlandı ve kayıt kapatıldı.",
+      stopped,photoName:"",status:"done",
+      createdAt:start.toISOString(),closedAt:end.toISOString()
+    });
+  }
+
+  arr.push(
+    {id:1001,factory:"1. Fabrika",line:"1. Hat",department:"Pres Bölümü",machine:"Presler",type:"Hidrolik",subject:"Yağ basıncı düşük",description:"Basınç normal seviyenin altında.",stopped:true,photoName:"",status:"open",createdAt:new Date(Date.now()-42*60000).toISOString(),closedAt:null},
+    {id:1002,factory:"2. Fabrika B Blok",line:"2. Hat",department:"Paketleme",machine:"Etiket Yazıcı",type:"Elektrik",subject:"Etiket yazdırmıyor",description:"Yazıcı çevrimiçi ancak çıktı alınamıyor.",stopped:false,photoName:"",status:"progress",createdAt:new Date(Date.now()-18*60000).toISOString(),closedAt:null}
+  );
+  return arr;
+}
+
+function safeJson(text,fallback){
+  try{return JSON.parse(text)}catch(e){return fallback}
+}
+function storageGet(storage,key,fallback){
+  try{
+    const value=storage.getItem(key);
+    return value===null?fallback:value;
+  }catch(e){
+    return fallback;
+  }
+}
+function storageSet(storage,key,value){
+  try{storage.setItem(key,value);return true}catch(e){return false}
+}
+function storageRemove(storage,key){
+  try{storage.removeItem(key)}catch(e){}
+}
+function storageClear(storage){
+  try{storage.clear()}catch(e){}
+}
+let s={
+  login:storageGet(sessionStorage,"eslogin","0")==="1",
+  user:safeJson(storageGet(sessionStorage,"esuser","null"),null),
+  page:"dashboard",
+  faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
+  dashboardFactory:"Tümü",
+  reportFactory:"Tümü",
+  reportStart:"",
+  reportEnd:"",
+  layoutFactory:"1. Fabrika",
+  layoutLine:"1. Hat",
+  machineModal:null,
+  machineTab:"overview",
+  chartRanges:{
+    trend:{unit:"day",value:30},
+    department:{unit:"day",value:30},
+    type:{unit:"day",value:30},
+    downtime:{unit:"day",value:30}
+  },
+  qrModal:null,
+  qrScanner:null
+};
+
+
+function esc(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+function opts(items,placeholder="Seçiniz",selected=""){
+  const list=Array.isArray(items)?items:[];
+  const first=`<option value="" ${selected===""?"selected":""} disabled>${esc(placeholder)}</option>`;
+  return first+list.map(item=>`<option value="${esc(item)}" ${item===selected?"selected":""}>${esc(item)}</option>`).join("");
+}
+function fmtDate(value){
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime()))return "-";
+  return d.toLocaleString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+function durationMs(fault){
+  const start=new Date(fault.createdAt).getTime();
+  const end=fault.closedAt?new Date(fault.closedAt).getTime():Date.now();
+  return Math.max(0,end-start);
+}
+function durationText(fault){
+  const totalMinutes=Math.floor(durationMs(fault)/60000);
+  const days=Math.floor(totalMinutes/1440);
+  const hours=Math.floor((totalMinutes%1440)/60);
+  const minutes=totalMinutes%60;
+  if(days>0)return `${days} gün ${hours} sa ${minutes} dk`;
+  if(hours>0)return `${hours} sa ${minutes} dk`;
+  return `${minutes} dk`;
+}
+function shiftInfo(date=new Date()){
+  const h=date.getHours();
+  if(h<8)return {name:"00–08 Vardiyası",range:"00:00–08:00",startHour:0,endHour:8};
+  if(h<16)return {name:"08–16 Vardiyası",range:"08:00–16:00",startHour:8,endHour:16};
+  return {name:"16–00 Vardiyası",range:"16:00–00:00",startHour:16,endHour:24};
+}
+function isInCurrentShift(fault){
+  const now=new Date();
+  const shift=shiftInfo(now);
+  const start=new Date(now);
+  start.setHours(shift.startHour,0,0,0);
+  const end=new Date(start);
+  if(shift.endHour===24)end.setDate(end.getDate()+1);
+  end.setHours(shift.endHour===24?0:shift.endHour,0,0,0);
+  const created=new Date(fault.createdAt);
+  return created>=start&&created<end;
+}
+function liveDateTime(){
+  const now=new Date();
+  return {
+    date:now.toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"}),
+    time:now.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}),
+    shift:shiftInfo(now)
+  };
+}
+function clockBlock(){
+  const x=liveDateTime();
+  return `<div class="live-clock">
+    <div><span>Tarih</span><b id="liveDate">${esc(x.date)}</b></div>
+    <div><span>Saat</span><b id="liveTime">${esc(x.time)}</b></div>
+    <div><span>Vardiya</span><b id="liveShift">${esc(x.shift.name)}</b></div>
+  </div>`;
+}
+function countBy(items,key){
+  const map=new Map();
+  items.forEach(item=>{
+    const label=item?.[key]||"Belirtilmemiş";
+    map.set(label,(map.get(label)||0)+1);
+  });
+  return [...map.entries()].sort((a,b)=>b[1]-a[1]);
+}
+function statusLabel(status){
+  return status==="done"?"Tamamlandı":status==="progress"?"Müdahale Ediliyor":"Açık";
+}
+function table(items,editable=false){
+  if(!items.length)return `<div class="card empty-panel"><h3>Kayıt bulunamadı</h3><p>Seçilen kriterlere uygun arıza kaydı yok.</p></div>`;
+  return `<div class="card table-wrap"><table>
+    <thead><tr><th>Tarih</th><th>Fabrika / Hat</th><th>Bölüm / Makine</th><th>Arıza</th><th>Durum</th><th>Süre</th>${editable?"<th>İşlem</th>":""}</tr></thead>
+    <tbody>${items.map(f=>`<tr>
+      <td data-label="Tarih">${fmtDate(f.createdAt)}</td>
+      <td data-label="Fabrika / Hat"><b>${esc(f.factory)}</b><br><small>${esc(f.line)}</small></td>
+      <td data-label="Bölüm / Makine"><b>${esc(f.department)}</b><br><small>${esc(f.machine)}</small></td>
+      <td data-label="Arıza"><b>${esc(f.subject)}</b>${f.description?`<br><small>${esc(f.description)}</small>`:""}${f.stopped?'<br><span class="stop-tag">Üretim durdu</span>':""}</td>
+      <td data-label="Durum"><span class="status ${f.status}">${statusLabel(f.status)}</span></td>
+      <td data-label="Süre"><span class="duration" data-id="${f.id}">${durationText(f)}</span></td>
+      ${editable?`<td data-label="İşlem"><select class="sel" data-id="${f.id}">
+        <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
+        <option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option>
+        <option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option>
+      </select></td>`:""}
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+function nav(page,label){
+  return `<button class="nav ${s.page===page?"active":""}" data-p="${page}">${esc(label)}</button>`;
+}
+
+function save(){storageSet(localStorage,K,JSON.stringify(s.faults))}
+function isOperator(){
+  return s.user?.role==="Operatör";
+}
+function roleHasCharts(){
+  return !["Operatör","Bakım Personeli"].includes(s.user?.role);
+}
+function isManagementRole(){
+  return ["Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"].includes(s.user?.role);
+}
+function roleIsDepartmentLimited(){
+  return ["Bölüm Formeni","Bölüm Yöneticisi"].includes(s.user?.role);
+}
+function visibleFaults(base=s.faults){
+  let a=[...base];
+  if(roleIsDepartmentLimited() && s.user?.department){
+    a=a.filter(x=>x.department===s.user.department);
+  }
+  if(s.user?.role==="Fabrika Müdürü" && s.user?.factory){
+    a=a.filter(x=>x.factory===s.user.factory);
+  }
+  return a;
+}
+function chartConfig(chartId){
+  return s.chartRanges[chartId]||{unit:"day",value:30};
+}
+function rangeStartDateFor(chartId){
+  const cfg=chartConfig(chartId);
+  const now=new Date();
+  const n=Math.max(1,Number(cfg.value)||1);
+  if(cfg.unit==="hour")return new Date(now.getTime()-n*3600000);
+  if(cfg.unit==="shift")return new Date(now.getTime()-n*8*3600000);
+  if(cfg.unit==="day")return new Date(now.getTime()-n*86400000);
+  const d=new Date(now);d.setMonth(d.getMonth()-n);return d;
+}
+function chartRangeFaultsFor(base,chartId){
+  const start=rangeStartDateFor(chartId);
+  return visibleFaults(base).filter(x=>new Date(x.createdAt)>=start);
+}
+function chartRangeControlsFor(chartId){
+  const cfg=chartConfig(chartId);
+  return `<div class="chart-local-controls">
+    <div class="field">
+      <label>Zaman Birimi</label>
+      <select class="chart-unit" data-chart="${chartId}">
+        <option value="hour" ${cfg.unit==="hour"?"selected":""}>Saat</option>
+        <option value="shift" ${cfg.unit==="shift"?"selected":""}>Vardiya</option>
+        <option value="day" ${cfg.unit==="day"?"selected":""}>Gün</option>
+        <option value="month" ${cfg.unit==="month"?"selected":""}>Ay</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Son Kaç Birim?</label>
+      <input class="chart-value" data-chart="${chartId}" type="number" min="1" max="365" value="${cfg.value}">
+    </div>
+  </div>`;
+}
+function periodLabel(d,chartId){
+  const unit=chartConfig(chartId).unit;
+  if(unit==="hour")return d.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+  if(unit==="shift"){
+    const h=d.getHours();
+    const name=h<8?"00–08":h<16?"08–16":"16–00";
+    return `${d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})} ${name}`;
+  }
+  if(unit==="day")return d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"});
+  return d.toLocaleDateString("tr-TR",{month:"short",year:"2-digit"});
+}
+function trendDataFor(base,chartId){
+  const cfg=chartConfig(chartId);
+  const a=chartRangeFaultsFor(base,chartId);
+  const now=new Date();
+  const n=Math.max(1,Number(cfg.value)||1);
+  const buckets=[];
+  if(cfg.unit==="hour"){
+    for(let i=n-1;i>=0;i--){
+      const start=new Date(now.getTime()-(i+1)*3600000),end=new Date(now.getTime()-i*3600000);
+      buckets.push({start,end,label:periodLabel(end,chartId),value:0});
+    }
+  }else if(cfg.unit==="shift"){
+    for(let i=n-1;i>=0;i--){
+      const end=new Date(now.getTime()-i*8*3600000),start=new Date(end.getTime()-8*3600000);
+      buckets.push({start,end,label:periodLabel(start,chartId),value:0});
+    }
+  }else if(cfg.unit==="day"){
+    for(let i=n-1;i>=0;i--){
+      const start=new Date(now);start.setDate(now.getDate()-i);start.setHours(0,0,0,0);
+      const end=new Date(start);end.setDate(start.getDate()+1);
+      buckets.push({start,end,label:periodLabel(start,chartId),value:0});
+    }
+  }else{
+    for(let i=n-1;i>=0;i--){
+      const start=new Date(now.getFullYear(),now.getMonth()-i,1);
+      const end=new Date(now.getFullYear(),now.getMonth()-i+1,1);
+      buckets.push({start,end,label:periodLabel(start,chartId),value:0});
+    }
+  }
+  a.forEach(f=>{
+    const t=new Date(f.createdAt);
+    const b=buckets.find(x=>t>=x.start&&t<x.end);
+    if(b)b.value++;
+  });
+  return buckets;
+}
+function lineChartSVG(data,title){
+  const w=620,h=210,p=35,max=Math.max(...data.map(x=>x.value),1);
+  const pts=data.map((x,i)=>`${p+i*(w-2*p)/Math.max(data.length-1,1)},${h-p-x.value*(h-2*p)/max}`).join(" ");
+  return `<div class="chartbox"><h4>${title}</h4><svg viewBox="0 0 ${w} ${h}" role="img">
+    <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" class="axis"/>
+    <polyline points="${pts}" class="line"/>
+    ${data.map((x,i)=>{const cx=p+i*(w-2*p)/Math.max(data.length-1,1),cy=h-p-x.value*(h-2*p)/max;return `<circle cx="${cx}" cy="${cy}" r="4" class="point"><title>${x.label}: ${x.value}</title></circle><text x="${cx}" y="${h-10}" text-anchor="middle">${x.label}</text>`}).join("")}
+  </svg></div>`;
+}
+function barChartSVG(data,title){
+  const w=620,h=230,p=40,max=Math.max(...data.map(x=>x.value),1);
+  const bw=(w-2*p)/Math.max(data.length,1)*0.62;
+  return `<div class="chartbox"><h4>${title}</h4><svg viewBox="0 0 ${w} ${h}" role="img">
+    <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" class="axis"/>
+    ${data.map((x,i)=>{const xPos=p+i*(w-2*p)/data.length+((w-2*p)/data.length-bw)/2;const bh=x.value*(h-2*p)/max;return `<rect x="${xPos}" y="${h-p-bh}" width="${bw}" height="${bh}" rx="5" class="bar"><title>${x.label}: ${x.value}</title></rect><text x="${xPos+bw/2}" y="${h-12}" text-anchor="middle">${esc(x.label)}</text><text x="${xPos+bw/2}" y="${h-p-bh-6}" text-anchor="middle" class="val">${x.value}</text>`}).join("")}
+  </svg></div>`;
+}
+function dashboard(){
+  let all=visibleFaults();
+  if(s.dashboardFactory!=="Tümü")all=all.filter(x=>x.factory===s.dashboardFactory);
+
+  const active=all
+    .filter(x=>x.status!=="done")
+    .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  const currentShiftActive=active
+    .filter(isInCurrentShift)
+    .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  const open=currentShiftActive.filter(x=>x.status==="open").length;
+  const progress=currentShiftActive.filter(x=>x.status==="progress").length;
+  const stopped=currentShiftActive.filter(x=>x.stopped).length;
+  const shiftTotal=currentShiftActive.length;
+
+  const factoryOptions=s.user?.role==="Fabrika Müdürü" ? [s.user.factory] : ["Tümü",...Object.keys(FACTORIES)];
+  const departmentBadge=roleIsDepartmentLimited()?`<div class="scope-badge">Yetki alanı: ${esc(s.user.department)}</div>`:"";
+  const shift=shiftInfo();
+
+  if(isOperator()){
+    return `${clockBlock()}
+    <div class="head operator-head">
+      <div>
+        <h1>Operatör Paneli</h1>
+        <p>Arıza kaydı açabilir ve yalnızca mevcut vardiyadaki aktif arızaları görebilirsiniz.</p>
+      </div>
+      <div class="home-action-buttons">
+        <button type="button" class="qr-home-button" id="openQrScanner">▣ QR Kod Tara</button>
+        <button class="primary operator-new-btn" data-p="new">+ Arıza Kaydı Aç</button>
+      </div>
+    </div>
+
+    <div class="qr-home-card">
+      <div class="qr-home-symbol">▣</div>
+      <div><b>Makine QR Kodunu Tara</b><span>Makine bilgilerini görüntüle ve doğrudan arıza kaydı oluştur.</span></div>
+      <button type="button" class="primary" id="openQrScannerCard">Kamerayı Aç</button>
+    </div>
+
+    <div class="grid operator-grid">
+      <div class="card"><div class="label">Yeni Arıza</div><div class="value">${open}</div></div>
+      <div class="card"><div class="label">İşlemde</div><div class="value">${progress}</div></div>
+      <div class="card"><div class="label">Üretim Duruşu</div><div class="value">${stopped}</div></div>
+      <div class="card"><div class="label">${shift.name}</div><div class="value">${shiftTotal}</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title-row">
+        <div>
+          <h3>Vardiyamdaki Aktif Arızalar</h3>
+          <p>${shift.range} saatleri arasında açılmış ve henüz tamamlanmamış kayıtlar</p>
+        </div>
+        <span class="count-badge">${currentShiftActive.length} aktif</span>
+      </div>
+      ${table(currentShiftActive)}
+    </div>`;
+  }
+
+  const trendFaults=chartRangeFaultsFor(all,"trend");
+  const departmentFaults=chartRangeFaultsFor(all,"department");
+  const typeFaults=chartRangeFaultsFor(all,"type");
+  const downtimeFaults=chartRangeFaultsFor(all,"downtime");
+
+  const trend=trendDataFor(all,"trend");
+  const departmentData=countBy(departmentFaults,"department").slice(0,6).map(([label,value])=>({label,value}));
+  const typeData=countBy(typeFaults,"type").map(([label,value])=>({label,value}));
+  const stoppedByDepartment=countBy(downtimeFaults.filter(x=>x.stopped),"department").slice(0,6).map(([label,value])=>({label,value}));
+
+  const urgent=active.slice(0,4);
+  const factoryLabel=s.dashboardFactory==="Tümü"?"Tüm Fabrikalar":s.dashboardFactory;
+  const totalToday=all.filter(x=>{
+    const d=new Date(x.createdAt),n=new Date();
+    return d.toDateString()===n.toDateString();
+  }).length;
+
+  return `
+  <section class="app-hero">
+    <div class="hero-copy">
+      <span class="hero-version">MOBİL PRO v2</span>
+      <h1>${isManagementRole()?"Yönetim Paneli":"Ana Panel"}</h1>
+      <p>${factoryLabel} · ${shift.name} · ${shift.range}</p>
+      <div class="hero-meta">${new Date().toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric",weekday:"long"})}</div>
+    </div>
+    <button type="button" class="hero-qr" id="openQrScanner"><span>⌗</span><b>QR Tara</b></button>
+  </section>
+
+  <section class="quick-actions">
+    <button data-p="new"><span>＋</span><div><b>Yeni Arıza</b><small>Hızlı kayıt oluştur</small></div></button>
+    <button data-p="faults"><span>≡</span><div><b>Arızalar</b><small>Tüm kayıtları gör</small></div></button>
+    <button data-p="layout"><span>⌘</span><div><b>Hat Planı</b><small>Makineleri görüntüle</small></div></button>
+    ${roleHasCharts()?`<button data-p="report"><span>▥</span><div><b>Raporlar</b><small>Trend ve analizler</small></div></button>`:""}
+  </section>
+
+  <section class="mobile-filter-card">
+    <div><small>GÖRÜNÜM</small><b>${factoryLabel}</b></div>
+    <select id="dashboardFactory">
+      ${factoryOptions.map(x=>`<option ${x===s.dashboardFactory||factoryOptions.length===1?"selected":""}>${x}</option>`).join("")}
+    </select>
+  </section>
+
+  <section class="kpi-title"><h2>Hızlı Göstergeler</h2><span>Canlı</span></section>
+  <section class="pro-kpi-grid">
+    <article class="pro-kpi red"><div><small>AKTİF ARIZALAR</small><strong>${active.filter(x=>x.status==="open").length}</strong><p>Yeni kayıt</p></div><i>!</i></article>
+    <article class="pro-kpi amber"><div><small>İŞLEMDE</small><strong>${active.filter(x=>x.status==="progress").length}</strong><p>Bakım devam ediyor</p></div><i>◷</i></article>
+    <article class="pro-kpi green"><div><small>ÜRETİM DURUŞU</small><strong>${active.filter(x=>x.stopped).length}</strong><p>Etkilenen makine</p></div><i>Ⅱ</i></article>
+    <article class="pro-kpi blue"><div><small>BUGÜN AÇILAN</small><strong>${totalToday}</strong><p>Arıza kaydı</p></div><i>▤</i></article>
+  </section>
+
+  <section class="priority-section">
+    <div class="section-modern-head">
+      <div><h2>Öncelikli Arızalar</h2><p>En yeni aktif kayıtlar</p></div>
+      <button data-p="faults">Tümünü Gör ›</button>
+    </div>
+    <div class="priority-list">
+      ${urgent.length?urgent.map(f=>`
+        <article class="priority-fault ${f.stopped?"is-stop":""}">
+          <div class="fault-machine-icon">${f.machine.includes("Fırın")?"🔥":f.machine.includes("Pres")?"▣":f.machine.includes("Spray")?"♨":"⚙"}</div>
+          <div class="fault-copy">
+            <div class="fault-top"><b>${esc(f.machine)}</b><span>${durationText(f)}</span></div>
+            <small>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</small>
+            <p>${esc(f.subject)}</p>
+            <em>${f.stopped?"ÜRETİM DURUŞU":statusLabel(f.status)}</em>
+          </div>
+          <button class="fault-chevron" data-p="faults">›</button>
+        </article>`).join(""):`<div class="modern-empty"><span>✓</span><b>Aktif arıza yok</b><p>Sistem normal çalışıyor.</p></div>`}
+    </div>
+  </section>
+
+  <section class="line-preview-card">
+    <div class="section-modern-head">
+      <div><h2>Hat Yerleşim Özeti</h2><p>Makine durumlarını hızlı kontrol et</p></div>
+      <button data-p="layout">Hatları Aç ›</button>
+    </div>
+    <div class="mini-process-flow">
+      ${["Hammadde Silo","Değirmen","Spray Dryer","Pres","Fırın","Dijital Baskı","Paketleme","Paletleme"].map((m,i)=>{
+        const ms=machineState("2. Fabrika A Blok","1. Hat",m);
+        const ico=m.includes("Silo")?"⬡":m.includes("Değirmen")?"✣":m.includes("Spray")?"♨":m.includes("Pres")?"▣":m.includes("Fırın")?"🔥":m.includes("Baskı")?"▦":m.includes("Paket")?"▤":"♜";
+        return `<button class="mini-machine ${ms.cls}" data-machine="${esc(m)}" data-mf="2. Fabrika A Blok" data-ml="1. Hat"><i>${ico}</i><span>${esc(m)}</span></button>${i<7?'<b class="flow-line">→</b>':''}`;
+      }).join("")}
+    </div>
+  </section>
+
+  ${isManagementRole()?`
+  <section class="trend-preview">
+    <div class="section-modern-head">
+      <div><h2>Arıza Trendi</h2><p>Son dönem görünümü</p></div>
+      <button data-p="report">Detaylı Rapor ›</button>
+    </div>
+    <div class="modern-chart-shell">${lineChartSVG(trend,"")}</div>
+  </section>`:""}
+
+  <section class="desktop-active-table">
+    <div class="section-modern-head"><div><h2>Aktif Arızalar</h2><p>Yetki alanınızdaki açık işler</p></div></div>
+    ${table(active)}
+  </section>`;
+
+}
+
+
+const qrLibraryState={generator:null,scanner:null};
+function loadExternalScript(src){
+  return new Promise((resolve,reject)=>{
+    const existing=[...document.scripts].find(x=>x.src===src);
+    if(existing){
+      if(existing.dataset.loaded==="1")return resolve();
+      existing.addEventListener("load",resolve,{once:true});
+      existing.addEventListener("error",reject,{once:true});
+      return;
+    }
+    const script=document.createElement("script");
+    script.src=src;
+    script.async=true;
+    script.onload=()=>{script.dataset.loaded="1";resolve()};
+    script.onerror=()=>reject(new Error("Kütüphane yüklenemedi"));
+    document.head.appendChild(script);
+  });
+}
+async function ensureQrGenerator(){
+  if(typeof QRCode!=="undefined")return true;
+  if(!qrLibraryState.generator){
+    qrLibraryState.generator=loadExternalScript("https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js");
+  }
+  try{await qrLibraryState.generator;return typeof QRCode!=="undefined"}
+  catch(e){qrLibraryState.generator=null;return false}
+}
+async function ensureQrScanner(){
+  if(typeof Html5Qrcode!=="undefined")return true;
+  if(!qrLibraryState.scanner){
+    qrLibraryState.scanner=loadExternalScript("https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js");
+  }
+  try{await qrLibraryState.scanner;return typeof Html5Qrcode!=="undefined"}
+  catch(e){qrLibraryState.scanner=null;return false}
+}
+
+function machineQrPayload(factory,line,department,machine){
+  return JSON.stringify({
+    app:"ETILISMART",
+    version:1,
+    action:"machine-info",
+    factory,
+    line,
+    department,
+    machine
+  });
+}
+function findMachineDepartment(machine){
+  return Object.entries(STRUCTURE).find(([,machines])=>machines.includes(machine))?.[0]||"";
+}
+function openQrScanner(){
+  s.qrModal={mode:"scan"};
+  render();
+  setTimeout(startQrScanner,80);
+}
+function openQrGenerator(factory,line,machine){
+  s.qrModal={mode:"generate",factory,line,machine,department:findMachineDepartment(machine)};
+  render();
+  setTimeout(renderMachineQr,40);
+}
+function closeQrModal(){
+  stopQrScanner();
+  s.qrModal=null;
+  render();
+}
+async function startQrScanner(){
+  const reader=document.getElementById("qr-reader");
+  if(!reader)return;
+  const scannerReady=await ensureQrScanner();
+  if(!scannerReady){
+    const msg=document.getElementById("qrMessage");
+    if(msg)msg.textContent="QR tarama özelliği yüklenemedi. İnternet bağlantısını kontrol edin; uygulamanın diğer bölümleri çalışmaya devam eder.";
+    return;
+  }
+  stopQrScanner();
+  s.qrScanner=new Html5Qrcode("qr-reader");
+  s.qrScanner.start(
+    {facingMode:"environment"},
+    {fps:10,qrbox:{width:240,height:240}},
+    decoded=>{
+      applyQrPayload(decoded);
+      stopQrScanner();
+    },
+    ()=>{}
+  ).catch(err=>{
+    const msg=document.getElementById("qrMessage");
+    if(msg)msg.textContent="Kamera açılamadı. Kamera izni verin veya QR içeriğini aşağıdaki alana yapıştırın.";
+  });
+}
+function stopQrScanner(){
+  if(s.qrScanner){
+    const scanner=s.qrScanner;
+    s.qrScanner=null;
+    scanner.stop().catch(()=>{}).finally(()=>scanner.clear().catch(()=>{}));
+  }
+}
+function applyQrPayload(raw){
+  try{
+    const clean=String(raw||"").trim();
+    let data=null;
+
+    if(MACHINE_QR_REGISTRY[clean]){
+      data=MACHINE_QR_REGISTRY[clean];
+    }else{
+      const parsed=JSON.parse(clean);
+      if(parsed.app!=="ETILISMART"||!["new-fault","machine-info"].includes(parsed.action)){
+        throw new Error("Geçersiz QR");
+      }
+      data=parsed;
+    }
+
+    if(!data.factory||!data.line||!data.machine)throw new Error("Eksik makine bilgisi");
+    stopQrScanner();
+    s.qrModal={
+      mode:"machine-info",
+      machineCode:data.machineCode||clean,
+      factory:data.factory,
+      line:data.line,
+      department:data.department||findMachineDepartment(data.machine),
+      machine:data.machine
+    };
+    render();
+  }catch(e){
+    const msg=document.getElementById("qrMessage");
+    if(msg)msg.textContent="QR kod tanınmadı. Geçerli bir ETİLİSMART makine kodu okutun.";
+  }
+}
+function openFaultFormFromQr(){
+  if(!s.qrModal||s.qrModal.mode!=="machine-info")return;
+  const data={...s.qrModal};
+  s.page="new";
+  s.qrModal=null;
+  render();
+  setTimeout(()=>{
+    const factory=document.getElementById("factory");
+    const line=document.getElementById("line");
+    const department=document.getElementById("department");
+    const machine=document.getElementById("machine");
+    if(!factory||!line||!department||!machine)return;
+    factory.value=data.factory||"";
+    factory.dispatchEvent(new Event("change"));
+    line.value=data.line||"";
+    department.value=data.department||"";
+    department.dispatchEvent(new Event("change"));
+    machine.value=data.machine||"";
+    const info=document.getElementById("qrFilledInfo");
+    if(info)info.textContent=`Makine seçildi: ${data.factory} · ${data.line} · ${data.machine}`;
+    document.getElementById("type")?.focus();
+  },30);
+}
+async function renderMachineQr(){
+  const target=document.getElementById("machineQr");
+  if(!target||!s.qrModal||s.qrModal.mode!=="generate")return;
+  target.innerHTML="";
+  const generatorReady=await ensureQrGenerator();
+  if(!generatorReady){
+    target.textContent="QR oluşturma özelliği yüklenemedi. İnternet bağlantısını kontrol edin.";
+    return;
+  }
+  new QRCode(target,{
+    text:machineQrPayload(s.qrModal.factory,s.qrModal.line,s.qrModal.department,s.qrModal.machine),
+    width:220,
+    height:220,
+    correctLevel:QRCode.CorrectLevel.M
+  });
+}
+function qrModal(){
+  if(!s.qrModal)return "";
+  if(s.qrModal.mode==="machine-info"){
+    const q=s.qrModal;
+    const faults=s.faults
+      .filter(x=>x.factory===q.factory&&x.line===q.line&&x.machine===q.machine)
+      .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    const active=faults.filter(x=>x.status!=="done");
+    const state=machineState(q.factory,q.line,q.machine);
+    const last=faults[0];
+    return `<div class="modal-backdrop qr-backdrop"><div class="modal qr-modal machine-qr-info">
+      <div class="modal-head">
+        <div><h2>${esc(q.machine)}</h2><p>QR ile makine bilgisi açıldı</p></div>
+        <button class="qr-close">×</button>
+      </div>
+      <div class="qr-machine-hero">
+        <div class="qr-machine-icon">⚙</div>
+        <div>
+          <span class="status ${state.cls==="running"?"done":state.cls==="stopped"?"open":"progress"}">${esc(state.text)}</span>
+          <h3>${esc(q.machine)}</h3>
+          <p>${esc(q.factory)} · ${esc(q.line)}</p>
+        </div>
+      </div>
+      <div class="qr-machine-grid">
+        <div class="info-card"><span>Fabrika</span><b>${esc(q.factory||"-")}</b></div>
+        <div class="info-card"><span>Hat</span><b>${esc(q.line||"-")}</b></div>
+        <div class="info-card"><span>Bölüm</span><b>${esc(q.department||"-")}</b></div>
+        <div class="info-card"><span>Makine Kodu</span><b>${esc(q.machineCode||"-")}</b></div>
+        <div class="info-card"><span>Aktif Arıza</span><b>${active.length}</b></div>
+      </div>
+      <div class="qr-last-fault">
+        <h4>Son Arıza Kaydı</h4>
+        ${last?`<p><b>${esc(last.subject)}</b></p><p>${fmtDate(last.createdAt)} · ${statusLabel(last.status)}</p>`:"<p>Bu makine için daha önce arıza kaydı bulunmuyor.</p>"}
+      </div>
+      <div class="qr-machine-actions">
+        <button type="button" class="secondary qr-close">Kapat</button>
+        <button type="button" class="primary" id="createFaultFromQr">+ Arıza Kaydı Oluştur</button>
+      </div>
+    </div></div>`;
+  }
+  if(s.qrModal.mode==="generate"){
+    return `<div class="modal-backdrop qr-backdrop"><div class="modal qr-modal">
+      <div class="modal-head"><div><h2>Makine QR Kodu</h2><p>${esc(s.qrModal.factory)} · ${esc(s.qrModal.line)} · ${esc(s.qrModal.machine)}</p></div><button class="qr-close">×</button></div>
+      <div class="qr-generator-layout">
+        <div id="machineQr" class="qr-code-box"></div>
+        <div class="qr-help">
+          <h3>Nasıl kullanılır?</h3>
+          <p>Bu QR kodu makinenin üzerine yapıştırın. Kod okutulduğunda önce makine bilgileri açılır; kullanıcı buradan arıza kaydı oluşturabilir.</p>
+          <button type="button" class="primary" id="printQr">QR Kodunu Yazdır</button>
+        </div>
+      </div>
+    </div></div>`;
+  }
+  return `<div class="modal-backdrop qr-backdrop"><div class="modal qr-modal">
+    <div class="modal-head"><div><h2>Makine QR Kodunu Tara</h2><p>Kamera izni vererek makine bilgilerini otomatik doldurun.</p></div><button class="qr-close">×</button></div>
+    <div id="qr-reader" class="qr-reader"></div>
+    <div id="qrMessage" class="qr-message">QR kodu kameraya gösterin.</div>
+    <div class="qr-manual">
+      <label>QR içeriğini elle yapıştır</label>
+      <textarea id="qrManualText" rows="3" placeholder='{"app":"ETILISMART", ...}'></textarea>
+      <button type="button" class="secondary" id="applyQrManual">Kodu Uygula</button>
+    </div>
+  </div></div>`;
+}
+
+function newf(){
+  return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">▣ QR Kod Tara</button></div>
+  <div id="qrFilledInfo" class="qr-filled-info"></div>
+  <div class="card form"><form id="fault"><div class="formgrid">
+  <div class="field"><label>Fabrika</label><select id="factory" required>${opts(Object.keys(FACTORIES))}</select></div>
+  <div class="field"><label>Hat</label><select id="line" required disabled>${opts([],"Önce fabrika seçiniz")}</select></div>
+  <div class="field"><label>Bölüm</label><select id="department" required>${opts(Object.keys(STRUCTURE))}</select></div>
+  <div class="field"><label>Makine</label><select id="machine" required disabled>${opts([],"Önce bölüm seçiniz")}</select></div>
+  <div class="field"><label>Arıza Tipi</label><select id="type" required>${opts(TYPES)}</select></div>
+  <div class="field"><label>Arıza Konusu</label><input id="subject" required></div>
+  <div class="field full"><label>Arıza Açıklaması</label><textarea id="desc" required></textarea></div>
+  <div class="field"><label>Fotoğraf</label><input type="file" id="photo" accept="image/*" capture="environment"></div>
+  <div class="field check"><label><input type="checkbox" id="stopped"> Üretim durdu mu?</label></div>
+  </div><div class="actions"><button type="button" class="secondary" data-p="dashboard">İptal</button><button class="primary">Kaydı Oluştur</button></div></form></div>`;
+}
+function reportPage(){
+  let a=visibleFaults();
+  if(s.reportFactory!=="Tümü")a=a.filter(x=>x.factory===s.reportFactory);
+  if(s.reportStart)a=a.filter(x=>new Date(x.createdAt)>=new Date(s.reportStart+"T00:00:00"));
+  if(s.reportEnd)a=a.filter(x=>new Date(x.createdAt)<=new Date(s.reportEnd+"T23:59:59"));
+  a.sort((x,y)=>new Date(y.createdAt)-new Date(x.createdAt));
+  const total=a.length,stop=a.filter(x=>x.stopped).length,avg=total?Math.round(a.reduce((sum,x)=>sum+durationMs(x)/60000,0)/total):0;
+  const typeData=countBy(chartRangeFaultsFor(a,"type"),"type").map(([label,value])=>({label,value}));
+  const factoryOptions=s.user?.role==="Fabrika Müdürü" ? [s.user.factory] : ["Tümü",...Object.keys(FACTORIES)];
+  return `${clockBlock()}<div class="head"><div><h1>Geçmiş Arıza Raporu</h1><p>${roleIsDepartmentLimited()?esc(s.user.department)+" bölümüne ait kayıtlar":"Yetki alanınızdaki geçmiş kayıtlar"}</p></div></div>
+  <div class="card report-filter"><div class="field"><label>Başlangıç Tarihi</label><input type="date" id="reportStart" value="${s.reportStart}"></div><div class="field"><label>Bitiş Tarihi</label><input type="date" id="reportEnd" value="${s.reportEnd}"></div><div class="field"><label>Fabrika</label><select id="reportFactory">${factoryOptions.map(x=>`<option ${x===s.reportFactory||factoryOptions.length===1?"selected":""}>${x}</option>`).join("")}</select></div><button class="secondary" id="clearReport">Filtreyi Temizle</button></div>
+  <div class="grid report-cards"><div class="card"><div class="label">Toplam Kayıt</div><div class="value">${total}</div></div><div class="card"><div class="label">Üretim Duruşu</div><div class="value">${stop}</div></div><div class="card"><div class="label">Ortalama Süre</div><div class="value">${avg}<small> dk</small></div></div></div>
+  <div class="chart-panel">
+    <div class="chart-panel-head"><h4>Seçilen Dönemde Arıza Tipleri</h4>${chartRangeControlsFor("type")}</div>
+    ${barChartSVG(typeData.length?typeData:[{label:"Kayıt Yok",value:0}],"Arıza Tipleri")}
+  </div>${table(a)}`;
+}
+function machineState(factory,line,machine){
+  const active=s.faults.find(x=>x.factory===factory&&x.line===line&&x.machine===machine&&x.status!=="done");
+  if(!active)return {cls:"running",text:"Çalışıyor"};
+  if(active.stopped)return {cls:"stopped",text:"Duruş"};
+  return {cls:"warning",text:"Arızalı"};
+}
+function layoutPage(){
+  const factory=s.layoutFactory,lines=FACTORIES[factory]||[];
+  if(!lines.includes(s.layoutLine))s.layoutLine=lines[0];
+  const line=s.layoutLine;
+  const iconFor=m=>m.includes("Silo")?"⬡":m.includes("Değirmen")?"✣":m.includes("Spray")?"♨":m.includes("Pres")?"▣":m.includes("Fırın")?"🔥":m.includes("Baskı")?"▦":m.includes("Polisaj")?"◉":m.includes("Paket")?"▤":m.includes("Palet")?"♜":m.includes("Streç")?"◎":m.includes("Bant")?"⇢":"⚙";
+  return `
+  <section class="layout-hero">
+    <div><span>CANLI HAT GÖRÜNÜMÜ</span><h1>Hat Yerleşim Planı</h1><p>Makineye dokunarak durum, arıza geçmişi ve detayları açabilirsiniz.</p></div>
+    <div class="layout-live-dot">● CANLI</div>
+  </section>
+  <section class="layout-control-modern">
+    <label>Fabrika<select id="layoutFactory">${opts(Object.keys(FACTORIES),"Seçiniz",factory)}</select></label>
+    <label>Hat<select id="layoutLine">${opts(lines,"Seçiniz",line)}</select></label>
+    <div class="layout-status-legend"><span><i class="running"></i>Çalışıyor</span><span><i class="warning"></i>Arızalı</span><span><i class="stopped"></i>Duruş</span></div>
+  </section>
+  <div class="visual-plant-map">
+    ${Object.entries(STRUCTURE).filter(([dept])=>!roleIsDepartmentLimited()||dept===s.user.department).map(([dept,machines],di)=>`
+      <section class="visual-department">
+        <div class="visual-dept-title"><span>${String(di+1).padStart(2,"0")}</span><div><h2>${esc(dept)}</h2><p>${machines.length} makine</p></div></div>
+        <div class="visual-machine-flow">
+          ${machines.map((m,i)=>{
+            const ms=machineState(factory,line,m);
+            return `<button class="visual-machine ${ms.cls}" data-machine="${esc(m)}" data-mf="${esc(factory)}" data-ml="${esc(line)}">
+              <div class="machine-illustration">${iconFor(m)}</div><b>${esc(m)}</b><small>${ms.text}</small><i class="machine-state-dot"></i>
+            </button>${i<machines.length-1?'<div class="visual-connector"><span></span><b>›</b></div>':''}`;
+          }).join("")}
+        </div>
+      </section>`).join("")}
+  </div>`;
+}
+function machineModal(){
+  if(!s.machineModal)return "";
+  const {factory,line,machine}=s.machineModal;
+  const hist=visibleFaults().filter(x=>x.factory===factory&&x.line===line&&x.machine===machine).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const total=hist.length,active=hist.filter(x=>x.status!=="done").length,totalMin=Math.round(hist.reduce((sum,x)=>sum+durationMs(x)/60000,0));
+  const mttr=total?Math.round(totalMin/total):0;
+  const sorted=[...hist].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  let mtbf=0;
+  if(sorted.length>1){
+    let sum=0,count=0;
+    for(let i=1;i<sorted.length;i++){sum+=(new Date(sorted[i].createdAt)-new Date(sorted[i-1].createdAt))/3600000;count++}
+    mtbf=Math.round(sum/count);
+  }
+  const typeData=countBy(hist,"type").map(([label,value])=>({label,value}));
+  const monthMap={};
+  hist.forEach(x=>{const d=new Date(x.createdAt);const k=d.toLocaleDateString("tr-TR",{month:"short",year:"2-digit"});monthMap[k]=(monthMap[k]||0)+1});
+  const trend=Object.entries(monthMap).slice(-8).map(([label,value])=>({label,value}));
+  const topSubject=countBy(hist,"subject")[0]?.[0]||"-";
+
+  let body="";
+  if(s.machineTab==="history")body=table(hist);
+  else if(s.machineTab==="charts")body=`<div class="chartgrid">${lineChartSVG(trend.length?trend:[{label:"Yok",value:0}],"Makine Arıza Trendi")}${barChartSVG(typeData.length?typeData:[{label:"Yok",value:0}],"Arıza Tipi Dağılımı")}</div>`;
+  else if(s.machineTab==="documents")body=`<div class="empty-panel"><h3>Makine Dokümanları</h3><p>Bu alana elektrik şeması, mekanik çizim, kullanım kılavuzu ve PLC yedekleri eklenecek.</p><button class="secondary">+ Doküman Ekle</button></div>`;
+  else body=`<div class="machine-kpis"><div class="metric"><span>Toplam Arıza</span><b>${total}</b></div><div class="metric"><span>Aktif Arıza</span><b>${active}</b></div><div class="metric"><span>Toplam Duruş</span><b>${totalMin} dk</b></div><div class="metric"><span>MTTR</span><b>${mttr} dk</b></div><div class="metric"><span>MTBF</span><b>${mtbf} sa</b></div><div class="metric wide"><span>En Sık Arıza</span><b>${esc(topSubject)}</b></div></div><div class="machine-info-grid"><div class="info-card"><h4>Makine Bilgileri</h4><p><b>Fabrika:</b> ${esc(factory)}</p><p><b>Hat:</b> ${esc(line)}</p><p><b>Makine:</b> ${esc(machine)}</p><p><b>Durum:</b> ${machineState(factory,line,machine).text}</p></div><div class="info-card"><h4>Son Kayıt</h4>${hist[0]?`<p><b>${esc(hist[0].subject)}</b></p><p>${fmtDate(hist[0].createdAt)}</p><p>${durationText(hist[0])}</p>`:"<p>Kayıt yok.</p>"}</div></div>`;
+
+  return `<div class="modal-backdrop" id="modalCloseBg"><div class="modal machine-modal">
+    <div class="modal-head"><div><h2>${esc(machine)}</h2><p>${esc(factory)} · ${esc(line)}</p></div><div class="modal-head-actions"><button type="button" class="machine-qr-button" data-qr-machine="${esc(machine)}" data-qr-factory="${esc(factory)}" data-qr-line="${esc(line)}">QR</button><button id="modalClose">×</button></div></div>
+    <div class="tabs"><button data-tab="overview" class="${s.machineTab==="overview"?"active":""}">Genel Bakış</button><button data-tab="history" class="${s.machineTab==="history"?"active":""}">Arıza Geçmişi</button>${roleHasCharts()?`<button data-tab="charts" class="${s.machineTab==="charts"?"active":""}">Grafikler</button>`:""}<button data-tab="documents" class="${s.machineTab==="documents"?"active":""}">Dokümanlar</button></div>
+    ${body}
+  </div></div>`;
+}
+function page(){
+  if(isOperator() && !["dashboard","new"].includes(s.page))s.page="dashboard";
+  if(s.page==="new")return newf();
+  if(s.page==="faults")return `${clockBlock()}<div class="head"><div><h1>Arıza Kayıtları</h1><p>Tüm kayıtlar</p></div><button class="primary" data-p="new">+ Yeni Arıza</button></div>${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),true)}`;
+  if(s.page==="layout")return layoutPage();
+  if(s.page==="report")return roleHasCharts()?reportPage():dashboard();
+  return dashboard();
+}
+function mobileNav(){
+  const items=isOperator()
+    ?[["dashboard","⌂","Ana Sayfa"],["new","+","Arıza Aç"]]
+    :[["dashboard","⌂","Panel"],["new","+","Arıza Aç"],["faults","≡","Arızalar"],...(roleHasCharts()?[["report","▥","Rapor"]]:[]),["layout","⌘","Hatlar"]];
+  return `<nav class="mobile-top-tabs">${items.map(([page,icon,label])=>`
+    <button type="button" data-p="${page}" class="${s.page===page?"active":""}">
+      <span>${icon}</span><small>${label}</small>
+    </button>`).join("")}</nav>`;
+}
+function app(){
+  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span></div>
+    <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
+  </div>
+  ${mobileNav()}
+  <div class="layout"><aside>${isOperator()?`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}`:`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}${nav("faults","Arıza Kayıtları")}${roleHasCharts()?nav("report","Geçmiş Arıza Raporu"):""}${nav("layout","Hat Yerleşim Planı")}`}</aside><main>${page()}</main></div>${machineModal()}${qrModal()}`;
+}
+function login(){
+  return `<div class="login"><div class="loginbox"><div class="logo">ES</div><h1>ETİLİSMART</h1><p>Dijital Bakım Yönetim Sistemi</p><div class="notice">Demo şifresi: <strong>1234</strong></div>
+  <form id="login">
+    <div class="field"><label>Ad Soyad</label><input id="name" value="Mert Yaman" required></div>
+    <div class="field"><label>Rol</label><select id="role">${ROLES.map(x=>`<option>${x}</option>`).join("")}</select></div>
+    <div class="field" id="loginFactoryWrap"><label>Bağlı Fabrika</label><select id="loginFactory">${opts(Object.keys(FACTORIES),"Seçiniz","1. Fabrika")}</select></div>
+    <div class="field hidden" id="loginDepartmentWrap"><label>Bağlı Bölüm</label><select id="loginDepartment">${opts(Object.keys(STRUCTURE),"Seçiniz","Pres Bölümü")}</select></div>
+    <div class="field"><label>Şifre</label><input id="password" type="password" required></div>
+    <div id="loginError" class="login-error"></div><button class="primary">Giriş Yap</button>
+  </form></div></div>`;
+}
+function updateClockAndDurations(){
+  const x=liveDateTime(),d=document.getElementById("liveDate"),t=document.getElementById("liveTime"),v=document.getElementById("liveShift");
+  if(d)d.textContent=x.date;if(t)t.textContent=x.time;if(v)v.textContent=x.shift.name;
+  document.querySelectorAll(".duration").forEach(el=>{const f=s.faults.find(x=>x.id==el.dataset.id);if(f)el.textContent=durationText(f)});
+}
+function render(){window.__etiliStarted=true;document.getElementById("app").innerHTML=s.login?app():login();bind();updateClockAndDurations()}
+function bind(){
+  document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{s.page=b.dataset.p;render()});
+  const l=document.getElementById("login");
+  const roleEl=document.getElementById("role");
+  const deptWrap=document.getElementById("loginDepartmentWrap");
+  if(roleEl)roleEl.onchange=()=>{deptWrap.classList.toggle("hidden",!["Bölüm Formeni","Bölüm Yöneticisi"].includes(roleEl.value))};
+  if(l)l.onsubmit=e=>{
+    e.preventDefault();
+    if(document.getElementById("password").value!=="1234"){document.getElementById("loginError").textContent="Şifre hatalı.";return;}
+    s.user={
+      name:document.getElementById("name").value,
+      role:roleEl.value,
+      factory:document.getElementById("loginFactory").value,
+      department:["Bölüm Formeni","Bölüm Yöneticisi"].includes(roleEl.value)?document.getElementById("loginDepartment").value:""
+    };
+    s.dashboardFactory=s.user.role==="Fabrika Müdürü"?s.user.factory:"Tümü";
+    s.reportFactory=s.dashboardFactory;
+    s.login=true;
+    storageSet(sessionStorage,"eslogin","1");
+    storageSet(sessionStorage,"esuser",JSON.stringify(s.user));
+    render();
+  };
+  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);s.login=false;s.user=null;render()};
+  const df=document.getElementById("dashboardFactory");if(df)df.onchange=()=>{s.dashboardFactory=df.value;render()};
+  document.querySelectorAll(".chart-unit").forEach(el=>el.onchange=()=>{
+    const id=el.dataset.chart;
+    if(!s.chartRanges[id])s.chartRanges[id]={unit:"day",value:30};
+    s.chartRanges[id].unit=el.value;
+    render();
+  });
+  document.querySelectorAll(".chart-value").forEach(el=>el.onchange=()=>{
+    const id=el.dataset.chart;
+    if(!s.chartRanges[id])s.chartRanges[id]={unit:"day",value:30};
+    s.chartRanges[id].value=Math.max(1,Number(el.value)||1);
+    render();
+  });
+  const factoryEl=document.getElementById("factory"),lineEl=document.getElementById("line");if(factoryEl)factoryEl.onchange=()=>{const a=FACTORIES[factoryEl.value]||[];lineEl.innerHTML=opts(a);lineEl.disabled=!a.length};
+  const depEl=document.getElementById("department"),machineEl=document.getElementById("machine");if(depEl)depEl.onchange=()=>{const a=STRUCTURE[depEl.value]||[];machineEl.innerHTML=opts(a);machineEl.disabled=!a.length};
+  const f=document.getElementById("fault");if(f)f.onsubmit=e=>{e.preventDefault();const now=new Date().toISOString();s.faults.push({id:Math.max(...s.faults.map(x=>x.id))+1,factory:factoryEl.value,line:lineEl.value,department:depEl.value,machine:machineEl.value,type:document.getElementById("type").value,subject:document.getElementById("subject").value,description:document.getElementById("desc").value,stopped:document.getElementById("stopped").checked,photoName:document.getElementById("photo").files[0]?.name||"",status:"open",createdAt:now,closedAt:null});save();s.page="faults";render();alert("Arıza kaydı oluşturuldu.")};
+  document.querySelectorAll(".sel").forEach(x=>x.onchange=()=>{let f=s.faults.find(y=>y.id==x.dataset.id);f.status=x.value;if(x.value==="done"&&!f.closedAt)f.closedAt=new Date().toISOString();if(x.value!=="done")f.closedAt=null;save();render()});
+  const rf=document.getElementById("reportFactory"),rs=document.getElementById("reportStart"),re=document.getElementById("reportEnd");if(rf)rf.onchange=()=>{s.reportFactory=rf.value;render()};if(rs)rs.onchange=()=>{s.reportStart=rs.value;render()};if(re)re.onchange=()=>{s.reportEnd=re.value;render()};
+  const cr=document.getElementById("clearReport");if(cr)cr.onclick=()=>{s.reportFactory="Tümü";s.reportStart="";s.reportEnd="";render()};
+  const lf=document.getElementById("layoutFactory"),ll=document.getElementById("layoutLine");if(lf)lf.onchange=()=>{s.layoutFactory=lf.value;s.layoutLine=(FACTORIES[lf.value]||[])[0]||"";render()};if(ll)ll.onchange=()=>{s.layoutLine=ll.value;render()};
+  document.querySelectorAll("[data-machine]").forEach(b=>b.onclick=()=>{s.machineModal={factory:b.dataset.mf,line:b.dataset.ml,machine:b.dataset.machine};s.machineTab="overview";render()});
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{s.machineTab=b.dataset.tab;render()});
+  const mc=document.getElementById("modalClose");if(mc)mc.onclick=()=>{s.machineModal=null;render()};
+  const mb=document.getElementById("modalCloseBg");if(mb)mb.onclick=e=>{if(e.target===mb){s.machineModal=null;render()}};
+
+  const openQr=document.getElementById("openQrScanner");
+  if(openQr)openQr.onclick=openQrScanner;
+  const openQrCard=document.getElementById("openQrScannerCard");
+  if(openQrCard)openQrCard.onclick=openQrScanner;
+  document.querySelectorAll(".machine-qr-button").forEach(b=>b.onclick=()=>openQrGenerator(b.dataset.qrFactory,b.dataset.qrLine,b.dataset.qrMachine));
+  document.querySelectorAll(".qr-close").forEach(b=>b.onclick=closeQrModal);
+  document.querySelectorAll(".qr-backdrop").forEach(bg=>bg.onclick=e=>{if(e.target===bg)closeQrModal()});
+  const applyManual=document.getElementById("applyQrManual");
+  if(applyManual)applyManual.onclick=()=>applyQrPayload(document.getElementById("qrManualText").value.trim());
+  const createFaultFromQr=document.getElementById("createFaultFromQr");
+  if(createFaultFromQr)createFaultFromQr.onclick=openFaultFormFromQr;
+  const printQr=document.getElementById("printQr");
+  if(printQr)printQr.onclick=()=>window.print();
+
+}
+function startEtiliSmart(){
+  setInterval(updateClockAndDurations,1000);
+  try{
+    render();
+  }catch(error){
+  console.error(error);
+  const app=document.getElementById("app");
+  if(app)app.innerHTML=`<div style="max-width:720px;margin:60px auto;padding:24px;font-family:Arial,sans-serif;background:#fff;border:1px solid #ddd;border-radius:16px">
+    <h2 style="margin-top:0">ETİLİSMART açılırken bir hata oluştu</h2>
+    <p>Tarayıcıdaki eski kayıtları temizleyip sayfayı yenileyin.</p>
+    <button id="resetEtiliSmart" style="border:0;border-radius:10px;padding:11px 16px;background:#f2b21a;font-weight:700">Kayıtları Temizle ve Yenile</button>
+    <pre style="white-space:pre-wrap;color:#a00">${String(error.message||error)}</pre>
+  </div>`;
+  const resetButton=document.getElementById("resetEtiliSmart");
+  if(resetButton){
+    resetButton.addEventListener("click",function(){
+      storageRemove(localStorage,K);
+      storageRemove(sessionStorage,"eslogin");
+      storageRemove(sessionStorage,"esuser");
+      location.reload();
+    });
+  }
+  }
+}
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",startEtiliSmart);
+}else{
+  startEtiliSmart();
+}
+</script></body></html>
