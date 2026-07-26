@@ -33,11 +33,12 @@ function visibleMaintenances(){
 }
 function canEditPlannedMaintenance(item){
   if(!item||!permissions().editPlanned||!userCanSeeFactory(item.factory))return false;
+  if(isDeveloper())return true;
   if(s.user?.role==="Bölüm Formeni")return !!s.user.department&&item.department===s.user.department;
-  return ["Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return ["Üretim Müdürü","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
 }
 function canCreatePlannedMaintenance(){
-  return permissions().editPlanned&&["Bölüm Formeni","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return permissions().editPlanned&&(isDeveloper()||["Bölüm Formeni","Üretim Müdürü","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role));
 }
 function calendarMonthLabel(date){
   return new Date(date).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});

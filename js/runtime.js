@@ -1038,7 +1038,7 @@ function bind(){
     machineEl.innerHTML=opts([],"Önce bölüm seçiniz");machineEl.disabled=true;
   };
   if(lineEl)lineEl.onchange=()=>{
-    const departments=catalogDepartments(factoryEl.value,lineEl.value);
+    const departments=catalogDepartments(factoryEl.value,lineEl.value).filter(department=>!roleIsDepartmentLimited()||!s.user?.department||department===s.user.department);
     depEl.innerHTML=opts(departments,"Bölüm seçiniz");
     depEl.disabled=!departments.length;
     machineEl.innerHTML=opts([],"Önce bölüm seçiniz");machineEl.disabled=true;
@@ -1051,9 +1051,13 @@ function bind(){
   const f=document.getElementById("fault");if(f)f.onsubmit=e=>{
     e.preventDefault();
     if(!canCreateFault()){
-      alert("Arıza kaydını yalnızca operatörler ve bölüm formenleri açabilir.");
+      alert("Arıza kaydını yalnızca operatörler, bölüm formenleri ve üretim müdürü açabilir.");
       s.page="dashboard";
       render();
+      return;
+    }
+    if(roleIsDepartmentLimited()&&s.user?.department&&depEl.value!==s.user.department){
+      alert("Yalnızca kendi bölümünüz için arıza kaydı açabilirsiniz.");
       return;
     }
     const now=new Date().toISOString();

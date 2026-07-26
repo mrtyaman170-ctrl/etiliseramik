@@ -22,6 +22,7 @@ kısıtlamaları nedeniyle yerel dosyada izin isteyebilir.
 - `js/qr.js`: QR üretme ve okutma
 - `js/app-shell.js`: Ortak uygulama durumu ve sayfa yönlendirme
 - `js/runtime.js`: Ekran olayları ve uygulamanın başlatılması
+- `KULLANICI_HESAPLARI.md`: Güncel demo kullanıcı ID ve şifre listesi
 
 Yeni geliştirmelerde yalnızca ilgili dosya düzenlenmelidir. Büyük tek HTML
 dosyası geliştirme kaynağı olarak kullanılmamalıdır.

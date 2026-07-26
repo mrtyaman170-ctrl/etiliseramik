@@ -39,6 +39,7 @@ function workMaintenanceOptions(factory,team){
 function workItemFactoryVisible(item){return userCanSeeFactory(item.factory)}
 function canManageWorkRequest(item){
   if(!item)return false;
+  if(isDeveloper())return workItemFactoryVisible(item);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(!permissions().manageRequests)return false;
   if(!workItemFactoryVisible(item))return false;
@@ -50,14 +51,17 @@ function canManageWorkRequest(item){
 }
 function canUpdateWorkOrder(item){
   if(!item||item.kind!=="workorder")return false;
+  if(isDeveloper())return workItemFactoryVisible(item);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(canManageWorkRequest(item))return true;
   return !!permissions().updateAssignedWorkOrders&&item.assignedTo===s.user?.name;
 }
 function canEditWorkItemCore(item){
   if(!item)return false;
+  if(isDeveloper())return workItemFactoryVisible(item);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(canManageWorkRequest(item))return true;
+  if(item.kind==="request"&&permissions().allDepartmentForemanRights&&workItemFactoryVisible(item))return true;
   return item.kind==="request"
     &&permissions().createRequest
     &&item.createdBy===s.user?.name
@@ -69,6 +73,7 @@ function canDeleteWorkItem(item){
     return canManageWorkRequest(item);
   }
   if(item.kind==="request"){
+    if(permissions().allDepartmentForemanRights)return workItemFactoryVisible(item);
     return s.user?.role==="Bölüm Formeni"
       &&workItemFactoryVisible(item)
       &&item.department===s.user?.department;
@@ -129,11 +134,14 @@ function workManagementPage(){
   const activeOrders=orders.filter(x=>!["done","cancelled"].includes(x.status));
   const overdue=activeOrders.filter(x=>x.planEnd&&x.planEnd<dateOnly(new Date()));
   const categories=["Aydınlatma","Klima / Havalandırma","Elektrik Tesisatı","Enerji Hattı","Kamera / Güvenlik","Mekanik İyileştirme","Kaynak / İmalat","Pnömatik Hat","Hidrolik Sistem","Makine Taşıma","Diğer"];
+  const requestDepartmentField=permissions().allDepartments
+    ?`<div class="field"><label>Bölüm</label><select id="wrDepartment" required>${Object.keys(STRUCTURE).map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>`
+    :`<div class="field"><label>Bölüm</label><input id="wrDepartment" value="${esc(s.user?.department||"")}" readonly required></div>`;
   const requestForm=s.workCreateMode==="request"?`<section class="work-create-card">
     <div class="section-modern-head"><div><h2>Yeni İş Talebi</h2><p>Arıza dışındaki yeni tesis, iyileştirme ve ihtiyaçlar için talep oluşturun.</p></div><button type="button" class="secondary" id="closeWorkCreate">Kapat</button></div>
     <form id="workRequestForm" class="work-create-form">
       <div class="field"><label>Fabrika</label><select id="wrFactory" required>${userFactories().map(f=>`<option>${esc(f)}</option>`).join("")}</select></div>
-      <div class="field"><label>Bölüm</label><input id="wrDepartment" value="${esc(s.user?.department||"")}" readonly required></div>
+      ${requestDepartmentField}
       <div class="field"><label>Talep Yeri</label><input id="wrLocation" placeholder="Örn. Pres panosu önü" required></div>
       <div class="field"><label>Kategori</label><select id="wrCategory" required>${categories.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>
       <div class="field full"><label>Talep Başlığı</label><input id="wrTitle" maxlength="120" placeholder="Örn. İlave aydınlatma yapılması" required></div>

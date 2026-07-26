@@ -278,8 +278,11 @@ function isOperator(){
 function permissions(){
   return ROLE_PERMISSIONS[s.user?.role]||{};
 }
+function isDeveloper(){
+  return s.user?.role==="Yazılımcı";
+}
 function canCreateFault(){
-  return ["Operatör","Bölüm Formeni"].includes(s.user?.role);
+  return !!permissions().newFault;
 }
 function canManageMachines(){
   return !!permissions().manageMachines;
@@ -289,6 +292,7 @@ function canManageDailyControlCatalog(){
 }
 function canManageShiftTeam(team){
   if(!permissions().manageShifts)return false;
+  if(isDeveloper())return true;
   if(s.user?.role==="Bakım Müdürü")return true;
   if(s.user?.role==="Elektrik Bakım Formeni")return team==="Elektrik Bakım";
   if(s.user?.role==="Mekanik Bakım Formeni")return team==="Mekanik Bakım";
@@ -297,6 +301,7 @@ function canManageShiftTeam(team){
 }
 function canRedirectFault(fault){
   if(!permissions().redirectFaults)return false;
+  if(isDeveloper())return userCanSeeFactory(fault.factory);
   const team=maintenanceDisciplineForFault(fault);
   if(s.user?.role==="Bakım Müdürü")return userCanSeeFactory(fault.factory);
   if(s.user?.role==="Elektrik Bakım Formeni")return team==="Elektrik Bakım"&&userCanSeeFactory(fault.factory);
@@ -323,7 +328,7 @@ function roleHasCharts(){
   return !!permissions().report;
 }
 function isManagementRole(){
-  return ["Bölüm Formeni","Fabrika Müdürü","Genel Müdür","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return ["Bölüm Formeni","Üretim Müdürü","Genel Müdür","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni","Yazılımcı"].includes(s.user?.role);
 }
 function roleIsDepartmentLimited(){
   return !!permissions().departmentOnly;
@@ -671,7 +676,7 @@ function login(){
           <div id="loginError" class="login-error"></div>
           <button class="primary login-submit">Giriş Yap <span>→</span></button>
         </form>
-        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span><small>Bakım personelleri kendilerine tanımlanan ID ve 6 haneli parola ile giriş yapabilir.</small></div>
+        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span><small>Personeller kendilerine tanımlanan 4 haneli ID ve parola ile giriş yapabilir.</small></div>
       </section>
     </div>
   </div>`;

@@ -73,7 +73,7 @@ function generateHistory(){
 
 /* Arıza, rapor ve makine ekranları */
 function newf(){
-  if(!canCreateFault())return `<div class="card empty-panel"><h3>Yetkisiz işlem</h3><p>Arıza kaydını yalnızca operatörler ve bölüm formenleri açabilir.</p></div>`;
+  if(!canCreateFault())return `<div class="card empty-panel"><h3>Yetkisiz işlem</h3><p>Arıza kaydını yalnızca operatörler, bölüm formenleri ve üretim müdürü açabilir.</p></div>`;
   return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">▣ QR Kod Tara</button></div>
   <div id="qrFilledInfo" class="qr-filled-info"></div><div class="fault-opener-preview"><span>ARIZA KAYDINI AÇAN</span><div><i>${esc((s.user?.name||"?").charAt(0))}</i><b>${esc(s.user?.name||"Giriş yapan kullanıcı")}</b><small>Kullanıcı ID: ${esc(s.user?.id||"-")}</small></div></div>
   <div class="card form"><form id="fault"><div class="formgrid">

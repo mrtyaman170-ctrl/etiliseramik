@@ -2182,21 +2182,48 @@ function findMachineDepartment(factory,line,machine){
 </script>
 <script>
 /* Kullanıcılar, roller ve personel yetkileri */
-const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"];
+const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Genel Müdür","Yazılımcı"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 
-const AUTH_VERSION="pc-v2";
+const AUTH_VERSION="pc-v4";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
 const USER_STORE_KEY="etilismart_users_v2";
+const FACTORY_DEPARTMENT_FOREMEN={
+  "4401":{"password":"1801","name":"1. Fabrika Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Masse Bölümü"},
+  "4402":{"password":"1802","name":"1. Fabrika Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},
+  "4403":{"password":"1803","name":"1. Fabrika Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Sır Bantları"},
+  "4404":{"password":"1804","name":"1. Fabrika Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Fırınlar"},
+  "4405":{"password":"1805","name":"1. Fabrika Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Polisaj"},
+  "4406":{"password":"1806","name":"1. Fabrika Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Paketleme"},
+  "4501":{"password":"2801","name":"2. Fabrika Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},
+  "4502":{"password":"2802","name":"2. Fabrika Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},
+  "4503":{"password":"2803","name":"2. Fabrika Sır Bantları Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},
+  "4504":{"password":"2804","name":"2. Fabrika Fırınlar Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},
+  "4505":{"password":"2805","name":"2. Fabrika Polisaj Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},
+  "4506":{"password":"2806","name":"2. Fabrika Paketleme Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"}
+};
+const PRODUCTION_MANAGER_USERS={
+  "3901":{"password":"3901","name":"1. Fabrika Üretim Müdürü","role":"Üretim Müdürü","factories":["1. Fabrika"],"department":""},
+  "3902":{"password":"3902","name":"2. Fabrika Üretim Müdürü","role":"Üretim Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""}
+};
+const DEVELOPER_USERS={
+  "9001":{"password":"9001","name":"Mert Yaman","role":"Yazılımcı","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"}
+};
+const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
+function removeLegacyUsers(users){
+  REMOVED_LEGACY_USER_IDS.forEach(id=>delete users[id]);
+  return users;
+}
+const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS});
 function loadAppUsers(){
   const saved=safeJson(storageGet(localStorage,USER_STORE_KEY,"null"),null);
   if(saved&&typeof saved==="object"){
-    const merged={...JSON.parse(JSON.stringify(DEMO_USERS)),...saved};
+    const merged=removeLegacyUsers({...JSON.parse(JSON.stringify(DEMO_USERS)),...saved,...JSON.parse(JSON.stringify(FACTORY_DEPARTMENT_FOREMEN)),...JSON.parse(JSON.stringify(PRODUCTION_MANAGER_USERS)),...JSON.parse(JSON.stringify(DEVELOPER_USERS))});
     storageSet(localStorage,USER_STORE_KEY,JSON.stringify(merged));
     return merged;
   }
-  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(DEMO_USERS));
-  return JSON.parse(JSON.stringify(DEMO_USERS));
+  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(DEFAULT_USERS));
+  return JSON.parse(JSON.stringify(DEFAULT_USERS));
 }
 let APP_USERS=loadAppUsers();
 function saveAppUsers(){storageSet(localStorage,USER_STORE_KEY,JSON.stringify(APP_USERS));}
@@ -2363,7 +2390,7 @@ function participantCandidateNames(fault){
 }
 
 function canAddMaintenanceLog(){
-  return ["Bakım Personeli","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni","Bakım Müdürü"].includes(s.user?.role);
+  return ["Bakım Personeli","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni","Bakım Müdürü","Yazılımcı"].includes(s.user?.role);
 }
 function saveMaintenanceLogs(){
   storageSet(localStorage,MAINTENANCE_LOG_KEY,JSON.stringify(s.maintenanceLogs||[]));
@@ -2553,14 +2580,15 @@ function deleteMaintenancePersonnelAccount(id){
 
 const ROLE_PERMISSIONS={
   "Genel Müdür":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:false,personnel:true,materials:true,workRequests:true,editPlanned:false,editStatus:false,viewPerformance:true,allFactories:true,dailyChecks:true},
-  "Fabrika Müdürü":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:false,personnel:true,materials:true,workRequests:true,editPlanned:false,editStatus:false,viewPerformance:true,dailyChecks:true},
   "Bakım Müdürü":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,viewPerformance:true,allFactories:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
   "Elektrik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
   "Mekanik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
   "Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
   "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,createRequest:true,editPlanned:true,editStatus:false,departmentOnly:true},
+  "Üretim Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,createRequest:true,editPlanned:true,editStatus:false,allDepartments:true,allDepartmentForemanRights:true},
   "Bakım Personeli":{dashboard:true,newFault:false,faults:true,report:false,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,editPlanned:false,editStatus:true,manageFaultMaterials:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,dailyChecks:true,completeDailyChecks:true},
-  "Operatör":{dashboard:true,newFault:true,faults:true,report:false,layout:false,planned:true,shiftSchedule:true,workRequests:false,editPlanned:false,editStatus:false,departmentOnly:true,ownFaultsOnly:true,viewCurrentShiftMaintenance:true}
+  "Operatör":{dashboard:true,newFault:true,faults:true,report:false,layout:false,planned:true,shiftSchedule:true,workRequests:false,editPlanned:false,editStatus:false,departmentOnly:true,ownFaultsOnly:true,viewCurrentShiftMaintenance:true},
+  "Yazılımcı":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,dailyChecks:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,manageAllUserAccounts:true,manageOwnTeam:true,viewPerformance:true,allFactories:true,allDepartments:true,allDepartmentForemanRights:true,manageFaultMaterials:true,manageRequests:true,createRequest:true,createDirectWorkOrder:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,manageDailyChecks:true,completeDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true}
 };
 
 /* Personel ekranları */
@@ -2909,12 +2937,13 @@ function dailyDutyMembers(factory,team,dateValue){
 }
 function dailyAssetCanBeManaged(asset){
   if(!permissions().manageDailyChecks||asset.contractorMonthly)return false;
+  if(isDeveloper())return dailyControlFactories().includes(asset.factory);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(!dailyControlFactories().includes(asset.factory))return false;
   if(s.user?.role==="Elektrik Bakım Formeni")return asset.team==="Elektrik Bakım";
   if(s.user?.role==="Mekanik Bakım Formeni")return asset.team==="Mekanik Bakım";
   if(s.user?.role==="Bakım Formeni")return true;
-  return ["Genel Müdür","Fabrika Müdürü"].includes(s.user?.role);
+  return s.user?.role==="Genel Müdür";
 }
 function canCompleteDailyAsset(asset,dateValue){
   if(asset.contractorMonthly)return false;
@@ -2944,7 +2973,7 @@ function canCompleteUtilityAsset(asset,dateValue){
 function canRecordContractorCheck(asset){
   if(!asset?.contractorMonthly)return false;
   if(!dailyControlFactories().includes(asset.factory))return false;
-  return ["Bakım Müdürü","Elektrik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return isDeveloper()||["Bakım Müdürü","Elektrik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
 }
 function dailyAssetTypeLabel(type){
   return ({
@@ -3481,6 +3510,7 @@ function workMaintenanceOptions(factory,team){
 function workItemFactoryVisible(item){return userCanSeeFactory(item.factory)}
 function canManageWorkRequest(item){
   if(!item)return false;
+  if(isDeveloper())return workItemFactoryVisible(item);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(!permissions().manageRequests)return false;
   if(!workItemFactoryVisible(item))return false;
@@ -3492,14 +3522,17 @@ function canManageWorkRequest(item){
 }
 function canUpdateWorkOrder(item){
   if(!item||item.kind!=="workorder")return false;
+  if(isDeveloper())return workItemFactoryVisible(item);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(canManageWorkRequest(item))return true;
   return !!permissions().updateAssignedWorkOrders&&item.assignedTo===s.user?.name;
 }
 function canEditWorkItemCore(item){
   if(!item)return false;
+  if(isDeveloper())return workItemFactoryVisible(item);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(canManageWorkRequest(item))return true;
+  if(item.kind==="request"&&permissions().allDepartmentForemanRights&&workItemFactoryVisible(item))return true;
   return item.kind==="request"
     &&permissions().createRequest
     &&item.createdBy===s.user?.name
@@ -3511,6 +3544,7 @@ function canDeleteWorkItem(item){
     return canManageWorkRequest(item);
   }
   if(item.kind==="request"){
+    if(permissions().allDepartmentForemanRights)return workItemFactoryVisible(item);
     return s.user?.role==="Bölüm Formeni"
       &&workItemFactoryVisible(item)
       &&item.department===s.user?.department;
@@ -3571,11 +3605,14 @@ function workManagementPage(){
   const activeOrders=orders.filter(x=>!["done","cancelled"].includes(x.status));
   const overdue=activeOrders.filter(x=>x.planEnd&&x.planEnd<dateOnly(new Date()));
   const categories=["Aydınlatma","Klima / Havalandırma","Elektrik Tesisatı","Enerji Hattı","Kamera / Güvenlik","Mekanik İyileştirme","Kaynak / İmalat","Pnömatik Hat","Hidrolik Sistem","Makine Taşıma","Diğer"];
+  const requestDepartmentField=permissions().allDepartments
+    ?`<div class="field"><label>Bölüm</label><select id="wrDepartment" required>${Object.keys(STRUCTURE).map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>`
+    :`<div class="field"><label>Bölüm</label><input id="wrDepartment" value="${esc(s.user?.department||"")}" readonly required></div>`;
   const requestForm=s.workCreateMode==="request"?`<section class="work-create-card">
     <div class="section-modern-head"><div><h2>Yeni İş Talebi</h2><p>Arıza dışındaki yeni tesis, iyileştirme ve ihtiyaçlar için talep oluşturun.</p></div><button type="button" class="secondary" id="closeWorkCreate">Kapat</button></div>
     <form id="workRequestForm" class="work-create-form">
       <div class="field"><label>Fabrika</label><select id="wrFactory" required>${userFactories().map(f=>`<option>${esc(f)}</option>`).join("")}</select></div>
-      <div class="field"><label>Bölüm</label><input id="wrDepartment" value="${esc(s.user?.department||"")}" readonly required></div>
+      ${requestDepartmentField}
       <div class="field"><label>Talep Yeri</label><input id="wrLocation" placeholder="Örn. Pres panosu önü" required></div>
       <div class="field"><label>Kategori</label><select id="wrCategory" required>${categories.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>
       <div class="field full"><label>Talep Başlığı</label><input id="wrTitle" maxlength="120" placeholder="Örn. İlave aydınlatma yapılması" required></div>
@@ -4071,11 +4108,12 @@ function visibleMaintenances(){
 }
 function canEditPlannedMaintenance(item){
   if(!item||!permissions().editPlanned||!userCanSeeFactory(item.factory))return false;
+  if(isDeveloper())return true;
   if(s.user?.role==="Bölüm Formeni")return !!s.user.department&&item.department===s.user.department;
-  return ["Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return ["Üretim Müdürü","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
 }
 function canCreatePlannedMaintenance(){
-  return permissions().editPlanned&&["Bölüm Formeni","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return permissions().editPlanned&&(isDeveloper()||["Bölüm Formeni","Üretim Müdürü","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role));
 }
 function calendarMonthLabel(date){
   return new Date(date).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});
@@ -4268,7 +4306,7 @@ function generateHistory(){
 
 /* Arıza, rapor ve makine ekranları */
 function newf(){
-  if(!canCreateFault())return `<div class="card empty-panel"><h3>Yetkisiz işlem</h3><p>Arıza kaydını yalnızca operatörler ve bölüm formenleri açabilir.</p></div>`;
+  if(!canCreateFault())return `<div class="card empty-panel"><h3>Yetkisiz işlem</h3><p>Arıza kaydını yalnızca operatörler, bölüm formenleri ve üretim müdürü açabilir.</p></div>`;
   return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">▣ QR Kod Tara</button></div>
   <div id="qrFilledInfo" class="qr-filled-info"></div><div class="fault-opener-preview"><span>ARIZA KAYDINI AÇAN</span><div><i>${esc((s.user?.name||"?").charAt(0))}</i><b>${esc(s.user?.name||"Giriş yapan kullanıcı")}</b><small>Kullanıcı ID: ${esc(s.user?.id||"-")}</small></div></div>
   <div class="card form"><form id="fault"><div class="formgrid">
@@ -4845,8 +4883,11 @@ function isOperator(){
 function permissions(){
   return ROLE_PERMISSIONS[s.user?.role]||{};
 }
+function isDeveloper(){
+  return s.user?.role==="Yazılımcı";
+}
 function canCreateFault(){
-  return ["Operatör","Bölüm Formeni"].includes(s.user?.role);
+  return !!permissions().newFault;
 }
 function canManageMachines(){
   return !!permissions().manageMachines;
@@ -4856,6 +4897,7 @@ function canManageDailyControlCatalog(){
 }
 function canManageShiftTeam(team){
   if(!permissions().manageShifts)return false;
+  if(isDeveloper())return true;
   if(s.user?.role==="Bakım Müdürü")return true;
   if(s.user?.role==="Elektrik Bakım Formeni")return team==="Elektrik Bakım";
   if(s.user?.role==="Mekanik Bakım Formeni")return team==="Mekanik Bakım";
@@ -4864,6 +4906,7 @@ function canManageShiftTeam(team){
 }
 function canRedirectFault(fault){
   if(!permissions().redirectFaults)return false;
+  if(isDeveloper())return userCanSeeFactory(fault.factory);
   const team=maintenanceDisciplineForFault(fault);
   if(s.user?.role==="Bakım Müdürü")return userCanSeeFactory(fault.factory);
   if(s.user?.role==="Elektrik Bakım Formeni")return team==="Elektrik Bakım"&&userCanSeeFactory(fault.factory);
@@ -4890,7 +4933,7 @@ function roleHasCharts(){
   return !!permissions().report;
 }
 function isManagementRole(){
-  return ["Bölüm Formeni","Fabrika Müdürü","Genel Müdür","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return ["Bölüm Formeni","Üretim Müdürü","Genel Müdür","Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni","Yazılımcı"].includes(s.user?.role);
 }
 function roleIsDepartmentLimited(){
   return !!permissions().departmentOnly;
@@ -5238,7 +5281,7 @@ function login(){
           <div id="loginError" class="login-error"></div>
           <button class="primary login-submit">Giriş Yap <span>→</span></button>
         </form>
-        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span><small>Bakım personelleri kendilerine tanımlanan ID ve 6 haneli parola ile giriş yapabilir.</small></div>
+        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span><small>Personeller kendilerine tanımlanan 4 haneli ID ve parola ile giriş yapabilir.</small></div>
       </section>
     </div>
   </div>`;
@@ -8488,7 +8531,7 @@ function bind(){
     machineEl.innerHTML=opts([],"Önce bölüm seçiniz");machineEl.disabled=true;
   };
   if(lineEl)lineEl.onchange=()=>{
-    const departments=catalogDepartments(factoryEl.value,lineEl.value);
+    const departments=catalogDepartments(factoryEl.value,lineEl.value).filter(department=>!roleIsDepartmentLimited()||!s.user?.department||department===s.user.department);
     depEl.innerHTML=opts(departments,"Bölüm seçiniz");
     depEl.disabled=!departments.length;
     machineEl.innerHTML=opts([],"Önce bölüm seçiniz");machineEl.disabled=true;
@@ -8501,9 +8544,13 @@ function bind(){
   const f=document.getElementById("fault");if(f)f.onsubmit=e=>{
     e.preventDefault();
     if(!canCreateFault()){
-      alert("Arıza kaydını yalnızca operatörler ve bölüm formenleri açabilir.");
+      alert("Arıza kaydını yalnızca operatörler, bölüm formenleri ve üretim müdürü açabilir.");
       s.page="dashboard";
       render();
+      return;
+    }
+    if(roleIsDepartmentLimited()&&s.user?.department&&depEl.value!==s.user.department){
+      alert("Yalnızca kendi bölümünüz için arıza kaydı açabilirsiniz.");
       return;
     }
     const now=new Date().toISOString();

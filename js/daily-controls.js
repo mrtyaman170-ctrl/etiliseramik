@@ -161,12 +161,13 @@ function dailyDutyMembers(factory,team,dateValue){
 }
 function dailyAssetCanBeManaged(asset){
   if(!permissions().manageDailyChecks||asset.contractorMonthly)return false;
+  if(isDeveloper())return dailyControlFactories().includes(asset.factory);
   if(s.user?.role==="Bakım Müdürü")return true;
   if(!dailyControlFactories().includes(asset.factory))return false;
   if(s.user?.role==="Elektrik Bakım Formeni")return asset.team==="Elektrik Bakım";
   if(s.user?.role==="Mekanik Bakım Formeni")return asset.team==="Mekanik Bakım";
   if(s.user?.role==="Bakım Formeni")return true;
-  return ["Genel Müdür","Fabrika Müdürü"].includes(s.user?.role);
+  return s.user?.role==="Genel Müdür";
 }
 function canCompleteDailyAsset(asset,dateValue){
   if(asset.contractorMonthly)return false;
@@ -196,7 +197,7 @@ function canCompleteUtilityAsset(asset,dateValue){
 function canRecordContractorCheck(asset){
   if(!asset?.contractorMonthly)return false;
   if(!dailyControlFactories().includes(asset.factory))return false;
-  return ["Bakım Müdürü","Elektrik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return isDeveloper()||["Bakım Müdürü","Elektrik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
 }
 function dailyAssetTypeLabel(type){
   return ({
