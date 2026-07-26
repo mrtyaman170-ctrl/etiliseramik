@@ -990,6 +990,96 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 }
 @media(max-width:520px){.maintenance-kpis article{padding:11px}.maintenance-kpis b{font-size:21px}.maintenance-kpis i{width:38px;height:38px}.maintenance-title .primary{width:100%}}
 
+
+/* === Mobil arıza kayıtları tipografi standardı v2 === */
+@media(max-width:620px){
+  .table-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+  }
+  .table-wrap table,.table-wrap tbody{
+    width:100%!important;
+    min-width:0!important;
+  }
+  .table-wrap tr{
+    width:100%!important;
+    margin:0 0 12px!important;
+    padding:12px 14px!important;
+    border-radius:16px!important;
+    overflow:hidden!important;
+  }
+  .table-wrap td{
+    display:grid!important;
+    grid-template-columns:104px minmax(0,1fr)!important;
+    align-items:start!important;
+    column-gap:12px!important;
+    width:100%!important;
+    min-width:0!important;
+    padding:10px 0!important;
+    font-family:"Segoe UI",Arial,sans-serif!important;
+    font-size:13px!important;
+    font-weight:400!important;
+    line-height:1.4!important;
+    color:#222a36!important;
+    text-align:left!important;
+  }
+  .table-wrap td::before{
+    position:static!important;
+    display:block!important;
+    width:auto!important;
+    font-family:"Segoe UI",Arial,sans-serif!important;
+    font-size:10.5px!important;
+    font-weight:800!important;
+    line-height:1.4!important;
+    color:#727c89!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+  }
+  .table-wrap td b{
+    font-family:"Segoe UI",Arial,sans-serif!important;
+    font-size:13px!important;
+    font-weight:700!important;
+    line-height:1.4!important;
+    color:#202733!important;
+  }
+  .table-wrap td small{
+    font-family:"Segoe UI",Arial,sans-serif!important;
+    font-size:11px!important;
+    font-weight:400!important;
+    line-height:1.45!important;
+    color:#6f7987!important;
+  }
+  .table-wrap .duration{
+    font-size:13px!important;
+    font-weight:600!important;
+    white-space:normal!important;
+  }
+  .table-wrap .status{
+    display:inline-flex!important;
+    width:max-content!important;
+    max-width:100%!important;
+    font-size:10.5px!important;
+    font-weight:800!important;
+    line-height:1.2!important;
+    padding:6px 9px!important;
+    white-space:normal!important;
+  }
+  .table-wrap .sel{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:42px!important;
+    font-size:13px!important;
+    font-weight:500!important;
+    padding:8px 10px!important;
+  }
+  .stop-tag{
+    font-size:9.5px!important;
+    font-weight:800!important;
+  }
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -1024,8 +1114,8 @@ const K="etilismart_faults_v5";
 
 const FACTORIES={
   "1. Fabrika":["1. Hat","2. Hat","3. Hat"],
-  "2. Fabrika B Blok":["1. Hat","2. Hat"],
-  "2. Fabrika A Blok":["1. Hat","2. Hat","3. Hat"]
+  "2. Fabrika B Blok":["1. Hat","2. Hat","Ortak Alan"],
+  "2. Fabrika A Blok":["1. Hat","2. Hat","3. Hat","Ortak Alan"]
 };
 
 const STRUCTURE={
@@ -1036,6 +1126,39 @@ const STRUCTURE={
   "Polisaj":["Nano","Parlatma","Kareleme","Kalibre","Su Emme","Kayışlar"],
   "Paketleme":["Kalite Masası","Stoker","Paketleme","Bantlar","Etiket Yazıcı","Deste Birleştirici","Deste Çevirici","Paletizer","Streçleme"]
 };
+
+// Excel dosyasından alınan gerçek 2. Fabrika makine-hat yapısı.
+const MACHINE_CATALOG_2_FACTORY={"2. Fabrika B Blok":{"Ortak Alan":{"Masse Bölümü":["BEŞİKER 1","BEŞİKER 2","BEŞİKER DEĞİRMEN ARASI KONVEYÖRLER","1. DEĞİRMEN","2. DEĞİRMEN","3. DEĞİRMEN","4. DEĞİRMEN","5. DEĞİRMEN","6. DEĞİRMEN","7. DEĞİRMEN","8. DEĞİRMEN","ÇAMUR HAVUZU 1","ÇAMUR HAVUZU 2","ÇAMUR HAVUZU 3","ÇAMUR HAVUZU 4","ELEK 1","ELEK 2","ELEK 3","ELEK 4","SERVİS TANKI","ÇAMUR POMPALARI","SPRAY DRYER","SPRAY SİLO ARASI KONVEYÖRLER","1. SİLO","2. SİLO","3. SİLO","4. SİLO","5. SİLO","6. SİLO","7. SİLO","8. SİLO","9. SİLO","10. SİLO","SİLO PRES ARASI KONVEYÖRLER","İÇ ATIK SU HAVUZU","DIŞ ELEK"],"Sır Bantları":["1. SIR TANKI","2. SIR TANKI","3. SIR TANKI","4. SIR TANKI","1. MASTERJET","2. MASTERJET","3. MASTERJET","4. MASTERJET","5. MASTERJET","6. MASTERJET","1. SIR KAZANI","2. SIR KAZANI","3. SIR KAZANI","4. SIR KAZANI","5. SIR KAZANI","6. SIR KAZANI"],"Fırınlar":["POPPİ","TGV 1","TGV 2","TGV 3"],"Paketleme":["TRANSPALET 1","TRANSPALET 2","TRANSPALET 3","TRANSPALET 4"]},"1. Hat":{"Pres Bölümü":["1. PRES","2. PRES","PRES RULOLAR","1. PRES ÇEVİRİCİ","2. PRES ÇEVİRİCİ","2. KURUTMA GİRİŞİ ASANSÖR VE RULOLAR","2. KURUTMA","1. PRES YAĞ SOĞUTUCU","2. PRES YAĞ SOĞUTUCU"],"Sır Bantları":["1. KURUTMA ÇIKIŞI ASANSÖR VE RULOLAR","1. KURUTMA- SU ATMA KABİNİ ARASI BANTLAR","SU ATMA KABİNİ","SU ATMA KABİNİ - ENGOP ARASI BANTLAR","KENAR TAŞLAMA VE FIRÇA","1. ENGOP","ENGOP DİJİTAL ARASI BANTLAR","DİJİTAL ÖNCESİ FANLAR","1. DİJİTAL","DİJİTAL SONRASI KUMLAMA","1. SIRLAMA","DİJİTAL SIRLAMA ARASI BANTLAR","DİJİTAL ENGOP ARASI BANTLAR","SIRLAMA ELEVATÖR ARASI BANTLAR","ELEVATÖR DÖNER ARASI BANTLAR"],"Fırınlar":["1. FIRIN GİRİŞİ 1. ELEVATÖR","DÖNER SONRASI BANTLAR","1. FIRIN GİRİŞİ RULOLAR","1. FIRIN GİRİŞİ BARİYER","1. FIRIN","1. FIRIN ÇIKIŞI RULOLAR","DÖNER","1. FIRIN ÇIKIŞI -DÖNER ARASI KAYIŞLAR","DÖNER - HAVUZ ARASI BANTLAR","HAVUZ BANTLAR","HAVUZ ŞEMATİK ARASI BANTLAR","1. FIRIN ÇIKIŞI ŞEMATİK"],"Polisaj":["1. POLİSAJ ŞEMATİK","1. POLİSAJ ŞEMATİK ÇIKIŞI BANTLAR","1. NANO","2. NANO","3. NANO","1. PARLATMA","2. PARLATMA","3. PARLATMA","4. PARLATMA","1. KARELEME","2. KARELEME","1. KALİBRE","1. SU EMME","KARELEME ÇIKIŞI FANLAR","1. POLİSAJ HATTI BANTLAR"],"Paketleme":["1. PAKETLEME ŞEMATİK","1. KALİTE MASASI ÖNCESİ BANTLAR","1. KALİTE MASASI","1. KALİTE MASASI SONRASI BANTLAR (SYNTHESIS ONCESI)","1. SYNTHESIS (STOKER)","1. PAKETLEME","1. DESTE BİRLEŞTİCİ","1. ETİKET YAZICI","1. DESTE ÇEVİRİCİ","1. PALETİZER","1.STREÇLEME"]},"2. Hat":{"Pres Bölümü":["3. PRES","4. PRES","3-4 PRES RULOLAR","3. PRES ÇEVİRİCİ","4. PRES ÇEVİRİCİ","2. KURUTMA GİRİŞİ ASANSÖR VE RULOLAR","2. KURUTMA","3. PRES YAĞ SOĞUTUCU","4. PRES YAĞ SOĞUTUCU"],"Sır Bantları":["2. KURUTMA ÇIKIŞI ASANSÖR VE RULOLAR","2. KURUTMA- SU ATMA KABİNİ ARASI BANTLAR","SU ATMA KABİNİ","SU ATMA KABİNİ - ENGOP ARASI BANTLAR","KENAR TAŞLAMA VE FIRÇA","2. ENGOP","ENGOP DİJİTAL ARASI BANTLAR","DİJİTAL ÖNCESİ FANLAR","2. DİJİTAL","DİJİTAL SONRASI KUMLAMA","2. SIRLAMA","DİJİTAL SIRLAMA ARASI BANTLAR","DİJİTAL ENGOP ARASI BANTLAR","SIRLAMA ELEVATÖR ARASI BANTLAR","ELEVATÖR DÖNER ARASI BANTLAR"],"Fırınlar":["2. FIRIN GİRİŞİ 2. ELEVATÖR","DÖNER SONRASI BANTLAR","2. FIRIN GİRİŞİ RULOLAR","2. FIRIN GİRİŞİ BARİYER","2. FIRIN","2. FIRIN ÇIKIŞI RULOLAR","DÖNER","2. FIRIN ÇIKIŞI -DÖNER ARASI KAYIŞLAR","DÖNER - HAVUZ ARASI BANTLAR","HAVUZ BANTLAR","HAVUZ ŞEMATİK ARASI BANTLAR","2. FIRIN ÇIKIŞI ŞEMATİK"],"Polisaj":["2. POLİSAJ ŞEMATİK","2. POLİSAJ ŞEMATİK ÇIKIŞI BANTLAR","4. NANO","5. NANO","6. NANO","5. PARLATMA","6. PARLATMA","7. PARLATMA","8. PARLATMA","3. KARELEME","4. KARELEME","2. KALİBRE","2. SU EMME","KARELEME ÇIKIŞI FANLAR","2. POLİSAJ HATTI BANTLAR"],"Paketleme":["2. PAKETLEME ŞEMATİK","2. KALİTE MASASI ÖNCESİ BANTLAR","2. KALİTE MASASI","2. KALİTE MASASI SONRASI BANTLAR (SYNTHESIS ONCESI)","2. SYNTHESIS (STOKER)","2. PAKETLEME","2. DESTE BİRLEŞTİCİ","2. ETİKET YAZICI","2. DESTE ÇEVİRİCİ","2. PALETİZER","2.STREÇLEME"]}},"2. Fabrika A Blok":{"Ortak Alan":{"Masse Bölümü":["BEŞİKER 1","BEŞİKER 2","BEŞİKER DEĞİRMEN ARASI KONVEYÖRLER","1. DEĞİRMEN","2. DEĞİRMEN","3. DEĞİRMEN","4. DEĞİRMEN","5. DEĞİRMEN","6. DEĞİRMEN","7. DEĞİRMEN","8. DEĞİRMEN","ÇAMUR HAVUZU 1","ÇAMUR HAVUZU 2","ÇAMUR HAVUZU 3","ÇAMUR HAVUZU 4","ELEK 1","ELEK 2","ELEK 3","ELEK 4","SERVİS TANKI","ÇAMUR POMPALARI","SPRAY DRYER","SPRAY SİLO ARASI KONVEYÖRLER","1. SİLO","2. SİLO","3. SİLO","4. SİLO","5. SİLO","6. SİLO","7. SİLO","8. SİLO","9. SİLO","10. SİLO","SİLO PRES ARASI KONVEYÖRLER","İÇ ATIK SU HAVUZU","DIŞ ELEK"],"Sır Bantları":["1. SIR TANKI","2. SIR TANKI","3. SIR TANKI","4. SIR TANKI","1. MASTERJET","2. MASTERJET","3. MASTERJET","4. MASTERJET","5. MASTERJET","6. MASTERJET","1. SIR KAZANI","2. SIR KAZANI","3. SIR KAZANI","4. SIR KAZANI","5. SIR KAZANI","6. SIR KAZANI"],"Fırınlar":["POPPİ","AGV 1","AGV 2"],"Paketleme":["TRANSPALET 1","TRANSPALET 2","TRANSPALET 3","TRANSPALET 4"]},"1. Hat":{"Pres Bölümü":["1. PRES","2. PRES","PRES RULOLAR","1. PRES ÇEVİRİCİ","2. PRES ÇEVİRİCİ","2. KURUTMA GİRİŞİ ASANSÖR VE RULOLAR","2. KURUTMA","1. PRES YAĞ SOĞUTUCU","2. PRES YAĞ SOĞUTUCU"],"Sır Bantları":["1. KURUTMA ÇIKIŞI ASANSÖR VE RULOLAR","1. KURUTMA- SU ATMA KABİNİ ARASI BANTLAR","SU ATMA KABİNİ","SU ATMA KABİNİ - ENGOP ARASI BANTLAR","KENAR TAŞLAMA VE FIRÇA","1. ENGOP","ENGOP DİJİTAL ARASI BANTLAR","DİJİTAL ÖNCESİ FANLAR","1. DİJİTAL","DİJİTAL SONRASI KUMLAMA","1. SIRLAMA","DİJİTAL SIRLAMA ARASI BANTLAR","DİJİTAL ENGOP ARASI BANTLAR","SIRLAMA ELEVATÖR ARASI BANTLAR","ELEVATÖR DÖNER ARASI BANTLAR"],"Fırınlar":["1. FIRIN GİRİŞİ 1. ELEVATÖR","DÖNER SONRASI BANTLAR","1. FIRIN GİRİŞİ RULOLAR","1. FIRIN GİRİŞİ BARİYER","1. FIRIN","1. FIRIN ÇIKIŞI RULOLAR","DÖNER","1. FIRIN ÇIKIŞI -DÖNER ARASI KAYIŞLAR","DÖNER - HAVUZ ARASI BANTLAR","HAVUZ BANTLAR","HAVUZ ŞEMATİK ARASI BANTLAR","1. FIRIN ÇIKIŞI ŞEMATİK"],"Polisaj":["1. POLİSAJ ŞEMATİK","1. POLİSAJ ŞEMATİK ÇIKIŞI BANTLAR","1. NANO","2. NANO","3. NANO","1. PARLATMA","2. PARLATMA","3. PARLATMA","4. PARLATMA","1. KARELEME","2. KARELEME","1. KALİBRE","1. SU EMME","KARELEME ÇIKIŞI FANLAR","1. POLİSAJ HATTI BANTLAR"],"Paketleme":["1. PAKETLEME ŞEMATİK","1. KALİTE MASASI ÖNCESİ BANTLAR","1. KALİTE MASASI","1. KALİTE MASASI SONRASI BANTLAR (SYNTHESIS ONCESI)","1. SYNTHESIS (STOKER)","1. PAKETLEME","1. DESTE BİRLEŞTİCİ","1. ETİKET YAZICI","1. DESTE ÇEVİRİCİ","1. PALETİZER","1.STREÇLEME"]},"2. Hat":{"Pres Bölümü":["3. PRES","4. PRES","3-4 PRES RULOLAR","3. PRES ÇEVİRİCİ","4. PRES ÇEVİRİCİ","2. KURUTMA GİRİŞİ ASANSÖR VE RULOLAR","2. KURUTMA","3. PRES YAĞ SOĞUTUCU","4. PRES YAĞ SOĞUTUCU"],"Sır Bantları":["2. KURUTMA ÇIKIŞI ASANSÖR VE RULOLAR","2. KURUTMA- SU ATMA KABİNİ ARASI BANTLAR","SU ATMA KABİNİ","SU ATMA KABİNİ - ENGOP ARASI BANTLAR","KENAR TAŞLAMA VE FIRÇA","2. ENGOP","ENGOP DİJİTAL ARASI BANTLAR","DİJİTAL ÖNCESİ FANLAR","2. DİJİTAL","DİJİTAL SONRASI KUMLAMA","2. SIRLAMA","DİJİTAL SIRLAMA ARASI BANTLAR","DİJİTAL ENGOP ARASI BANTLAR","SIRLAMA ELEVATÖR ARASI BANTLAR","ELEVATÖR DÖNER ARASI BANTLAR"],"Fırınlar":["2. FIRIN GİRİŞİ 2. ELEVATÖR","DÖNER SONRASI BANTLAR","2. FIRIN GİRİŞİ RULOLAR","2. FIRIN GİRİŞİ BARİYER","2. FIRIN","2. FIRIN ÇIKIŞI RULOLAR","DÖNER","2. FIRIN ÇIKIŞI -DÖNER ARASI KAYIŞLAR","DÖNER - HAVUZ ARASI BANTLAR","HAVUZ BANTLAR","HAVUZ ŞEMATİK ARASI BANTLAR","2. FIRIN ÇIKIŞI ŞEMATİK"],"Polisaj":["2. POLİSAJ ŞEMATİK","2. POLİSAJ ŞEMATİK ÇIKIŞI BANTLAR","4. NANO","5. NANO","6. NANO","5. PARLATMA","6. PARLATMA","7. PARLATMA","8. PARLATMA","3. KARELEME","4. KARELEME","2. KALİBRE","2. SU EMME","KARELEME ÇIKIŞI FANLAR","2. POLİSAJ HATTI BANTLAR"],"Paketleme":["2. PAKETLEME ŞEMATİK","2. KALİTE MASASI ÖNCESİ BANTLAR","2. KALİTE MASASI","2. KALİTE MASASI SONRASI BANTLAR (SYNTHESIS ONCESI)","2. SYNTHESIS (STOKER)","2. PAKETLEME","2. DESTE BİRLEŞTİCİ","2. ETİKET YAZICI","2. DESTE ÇEVİRİCİ","2. PALETİZER","2.STREÇLEME"]},"3. Hat":{"Polisaj":["3. POLİSAJ ŞEMATİK","3. POLİSAJ ŞEMATİK ÇIKIŞI BANTLAR","7. NANO","8. NANO","9. NANO","9. PARLATMA","10. PARLATMA","11. PARLATMA","12. PARLATMA","5. KARELEME","6. KARELEME","3. KALİBRE","3. SU EMME","KARELEME ÇIKIŞI FANLAR","3. POLİSAJ HATTI BANTLAR"],"Paketleme":["3. PAKETLEME ŞEMATİK","3. KALİTE MASASI ÖNCESİ BANTLAR","3. KALİTE MASASI","3. KALİTE MASASI SONRASI BANTLAR (SYNTHESIS ONCESI)","3. SYNTHESIS (STOKER)","3. PAKETLEME","3. DESTE BİRLEŞTİCİ","3. ETİKET YAZICI","3. DESTE ÇEVİRİCİ","3. PALETİZER","3.STREÇLEME"]}}};
+
+function catalogLines(factory){
+  if(MACHINE_CATALOG_2_FACTORY[factory]){
+    const lines=Object.keys(MACHINE_CATALOG_2_FACTORY[factory]);
+    return lines.sort((a,b)=>{
+      if(a==="Ortak Alan")return 1;
+      if(b==="Ortak Alan")return -1;
+      return a.localeCompare(b,"tr",{numeric:true});
+    });
+  }
+  return FACTORIES[factory]||[];
+}
+function catalogDepartments(factory,line){
+  if(MACHINE_CATALOG_2_FACTORY[factory]){
+    return Object.keys(MACHINE_CATALOG_2_FACTORY[factory][line]||{});
+  }
+  return Object.keys(STRUCTURE);
+}
+function catalogMachines(factory,line,department){
+  if(MACHINE_CATALOG_2_FACTORY[factory]){
+    return MACHINE_CATALOG_2_FACTORY[factory]?.[line]?.[department]||[];
+  }
+  return STRUCTURE[department]||[];
+}
+function allFactoryMachines(factory){
+  if(!MACHINE_CATALOG_2_FACTORY[factory])return Object.values(STRUCTURE).flat();
+  return Object.values(MACHINE_CATALOG_2_FACTORY[factory])
+    .flatMap(departments=>Object.values(departments).flat());
+}
+
 
 const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
@@ -1713,7 +1836,17 @@ function machineQrPayload(factory,line,department,machine){
     machine
   });
 }
-function findMachineDepartment(machine){
+function findMachineDepartment(machine,factory="",line=""){
+  if(factory&&line&&MACHINE_CATALOG_2_FACTORY[factory]){
+    return Object.entries(MACHINE_CATALOG_2_FACTORY[factory]?.[line]||{})
+      .find(([,machines])=>machines.includes(machine))?.[0]||"";
+  }
+  for(const lines of Object.values(MACHINE_CATALOG_2_FACTORY)){
+    for(const departments of Object.values(lines)){
+      const found=Object.entries(departments).find(([,machines])=>machines.includes(machine));
+      if(found)return found[0];
+    }
+  }
   return Object.entries(STRUCTURE).find(([,machines])=>machines.includes(machine))?.[0]||"";
 }
 function openQrScanner(){
@@ -1808,6 +1941,7 @@ function openFaultFormFromQr(){
     factory.value=data.factory||"";
     factory.dispatchEvent(new Event("change"));
     line.value=data.line||"";
+    line.dispatchEvent(new Event("change"));
     department.value=data.department||"";
     department.dispatchEvent(new Event("change"));
     machine.value=data.machine||"";
@@ -1901,9 +2035,9 @@ function newf(){
   return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">▣ QR Kod Tara</button></div>
   <div id="qrFilledInfo" class="qr-filled-info"></div>
   <div class="card form"><form id="fault"><div class="formgrid">
-  <div class="field"><label>Fabrika</label><select id="factory" required>${opts(Object.keys(FACTORIES))}</select></div>
-  <div class="field"><label>Hat</label><select id="line" required disabled>${opts([],"Önce fabrika seçiniz")}</select></div>
-  <div class="field"><label>Bölüm</label><select id="department" required>${opts(Object.keys(STRUCTURE))}</select></div>
+  <div class="field"><label>Fabrika</label><select id="factory" required>${opts(userFactories(),"Fabrika seçiniz")}</select></div>
+  <div class="field"><label>Hat / Alan</label><select id="line" required disabled>${opts([],"Önce fabrika seçiniz")}</select></div>
+  <div class="field"><label>Bölüm</label><select id="department" required disabled>${opts([],"Önce hat seçiniz")}</select></div>
   <div class="field"><label>Makine</label><select id="machine" required disabled>${opts([],"Önce bölüm seçiniz")}</select></div>
   <div class="field"><label>Arıza Tipi</label><select id="type" required>${opts(TYPES)}</select></div>
   <div class="field"><label>Arıza Konusu</label><input id="subject" required></div>
@@ -1979,24 +2113,33 @@ function machineState(factory,line,machine){
   return {cls:"warning",text:"Arızalı"};
 }
 function layoutPage(){
-  const factory=s.layoutFactory,lines=FACTORIES[factory]||[];
-  if(!lines.includes(s.layoutLine))s.layoutLine=lines[0];
+  const factory=s.layoutFactory;
+  const lines=catalogLines(factory);
+  if(!lines.includes(s.layoutLine))s.layoutLine=lines[0]||"";
   const line=s.layoutLine;
-  const iconFor=m=>m.includes("Silo")?"⬡":m.includes("Değirmen")?"✣":m.includes("Spray")?"♨":m.includes("Pres")?"▣":m.includes("Fırın")?"🔥":m.includes("Baskı")?"▦":m.includes("Polisaj")?"◉":m.includes("Paket")?"▤":m.includes("Palet")?"♜":m.includes("Streç")?"◎":m.includes("Bant")?"⇢":"⚙";
+  const departments=MACHINE_CATALOG_2_FACTORY[factory]?.[line]||STRUCTURE;
+  const iconFor=m=>{
+    const u=m.toLocaleUpperCase("tr-TR");
+    return u.includes("SİLO")?"⬡":u.includes("DEĞİRMEN")?"✣":u.includes("SPRAY")?"♨":
+      u.includes("PRES")?"▣":u.includes("FIRIN")?"🔥":u.includes("DİJİTAL")?"▦":
+      u.includes("POLİSAJ")||u.includes("PARLATMA")?"◉":u.includes("PAKET")?"▤":
+      u.includes("PALET")?"♜":u.includes("STREÇ")?"◎":u.includes("BANT")||u.includes("KONVEYÖR")?"⇢":
+      u.includes("AGV")||u.includes("TGV")?"◆":u.includes("TANK")||u.includes("KAZAN")?"◒":"⚙";
+  };
   return `
   <section class="layout-hero">
-    <div><span>CANLI HAT GÖRÜNÜMÜ</span><h1>Hat Yerleşim Planı</h1><p>Makineye dokunarak durum, arıza geçmişi ve detayları açabilirsiniz.</p></div>
+    <div><span>CANLI HAT GÖRÜNÜMÜ</span><h1>Hat Yerleşim Planı</h1><p>${esc(factory)} · ${esc(line)} için gerçek makine listesi görüntüleniyor.</p></div>
     <div class="layout-live-dot">● CANLI</div>
   </section>
   <section class="layout-control-modern">
     <label>Fabrika<select id="layoutFactory">${opts(userFactories(),"Seçiniz",factory)}</select></label>
-    <label>Hat<select id="layoutLine">${opts(lines,"Seçiniz",line)}</select></label>
+    <label>Hat / Alan<select id="layoutLine">${opts(lines,"Seçiniz",line)}</select></label>
     <div class="layout-status-legend"><span><i class="running"></i>Çalışıyor</span><span><i class="warning"></i>Arızalı</span><span><i class="stopped"></i>Duruş</span></div>
   </section>
   <div class="visual-plant-map">
-    ${Object.entries(STRUCTURE).filter(([dept])=>!roleIsDepartmentLimited()||dept===s.user.department).map(([dept,machines],di)=>`
+    ${Object.entries(departments).filter(([dept])=>!roleIsDepartmentLimited()||dept===s.user.department).map(([dept,machines],di)=>`
       <section class="visual-department">
-        <div class="visual-dept-title"><span>${String(di+1).padStart(2,"0")}</span><div><h2>${esc(dept)}</h2><p>${machines.length} makine</p></div></div>
+        <div class="visual-dept-title"><span>${String(di+1).padStart(2,"0")}</span><div><h2>${esc(dept)}</h2><p>${machines.length} makine / ekipman</p></div></div>
         <div class="visual-machine-flow">
           ${machines.map((m,i)=>{
             const ms=machineState(factory,line,m);
@@ -2068,8 +2211,8 @@ function plannedMaintenanceModal(){
     <form id="plannedForm" class="formgrid">
       <div class="field full"><label>Bakım Başlığı</label><input id="pmTitle" required placeholder="Örn. Spray Dryer periyodik kontrol"></div>
       <div class="field"><label>Fabrika</label><select id="pmFactory" required>${opts(factories,"Fabrika seçiniz",defaultFactory)}</select></div>
-      <div class="field"><label>Hat</label><select id="pmLine" required>${opts(FACTORIES[defaultFactory]||[],"Hat seçiniz",defaultLine)}</select></div>
-      <div class="field"><label>Bölüm</label><select id="pmDepartment" required>${opts(Object.keys(STRUCTURE),"Bölüm seçiniz",s.user?.department||"")}</select></div>
+      <div class="field"><label>Hat</label><select id="pmLine" required>${opts(catalogLines(defaultFactory),"Hat seçiniz",defaultLine)}</select></div>
+      <div class="field"><label>Bölüm</label><select id="pmDepartment" required>${opts(catalogDepartments(defaultFactory,defaultLine),"Bölüm seçiniz",s.user?.department||"")}</select></div>
       <div class="field"><label>Makine</label><select id="pmMachine" required><option value="">Önce bölüm seçiniz</option></select></div>
       <div class="field"><label>Bakım Türü</label><select id="pmType" required>${opts(MAINTENANCE_TYPES,"Tür seçiniz","Periyodik Bakım")}</select></div>
       <div class="field"><label>Öncelik</label><select id="pmPriority" required>${opts(MAINTENANCE_PRIORITIES,"Öncelik seçiniz","Normal")}</select></div>
@@ -2258,13 +2401,31 @@ function bind(){
     s.chartRanges[id].value=Math.max(1,Number(el.value)||1);
     render();
   });
-  const factoryEl=document.getElementById("factory"),lineEl=document.getElementById("line");if(factoryEl)factoryEl.onchange=()=>{const a=FACTORIES[factoryEl.value]||[];lineEl.innerHTML=opts(a);lineEl.disabled=!a.length};
-  const depEl=document.getElementById("department"),machineEl=document.getElementById("machine");if(depEl)depEl.onchange=()=>{const a=STRUCTURE[depEl.value]||[];machineEl.innerHTML=opts(a);machineEl.disabled=!a.length};
+  const factoryEl=document.getElementById("factory"),lineEl=document.getElementById("line");
+  const depEl=document.getElementById("department"),machineEl=document.getElementById("machine");
+  if(factoryEl)factoryEl.onchange=()=>{
+    const lines=catalogLines(factoryEl.value);
+    lineEl.innerHTML=opts(lines,"Hat / alan seçiniz");
+    lineEl.disabled=!lines.length;
+    depEl.innerHTML=opts([],"Önce hat seçiniz");depEl.disabled=true;
+    machineEl.innerHTML=opts([],"Önce bölüm seçiniz");machineEl.disabled=true;
+  };
+  if(lineEl)lineEl.onchange=()=>{
+    const departments=catalogDepartments(factoryEl.value,lineEl.value);
+    depEl.innerHTML=opts(departments,"Bölüm seçiniz");
+    depEl.disabled=!departments.length;
+    machineEl.innerHTML=opts([],"Önce bölüm seçiniz");machineEl.disabled=true;
+  };
+  if(depEl)depEl.onchange=()=>{
+    const machines=catalogMachines(factoryEl.value,lineEl.value,depEl.value);
+    machineEl.innerHTML=opts(machines,"Makine seçiniz");
+    machineEl.disabled=!machines.length;
+  };
   const f=document.getElementById("fault");if(f)f.onsubmit=e=>{e.preventDefault();const now=new Date().toISOString();s.faults.push({id:Math.max(...s.faults.map(x=>x.id))+1,factory:factoryEl.value,line:lineEl.value,department:depEl.value,machine:machineEl.value,type:document.getElementById("type").value,subject:document.getElementById("subject").value,description:document.getElementById("desc").value,stopped:document.getElementById("stopped").checked,photoName:document.getElementById("photo").files[0]?.name||"",status:"open",createdAt:now,closedAt:null});save();s.page="faults";render();alert("Arıza kaydı oluşturuldu.")};
   document.querySelectorAll(".sel").forEach(x=>x.onchange=()=>{let f=s.faults.find(y=>y.id==x.dataset.id);f.status=x.value;if(x.value==="done"&&!f.closedAt)f.closedAt=new Date().toISOString();if(x.value!=="done")f.closedAt=null;save();render()});
   const rf=document.getElementById("reportFactory"),rs=document.getElementById("reportStart"),re=document.getElementById("reportEnd");if(rf)rf.onchange=()=>{s.reportFactory=rf.value;render()};if(rs)rs.onchange=()=>{s.reportStart=rs.value;render()};if(re)re.onchange=()=>{s.reportEnd=re.value;render()};
   const cr=document.getElementById("clearReport");if(cr)cr.onclick=()=>{s.reportFactory="Tümü";s.reportStart="";s.reportEnd="";render()};
-  const lf=document.getElementById("layoutFactory"),ll=document.getElementById("layoutLine");if(lf)lf.onchange=()=>{s.layoutFactory=lf.value;s.layoutLine=(FACTORIES[lf.value]||[])[0]||"";render()};if(ll)ll.onchange=()=>{s.layoutLine=ll.value;render()};
+  const lf=document.getElementById("layoutFactory"),ll=document.getElementById("layoutLine");if(lf)lf.onchange=()=>{s.layoutFactory=lf.value;s.layoutLine=catalogLines(lf.value)[0]||"";render()};if(ll)ll.onchange=()=>{s.layoutLine=ll.value;render()};
   const addPm=document.getElementById("addPlannedMaintenance");
   if(addPm)addPm.onclick=()=>{s.plannedSelectedDate=dateOnly(new Date());s.plannedModal=true;render()};
   const calPrev=document.getElementById("calendarPrev");
@@ -2281,9 +2442,26 @@ function bind(){
   const pmBg=document.querySelector(".planned-modal-bg");
   if(pmBg)pmBg.onclick=e=>{if(e.target===pmBg){s.plannedModal=false;render()}};
   const pmFactory=document.getElementById("pmFactory"),pmLine=document.getElementById("pmLine");
-  if(pmFactory)pmFactory.onchange=()=>{pmLine.innerHTML=opts(FACTORIES[pmFactory.value]||[],"Hat seçiniz",(FACTORIES[pmFactory.value]||[])[0]||"")};
   const pmDepartment=document.getElementById("pmDepartment"),pmMachine=document.getElementById("pmMachine");
-  if(pmDepartment)pmDepartment.onchange=()=>{pmMachine.innerHTML=opts(STRUCTURE[pmDepartment.value]||[],"Makine seçiniz","")};
+  if(pmFactory)pmFactory.onchange=()=>{
+    const lines=catalogLines(pmFactory.value);
+    pmLine.innerHTML=opts(lines,"Hat seçiniz",lines[0]||"");
+    const departments=catalogDepartments(pmFactory.value,pmLine.value);
+    pmDepartment.innerHTML=opts(departments,"Bölüm seçiniz",departments[0]||"");
+    pmMachine.innerHTML=opts(catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),"Makine seçiniz","");
+  };
+  if(pmLine)pmLine.onchange=()=>{
+    const departments=catalogDepartments(pmFactory.value,pmLine.value);
+    pmDepartment.innerHTML=opts(departments,"Bölüm seçiniz",departments[0]||"");
+    pmMachine.innerHTML=opts(catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),"Makine seçiniz","");
+  };
+  if(pmDepartment)pmDepartment.onchange=()=>{
+    pmMachine.innerHTML=opts(catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value),"Makine seçiniz","");
+  };
+  if(pmDepartment&&pmMachine){
+    const initialMachines=catalogMachines(pmFactory.value,pmLine.value,pmDepartment.value);
+    pmMachine.innerHTML=opts(initialMachines,"Makine seçiniz","");
+  }
   const pmForm=document.getElementById("plannedForm");
   if(pmForm)pmForm.onsubmit=e=>{
     e.preventDefault();
