@@ -705,6 +705,214 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .top-machine-list{grid-template-columns:1fr}
 }
 
+
+/* === ETİLİSMART PC PRO v2 — BELİRGİN MASAÜSTÜ DÜZENİ === */
+@media(min-width:901px){
+  html{font-size:15px}
+  body{font-family:"Segoe UI Variable","Segoe UI",Arial,sans-serif!important}
+  .top{
+    height:76px!important;
+    padding:0 30px!important;
+    background:linear-gradient(105deg,#111827 0%,#1d293d 60%,#263752 100%)!important
+  }
+  .brand{font-size:22px!important}
+  .brand small{font-size:11px!important;color:#aeb8c7!important}
+  .top-user-name{font-size:13px;font-weight:700}
+  .top-user-role{font-size:11px!important;color:#c7cfda!important}
+  .top .secondary{min-height:38px;padding:8px 13px!important;background:rgba(255,255,255,.08)!important;color:#fff!important;border-color:rgba(255,255,255,.16)!important}
+  .layout{
+    grid-template-columns:260px minmax(0,1fr)!important;
+    min-height:calc(100vh - 76px)!important
+  }
+  aside{
+    padding:22px 15px!important;
+    background:linear-gradient(180deg,#fff 0%,#f7f9fc 100%)!important
+  }
+  .aside-user{padding:16px!important;margin-bottom:18px!important}
+  .aside-user b{font-size:13px}
+  .aside-user small{font-size:11px}
+  .nav{
+    min-height:47px!important;
+    padding:0 14px!important;
+    margin-bottom:6px!important;
+    border-radius:12px!important;
+    font-size:13px!important
+  }
+  main{
+    padding:28px 32px 42px!important;
+    width:100%!important;
+    max-width:none!important;
+    overflow:hidden
+  }
+
+  /* Tarih - saat - vardiya */
+  .pro-timebar{
+    min-height:86px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:16px 20px;
+    margin-bottom:20px;
+    border:1px solid #dfe5ed;
+    border-radius:18px;
+    background:
+      linear-gradient(135deg,rgba(255,255,255,.98),rgba(247,249,252,.98)),
+      linear-gradient(90deg,#efb51d,#2780d7);
+    box-shadow:0 8px 28px rgba(25,38,58,.07);
+    position:relative;
+    overflow:hidden
+  }
+  .pro-timebar::before{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:5px;
+    background:linear-gradient(180deg,#efb51d,#ffcf52)
+  }
+  .pro-time-main,.pro-time-item{display:flex;align-items:center;gap:12px;min-width:0}
+  .pro-time-main{min-width:300px}
+  .pro-calendar-icon,.pro-time-icon{
+    width:46px;height:46px;display:grid;place-items:center;
+    border-radius:14px;background:#fff2bd;color:#856000;
+    font-size:22px;font-weight:900;flex:0 0 auto
+  }
+  .pro-time-icon{background:#e8f2ff;color:#196fbf}
+  .pro-time-icon.shift{background:#e7f7ef;color:#168154}
+  .pro-date-copy small,.pro-time-item small{
+    display:block;font-size:9px;font-weight:900;letter-spacing:.9px;color:#8a93a0;margin-bottom:4px
+  }
+  .pro-date-copy b{display:block;font-size:17px;white-space:nowrap}
+  .pro-time-item b{display:block;font-size:18px;white-space:nowrap}
+  .pro-time-item em{display:block;font-style:normal;font-size:10px;color:#7b8491;margin-top:2px}
+  .pro-time-divider{width:1px;height:42px;background:#e0e5eb}
+  .pro-system-state{
+    margin-left:auto;display:flex;align-items:center;gap:7px;
+    background:#e8f8ef;color:#137849;border:1px solid #ccefdc;
+    border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800;white-space:nowrap
+  }
+  .pro-system-state i{width:8px;height:8px;border-radius:50%;background:#18ae69;box-shadow:0 0 0 4px rgba(24,174,105,.13)}
+
+  /* Sayfa başlığı */
+  .desktop-page-title{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:22px;
+    margin:0 0 18px;padding:4px 2px
+  }
+  .desktop-page-title>div:first-child>span{
+    display:block;font-size:9px;font-weight:900;letter-spacing:1.2px;color:#d19a07;margin-bottom:7px
+  }
+  .desktop-page-title h1{font-size:29px!important;line-height:1.05;margin:0!important;letter-spacing:-.8px}
+  .desktop-page-title p{font-size:12px!important;color:#727c89;margin:7px 0 0}
+  .desktop-page-actions{display:flex;align-items:center;gap:12px}
+  .record-count{
+    min-width:112px;padding:9px 14px;border:1px solid #e0e5eb;border-radius:13px;background:#fff;text-align:right
+  }
+  .record-count small{display:block;font-size:8px;font-weight:900;letter-spacing:.7px;color:#929aa5}
+  .record-count b{font-size:21px;color:#263143}
+  .desktop-page-actions .primary{min-height:44px;padding:0 17px!important}
+
+  /* PC arıza tablosu tamamen kompakt */
+  .table-wrap{
+    border-radius:18px!important;
+    border:1px solid #dde3eb!important;
+    box-shadow:0 8px 28px rgba(25,38,58,.065)!important;
+    overflow:auto!important;
+    padding:0!important
+  }
+  .table-wrap table{
+    min-width:1040px!important;
+    width:100%!important;
+    table-layout:fixed!important;
+    font-family:"Segoe UI Variable","Segoe UI",Arial,sans-serif!important
+  }
+  .table-wrap thead{position:sticky;top:0;z-index:2}
+  .table-wrap th{
+    height:43px!important;
+    padding:9px 12px!important;
+    font-size:9.5px!important;
+    font-weight:800!important;
+    letter-spacing:.5px!important;
+    color:#66717f!important;
+    background:#eef2f6!important;
+    border-bottom:1px solid #d9e0e8!important;
+    text-transform:uppercase!important
+  }
+  .table-wrap td{
+    height:auto!important;
+    padding:10px 12px!important;
+    font-size:11.5px!important;
+    line-height:1.35!important;
+    color:#303846!important;
+    border-bottom:1px solid #edf0f4!important;
+    vertical-align:middle!important
+  }
+  .table-wrap tbody tr:nth-child(even){background:#fbfcfd}
+  .table-wrap tbody tr:hover{background:#fff9e8}
+  .table-wrap td b{font-size:11.5px!important;font-weight:750!important}
+  .table-wrap td small{font-size:9.5px!important;line-height:1.3!important;color:#76808d!important}
+  .table-wrap .status{
+    display:inline-flex!important;align-items:center!important;
+    font-size:9.5px!important;font-weight:800!important;
+    padding:5px 8px!important;border-radius:999px!important;
+    max-width:100%;white-space:nowrap
+  }
+  .table-wrap select{
+    width:100%!important;
+    min-height:34px!important;
+    padding:6px 8px!important;
+    font-size:10.5px!important;
+    border-radius:9px!important;
+    background:#fff!important
+  }
+  .table-wrap th:nth-child(1),.table-wrap td:nth-child(1){width:130px!important}
+  .table-wrap th:nth-child(2),.table-wrap td:nth-child(2){width:145px!important}
+  .table-wrap th:nth-child(3),.table-wrap td:nth-child(3){width:165px!important}
+  .table-wrap th:nth-child(4),.table-wrap td:nth-child(4){width:auto!important}
+  .table-wrap th:nth-child(5),.table-wrap td:nth-child(5){width:130px!important}
+  .table-wrap th:nth-child(6),.table-wrap td:nth-child(6){width:90px!important}
+  .table-wrap th:nth-child(7),.table-wrap td:nth-child(7){width:125px!important}
+
+  /* Kartlar ve renkler */
+  .app-hero,.layout-hero{background:linear-gradient(135deg,#111827,#263854)!important}
+  .quick-actions button:nth-child(1)>span{background:#fff0b5!important;color:#8a6400}
+  .quick-actions button:nth-child(2)>span{background:#e6f1ff!important;color:#1873c7}
+  .quick-actions button:nth-child(3)>span{background:#e4f7ed!important;color:#148653}
+  .quick-actions button:nth-child(4)>span{background:#efe9ff!important;color:#6c4fbd}
+  .top-machines-card,.line-preview-card,.trend-preview{border-radius:19px!important}
+  .section-modern-head h2{font-size:17px!important}
+  .section-modern-head p{font-size:11px!important}
+}
+
+/* Büyük ekranlarda içerik daha dengeli */
+@media(min-width:1300px){
+  main{padding-left:38px!important;padding-right:38px!important}
+  .pro-kpi-grid{grid-template-columns:repeat(4,minmax(190px,1fr))!important}
+  .priority-list{grid-template-columns:1fr 1fr}
+}
+
+/* Mobilde profesyonel saat paneli */
+@media(max-width:900px){
+  .pro-timebar{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:9px!important;
+    padding:13px!important;
+    margin-bottom:14px!important;
+    border-radius:18px!important;
+    background:linear-gradient(135deg,#18202e,#27344a)!important;
+    color:#fff!important
+  }
+  .pro-time-main{grid-column:1/-1;min-width:0!important}
+  .pro-time-main,.pro-time-item{
+    padding:10px!important;border-radius:13px!important;
+    background:rgba(255,255,255,.06)!important
+  }
+  .pro-time-divider,.pro-system-state{display:none!important}
+  .pro-calendar-icon,.pro-time-icon{width:38px;height:38px;border-radius:11px;font-size:18px}
+  .pro-date-copy small,.pro-time-item small{color:#aeb8c7!important}
+  .pro-date-copy b,.pro-time-item b{color:#fff!important;font-size:14px!important;white-space:normal!important}
+  .pro-time-item em{color:#bbc4d0!important}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -947,11 +1155,27 @@ function liveDateTime(){
 }
 function clockBlock(){
   const x=liveDateTime();
-  return `<div class="live-clock">
-    <div><span>Tarih</span><b id="liveDate">${esc(x.date)}</b></div>
-    <div><span>Saat</span><b id="liveTime">${esc(x.time)}</b></div>
-    <div><span>Vardiya</span><b id="liveShift">${esc(x.shift.name)}</b></div>
-  </div>`;
+  const shift=x.shift;
+  return `<section class="pro-timebar">
+    <div class="pro-time-main">
+      <div class="pro-calendar-icon">▦</div>
+      <div class="pro-date-copy">
+        <small>BUGÜN</small>
+        <b id="liveDate">${esc(x.date)}</b>
+      </div>
+    </div>
+    <div class="pro-time-divider"></div>
+    <div class="pro-time-item">
+      <span class="pro-time-icon">◷</span>
+      <div><small>SAAT</small><b id="liveTime">${esc(x.time)}</b></div>
+    </div>
+    <div class="pro-time-divider"></div>
+    <div class="pro-time-item">
+      <span class="pro-time-icon shift">⇄</span>
+      <div><small>VARDİYA</small><b id="liveShift">${esc(shift.name)}</b><em>${esc(shift.range)}</em></div>
+    </div>
+    <div class="pro-system-state"><i></i><span>Sistem aktif</span></div>
+  </section>`;
 }
 function countBy(items,key){
   const map=new Map();
@@ -1633,7 +1857,15 @@ function machineModal(){
 function page(){
   if(!canAccess(s.page))s.page="dashboard";
   if(s.page==="new")return newf();
-  if(s.page==="faults")return `${clockBlock()}<div class="head"><div><h1>Arıza Kayıtları</h1><p>Yetki alanınızdaki kayıtlar</p></div>${canAccess("new")?'<button class="primary" data-p="new">+ Yeni Arıza</button>':""}</div>${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),!!permissions().editStatus)}`;
+  if(s.page==="faults")return `${clockBlock()}
+  <section class="desktop-page-title">
+    <div><span>BAKIM OPERASYONLARI</span><h1>Arıza Kayıtları</h1><p>Yetki alanınızdaki tüm arıza kayıtlarını görüntüleyin ve yönetin.</p></div>
+    <div class="desktop-page-actions">
+      <div class="record-count"><small>TOPLAM KAYIT</small><b>${visibleFaults().length}</b></div>
+      ${canAccess("new")?'<button class="primary" data-p="new">+ Yeni Arıza</button>':""}
+    </div>
+  </section>
+  ${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),!!permissions().editStatus)}`;
   if(s.page==="layout")return layoutPage();
   if(s.page==="report")return reportPage();
   return dashboard();
