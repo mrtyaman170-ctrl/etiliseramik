@@ -913,6 +913,56 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .pro-time-item em{color:#bbc4d0!important}
 }
 
+
+/* === Ana panel canlı listeler ve vardiya performansı === */
+.dashboard-live-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.dashboard-list-card,.shift-performance,.analytics-chart-card,.charts-global-filter{
+  background:#fff;border:1px solid #e0e5ec;border-radius:20px;
+  box-shadow:0 7px 24px rgba(22,34,52,.055)
+}
+.dashboard-list-card{padding:17px;min-width:0}
+.list-count{display:grid;place-items:center;min-width:35px;height:35px;border-radius:11px;font-weight:900}
+.list-count.red{background:#ffe7ea;color:#c83243}.list-count.amber{background:#fff2cb;color:#8b6500}
+.compact-fault-list{display:grid;gap:7px;margin-top:12px}
+.compact-fault-row{display:flex;align-items:center;gap:10px;width:100%;border:1px solid #e7eaf0;background:#fbfcfd;border-radius:13px;padding:10px;text-align:left}
+.compact-fault-row:hover{background:#fff9e8;border-color:#e9c158}
+.compact-state{width:9px;height:36px;border-radius:999px;background:#e3ad19;flex:0 0 auto}
+.compact-state.open,.compact-state.stop{background:#e24757}.compact-state.done{background:#18a667}
+.compact-fault-copy{min-width:0;flex:1}.compact-fault-copy>div{display:flex;justify-content:space-between;gap:8px}
+.compact-fault-copy b{font-size:12px}.compact-fault-copy time{font-size:10px;color:#d43b4c;font-weight:800}
+.compact-fault-copy small{display:block;font-size:9.5px;color:#7b8491;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compact-fault-copy p{font-size:10.5px;margin:4px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compact-fault-row>i{font-size:20px;color:#929aa5;font-style:normal}
+.list-footer-link{width:100%;border:0;background:transparent;color:#2175c2;font-size:11px;font-weight:800;padding:12px 0 0}
+.compact-empty{text-align:center;padding:25px;color:#78818d}.compact-empty span{display:grid;place-items:center;width:38px;height:38px;margin:auto;background:#e6f8ef;color:#168755;border-radius:50%}
+.shift-performance{margin-top:17px;padding:19px;background:linear-gradient(135deg,#151d2b,#263650);color:#fff}
+.performance-head{display:flex;align-items:center;justify-content:space-between}.performance-head span{font-size:9px;letter-spacing:1px;color:#efbd32;font-weight:900}.performance-head h2{font-size:35px;margin:6px 0 0}.performance-head h2 small{font-size:13px;color:#aeb9c8}
+.score-ring{--score:75;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#efb51d calc(var(--score)*1%),rgba(255,255,255,.12) 0);position:relative}
+.score-ring:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#202d42}.score-ring b{position:relative;font-size:14px}
+.performance-progress{height:6px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden;margin:14px 0}.performance-progress i{display:block;height:100%;background:linear-gradient(90deg,#efb51d,#54d69a);border-radius:999px}
+.performance-metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.performance-metrics div{padding:10px;border-radius:12px;background:rgba(255,255,255,.06)}.performance-metrics small,.performance-metrics b{display:block}.performance-metrics small{font-size:9px;color:#b9c3d0}.performance-metrics b{font-size:15px;margin-top:5px}
+
+/* Grafikler sekmesi */
+.charts-global-filter{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;padding:14px;margin-bottom:16px;align-items:end}
+.charts-global-filter label{font-size:10px}.charts-global-filter input,.charts-global-filter select{display:block;width:100%;margin-top:5px}
+.charts-dashboard-grid,.machine-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.analytics-chart-card{padding:16px;min-width:0;overflow:hidden}.analytics-chart-card.wide{grid-column:1/-1}
+.chart-panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:10px}
+.chart-panel-head h3{font-size:15px;margin:0}.chart-panel-head p{font-size:10.5px;color:#78818e;margin:4px 0 0}
+.chart-local-controls{display:flex;gap:7px;align-items:flex-end}.chart-local-controls .field{gap:3px}.chart-local-controls label{font-size:8.5px}.chart-local-controls select,.chart-local-controls input{min-height:34px;padding:6px 8px;font-size:10px}
+.chart-local-controls input{width:85px}.chart-local-controls select{width:100px}
+.analytics-chart-card .chartbox{border:0;box-shadow:none;padding:0}.analytics-chart-card .chartbox h4{display:none}
+.analytics-chart-card svg{min-width:600px}
+@media(max-width:1100px){.performance-metrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){
+  .dashboard-live-grid,.charts-dashboard-grid,.machine-chart-grid{grid-template-columns:1fr}
+  .analytics-chart-card.wide{grid-column:auto}
+  .performance-metrics{grid-template-columns:repeat(2,1fr)}
+  .charts-global-filter{grid-template-columns:1fr}
+  .chart-panel-head{align-items:flex-start;flex-direction:column}
+  .chart-local-controls{width:100%}.chart-local-controls .field{flex:1}.chart-local-controls select,.chart-local-controls input{width:100%}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -1089,7 +1139,13 @@ let s={
     trend:{unit:"day",value:30},
     department:{unit:"day",value:30},
     type:{unit:"day",value:30},
-    downtime:{unit:"day",value:30}
+    downtime:{unit:"day",value:30},
+    status:{unit:"day",value:30},
+    machineRank:{unit:"day",value:30},
+    shiftTrend:{unit:"shift",value:12},
+    machineTrend:{unit:"day",value:30},
+    machineType:{unit:"day",value:30},
+    machineDowntime:{unit:"day",value:30}
   },
   qrModal:null,
   qrScanner:null
@@ -1347,6 +1403,46 @@ function barChartSVG(data,title){
     ${data.map((x,i)=>{const xPos=p+i*(w-2*p)/data.length+((w-2*p)/data.length-bw)/2;const bh=x.value*(h-2*p)/max;return `<rect x="${xPos}" y="${h-p-bh}" width="${bw}" height="${bh}" rx="5" class="bar"><title>${x.label}: ${x.value}</title></rect><text x="${xPos+bw/2}" y="${h-12}" text-anchor="middle">${esc(x.label)}</text><text x="${xPos+bw/2}" y="${h-p-bh-6}" text-anchor="middle" class="val">${x.value}</text>`}).join("")}
   </svg></div>`;
 }
+
+function compactFaultList(items,emptyText){
+  if(!items.length)return `<div class="compact-empty"><span>✓</span><p>${esc(emptyText)}</p></div>`;
+  return `<div class="compact-fault-list">${items.slice(0,8).map(f=>`
+    <button class="compact-fault-row" data-p="faults">
+      <span class="compact-state ${f.stopped?"stop":f.status}"></span>
+      <div class="compact-fault-copy">
+        <div><b>${esc(f.machine)}</b><time>${durationText(f)}</time></div>
+        <small>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</small>
+        <p>${esc(f.subject)}</p>
+      </div>
+      <i>›</i>
+    </button>`).join("")}</div>`;
+}
+function shiftPerformanceCard(allShiftFaults){
+  const completed=allShiftFaults.filter(x=>x.status==="done").length;
+  const active=allShiftFaults.filter(x=>x.status!=="done").length;
+  const stopped=allShiftFaults.filter(x=>x.stopped).length;
+  const total=allShiftFaults.length;
+  const completionRate=total?Math.round(completed/total*100):100;
+  const avgMinutes=completed.length===0?0:0;
+  const resolved=allShiftFaults.filter(x=>x.status==="done");
+  const avgResolution=resolved.length?Math.round(resolved.reduce((sum,x)=>sum+durationMs(x)/60000,0)/resolved.length):0;
+  const score=Math.max(0,Math.min(100,Math.round(completionRate-(stopped*8)+(total?10:0))));
+  return `<section class="shift-performance">
+    <div class="performance-head">
+      <div><span>ANLIK VARDİYA PERFORMANSI</span><h2>${score}<small>/100</small></h2></div>
+      <div class="score-ring" style="--score:${score}"><b>${score}%</b></div>
+    </div>
+    <div class="performance-progress"><i style="width:${score}%"></i></div>
+    <div class="performance-metrics">
+      <div><small>Toplam Kayıt</small><b>${total}</b></div>
+      <div><small>Tamamlanan</small><b>${completed}</b></div>
+      <div><small>Aktif</small><b>${active}</b></div>
+      <div><small>Üretim Duruşu</small><b>${stopped}</b></div>
+      <div><small>Tamamlama</small><b>%${completionRate}</b></div>
+      <div><small>Ort. Çözüm</small><b>${avgResolution} dk</b></div>
+    </div>
+  </section>`;
+}
 function dashboard(){
   let all=visibleFaults();
   if(s.dashboardFactory!=="Tümü")all=all.filter(x=>x.factory===s.dashboardFactory);
@@ -1355,8 +1451,11 @@ function dashboard(){
     .filter(x=>x.status!=="done")
     .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 
-  const currentShiftActive=active
+  const currentShiftAll=all
     .filter(isInCurrentShift)
+    .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const currentShiftActive=currentShiftAll
+    .filter(x=>x.status!=="done")
     .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 
   const open=currentShiftActive.filter(x=>x.status==="open").length;
@@ -1439,7 +1538,7 @@ function dashboard(){
     <button data-p="new"><span>＋</span><div><b>Yeni Arıza</b><small>Hızlı kayıt oluştur</small></div></button>
     <button data-p="faults"><span>≡</span><div><b>Arızalar</b><small>Tüm kayıtları gör</small></div></button>
     <button data-p="layout"><span>⌘</span><div><b>Hat Planı</b><small>Makineleri görüntüle</small></div></button>
-    ${roleHasCharts()?`<button data-p="report"><span>▥</span><div><b>Raporlar</b><small>Trend ve analizler</small></div></button>`:""}
+    ${roleHasCharts()?`<button data-p="report"><span>▥</span><div><b>Grafikler</b><small>Analiz ve performans</small></div></button>`:""}
   </section>
 
   <section class="mobile-filter-card">
@@ -1457,35 +1556,37 @@ function dashboard(){
     <article class="pro-kpi blue"><div><small>BUGÜN AÇILAN</small><strong>${totalToday}</strong><p>Arıza kaydı</p></div><i>▤</i></article>
   </section>
 
-  <section class="priority-section">
-    <div class="section-modern-head">
-      <div><h2>Öncelikli Arızalar</h2><p>En yeni aktif kayıtlar</p></div>
-      <button data-p="faults">Tümünü Gör ›</button>
-    </div>
-    <div class="priority-list">
-      ${urgent.length?urgent.map(f=>`
-        <article class="priority-fault ${f.stopped?"is-stop":""}">
-          <div class="fault-machine-icon">${f.machine.includes("Fırın")?"🔥":f.machine.includes("Pres")?"▣":f.machine.includes("Spray")?"♨":"⚙"}</div>
-          <div class="fault-copy">
-            <div class="fault-top"><b>${esc(f.machine)}</b><span>${durationText(f)}</span></div>
-            <small>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</small>
-            <p>${esc(f.subject)}</p>
-            <em>${f.stopped?"ÜRETİM DURUŞU":statusLabel(f.status)}</em>
-          </div>
-          <button class="fault-chevron" data-p="faults">›</button>
-        </article>`).join(""):`<div class="modern-empty"><span>✓</span><b>Aktif arıza yok</b><p>Sistem normal çalışıyor.</p></div>`}
-    </div>
+  <section class="dashboard-live-grid">
+    <article class="dashboard-list-card">
+      <div class="section-modern-head">
+        <div><h2>Aktif Arızalar</h2><p>Henüz tamamlanmamış tüm kayıtlar</p></div>
+        <span class="list-count red">${active.length}</span>
+      </div>
+      ${compactFaultList(active,"Aktif arıza bulunmuyor.")}
+      <button class="list-footer-link" data-p="faults">Tüm aktif arızaları görüntüle ›</button>
+    </article>
+
+    <article class="dashboard-list-card">
+      <div class="section-modern-head">
+        <div><h2>Bu Vardiyadaki Arızalar</h2><p>${shift.range} zaman aralığında açılan kayıtlar</p></div>
+        <span class="list-count amber">${currentShiftAll.length}</span>
+      </div>
+      ${compactFaultList(currentShiftAll,"Bu vardiyada arıza kaydı bulunmuyor.")}
+      <button class="list-footer-link" data-p="faults">Vardiya kayıtlarını görüntüle ›</button>
+    </article>
   </section>
+
+  ${shiftPerformanceCard(currentShiftAll)}
 
   <section class="top-machines-card">
     <div class="section-modern-head">
       <div><h2>En Çok Arıza Çıkaran Makineler</h2><p>Yetki alanınızdaki tüm kayıtlara göre ilk 6 makine</p></div>
-      ${roleHasCharts()?'<button data-p="report">Detaylı Analiz ›</button>':""}
+      ${roleHasCharts()?'<button data-p="report">Grafiklerde İncele ›</button>':""}
     </div>
     <div class="top-machine-list">
       ${countBy(all,"machine").slice(0,6).map(([machine,total],index)=>{
         const pct=Math.round(total/Math.max(1,countBy(all,"machine")[0]?.[1]||1)*100);
-        return `<button class="top-machine-row" data-p="faults">
+        return `<button class="top-machine-row" data-p="report">
           <span class="machine-rank">${index+1}</span>
           <div class="machine-rank-copy"><b>${esc(machine)}</b><small>${total} arıza kaydı</small><i><em style="width:${pct}%"></em></i></div>
           <strong>${total}</strong>
@@ -1506,20 +1607,6 @@ function dashboard(){
         return `<button class="mini-machine ${ms.cls}" data-machine="${esc(m)}" data-mf="2. Fabrika A Blok" data-ml="1. Hat"><i>${ico}</i><span>${esc(m)}</span></button>${i<7?'<b class="flow-line">→</b>':''}`;
       }).join("")}
     </div>
-  </section>
-
-  ${isManagementRole()?`
-  <section class="trend-preview">
-    <div class="section-modern-head">
-      <div><h2>Arıza Trendi</h2><p>Son dönem görünümü</p></div>
-      <button data-p="report">Detaylı Rapor ›</button>
-    </div>
-    <div class="modern-chart-shell">${lineChartSVG(trend,"")}</div>
-  </section>`:""}
-
-  <section class="desktop-active-table">
-    <div class="section-modern-head"><div><h2>Aktif Arızalar</h2><p>Yetki alanınızdaki açık işler</p></div></div>
-    ${table(active)}
   </section>`;
 
 }
@@ -1771,21 +1858,64 @@ function newf(){
   </div><div class="actions"><button type="button" class="secondary" data-p="dashboard">İptal</button><button class="primary">Kaydı Oluştur</button></div></form></div>`;
 }
 function reportPage(){
-  let a=visibleFaults();
-  if(s.reportFactory!=="Tümü")a=a.filter(x=>x.factory===s.reportFactory);
-  if(s.reportStart)a=a.filter(x=>new Date(x.createdAt)>=new Date(s.reportStart+"T00:00:00"));
-  if(s.reportEnd)a=a.filter(x=>new Date(x.createdAt)<=new Date(s.reportEnd+"T23:59:59"));
-  a.sort((x,y)=>new Date(y.createdAt)-new Date(x.createdAt));
-  const total=a.length,stop=a.filter(x=>x.stopped).length,avg=total?Math.round(a.reduce((sum,x)=>sum+durationMs(x)/60000,0)/total):0;
-  const typeData=countBy(chartRangeFaultsFor(a,"type"),"type").map(([label,value])=>({label,value}));
-  const factoryOptions=s.user?.role==="Fabrika Müdürü" ? [s.user.factory] : ["Tümü",...Object.keys(FACTORIES)];
-  return `${clockBlock()}<div class="head"><div><h1>Geçmiş Arıza Raporu</h1><p>${roleIsDepartmentLimited()?esc(s.user.department)+" bölümüne ait kayıtlar":"Yetki alanınızdaki geçmiş kayıtlar"}</p></div></div>
-  <div class="card report-filter"><div class="field"><label>Başlangıç Tarihi</label><input type="date" id="reportStart" value="${s.reportStart}"></div><div class="field"><label>Bitiş Tarihi</label><input type="date" id="reportEnd" value="${s.reportEnd}"></div><div class="field"><label>Fabrika</label><select id="reportFactory">${factoryOptions.map(x=>`<option ${x===s.reportFactory||factoryOptions.length===1?"selected":""}>${x}</option>`).join("")}</select></div><button class="secondary" id="clearReport">Filtreyi Temizle</button></div>
-  <div class="grid report-cards"><div class="card"><div class="label">Toplam Kayıt</div><div class="value">${total}</div></div><div class="card"><div class="label">Üretim Duruşu</div><div class="value">${stop}</div></div><div class="card"><div class="label">Ortalama Süre</div><div class="value">${avg}<small> dk</small></div></div></div>
-  <div class="chart-panel">
-    <div class="chart-panel-head"><h4>Seçilen Dönemde Arıza Tipleri</h4>${chartRangeControlsFor("type")}</div>
-    ${barChartSVG(typeData.length?typeData:[{label:"Kayıt Yok",value:0}],"Arıza Tipleri")}
-  </div>${table(a)}`;
+  let base=visibleFaults();
+  if(s.reportFactory!=="Tümü")base=base.filter(x=>x.factory===s.reportFactory);
+  if(s.reportStart)base=base.filter(x=>new Date(x.createdAt)>=new Date(s.reportStart+"T00:00:00"));
+  if(s.reportEnd)base=base.filter(x=>new Date(x.createdAt)<=new Date(s.reportEnd+"T23:59:59"));
+
+  const trend=trendDataFor(base,"trend");
+  const shiftTrend=trendDataFor(base,"shiftTrend");
+  const departmentData=countBy(chartRangeFaultsFor(base,"department"),"department").slice(0,10).map(([label,value])=>({label,value}));
+  const typeData=countBy(chartRangeFaultsFor(base,"type"),"type").map(([label,value])=>({label,value}));
+  const downtimeData=countBy(chartRangeFaultsFor(base,"downtime").filter(x=>x.stopped),"department").slice(0,10).map(([label,value])=>({label,value}));
+  const statusData=[
+    {label:"Yeni",value:chartRangeFaultsFor(base,"status").filter(x=>x.status==="open").length},
+    {label:"İşlemde",value:chartRangeFaultsFor(base,"status").filter(x=>x.status==="progress").length},
+    {label:"Tamamlandı",value:chartRangeFaultsFor(base,"status").filter(x=>x.status==="done").length}
+  ];
+  const machineData=countBy(chartRangeFaultsFor(base,"machineRank"),"machine").slice(0,12).map(([label,value])=>({label,value}));
+  const factoryOptions=permissions().allFactories?["Tümü",...Object.keys(FACTORIES)]:["Tümü",...userFactories()];
+
+  return `${clockBlock()}
+  <section class="desktop-page-title charts-title">
+    <div><span>ANALİZ MERKEZİ</span><h1>Grafikler</h1><p>Tüm grafiklerin zaman aralığını birbirinden bağımsız seçebilirsiniz.</p></div>
+  </section>
+  <section class="charts-global-filter">
+    <label>Başlangıç Tarihi<input type="date" id="reportStart" value="${s.reportStart}"></label>
+    <label>Bitiş Tarihi<input type="date" id="reportEnd" value="${s.reportEnd}"></label>
+    <label>Fabrika<select id="reportFactory">${factoryOptions.map(x=>`<option ${x===s.reportFactory?"selected":""}>${x}</option>`).join("")}</select></label>
+    <button class="secondary" id="clearReport">Filtreleri Temizle</button>
+  </section>
+  <section class="charts-dashboard-grid">
+    <article class="analytics-chart-card wide">
+      <div class="chart-panel-head"><div><h3>Arıza Trendi</h3><p>Zamana göre açılan arıza sayısı</p></div>${chartRangeControlsFor("trend")}</div>
+      ${lineChartSVG(trend.length?trend:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Vardiya Trendi</h3><p>Vardiyalara göre arıza yoğunluğu</p></div>${chartRangeControlsFor("shiftTrend")}</div>
+      ${lineChartSVG(shiftTrend.length?shiftTrend:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Durum Dağılımı</h3><p>Yeni, işlemde ve tamamlanan işler</p></div>${chartRangeControlsFor("status")}</div>
+      ${barChartSVG(statusData,"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Bölümlere Göre Arıza</h3><p>En yoğun bölümler</p></div>${chartRangeControlsFor("department")}</div>
+      ${barChartSVG(departmentData.length?departmentData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Arıza Tipleri</h3><p>Elektrik, mekanik ve diğer tipler</p></div>${chartRangeControlsFor("type")}</div>
+      ${barChartSVG(typeData.length?typeData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Üretim Duruşları</h3><p>Bölümlere göre duruş oluşturan arızalar</p></div>${chartRangeControlsFor("downtime")}</div>
+      ${barChartSVG(downtimeData.length?downtimeData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card wide">
+      <div class="chart-panel-head"><div><h3>En Çok Arıza Çıkaran Makineler</h3><p>Makine bazında arıza sıralaması</p></div>${chartRangeControlsFor("machineRank")}</div>
+      ${barChartSVG(machineData.length?machineData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+  </section>`;
 }
 function machineState(factory,line,machine){
   const active=s.faults.find(x=>x.factory===factory&&x.line===line&&x.machine===machine&&x.status!=="done");
@@ -1836,15 +1966,18 @@ function machineModal(){
     for(let i=1;i<sorted.length;i++){sum+=(new Date(sorted[i].createdAt)-new Date(sorted[i-1].createdAt))/3600000;count++}
     mtbf=Math.round(sum/count);
   }
-  const typeData=countBy(hist,"type").map(([label,value])=>({label,value}));
-  const monthMap={};
-  hist.forEach(x=>{const d=new Date(x.createdAt);const k=d.toLocaleDateString("tr-TR",{month:"short",year:"2-digit"});monthMap[k]=(monthMap[k]||0)+1});
-  const trend=Object.entries(monthMap).slice(-8).map(([label,value])=>({label,value}));
+  const machineTrend=trendDataFor(hist,"machineTrend");
+  const typeData=countBy(chartRangeFaultsFor(hist,"machineType"),"type").map(([label,value])=>({label,value}));
+  const machineDowntime=countBy(chartRangeFaultsFor(hist,"machineDowntime").filter(x=>x.stopped),"subject").slice(0,8).map(([label,value])=>({label,value}));
   const topSubject=countBy(hist,"subject")[0]?.[0]||"-";
 
   let body="";
   if(s.machineTab==="history")body=table(hist);
-  else if(s.machineTab==="charts")body=`<div class="chartgrid">${lineChartSVG(trend.length?trend:[{label:"Yok",value:0}],"Makine Arıza Trendi")}${barChartSVG(typeData.length?typeData:[{label:"Yok",value:0}],"Arıza Tipi Dağılımı")}</div>`;
+  else if(s.machineTab==="charts")body=`<div class="machine-chart-grid">
+    <article class="analytics-chart-card wide"><div class="chart-panel-head"><div><h3>Makine Arıza Trendi</h3><p>${esc(machine)} için zaman bazlı arıza sayısı</p></div>${chartRangeControlsFor("machineTrend")}</div>${lineChartSVG(machineTrend.length?machineTrend:[{label:"Yok",value:0}],"")}</article>
+    <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Arıza Tipi Dağılımı</h3><p>Makinenin arıza türleri</p></div>${chartRangeControlsFor("machineType")}</div>${barChartSVG(typeData.length?typeData:[{label:"Yok",value:0}],"")}</article>
+    <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Duruş Nedenleri</h3><p>Üretimi durduran arıza konuları</p></div>${chartRangeControlsFor("machineDowntime")}</div>${barChartSVG(machineDowntime.length?machineDowntime:[{label:"Yok",value:0}],"")}</article>
+  </div>`;
   else if(s.machineTab==="documents")body=`<div class="empty-panel"><h3>Makine Dokümanları</h3><p>Bu alana elektrik şeması, mekanik çizim, kullanım kılavuzu ve PLC yedekleri eklenecek.</p><button class="secondary">+ Doküman Ekle</button></div>`;
   else body=`<div class="machine-kpis"><div class="metric"><span>Toplam Arıza</span><b>${total}</b></div><div class="metric"><span>Aktif Arıza</span><b>${active}</b></div><div class="metric"><span>Toplam Duruş</span><b>${totalMin} dk</b></div><div class="metric"><span>MTTR</span><b>${mttr} dk</b></div><div class="metric"><span>MTBF</span><b>${mtbf} sa</b></div><div class="metric wide"><span>En Sık Arıza</span><b>${esc(topSubject)}</b></div></div><div class="machine-info-grid"><div class="info-card"><h4>Makine Bilgileri</h4><p><b>Fabrika:</b> ${esc(factory)}</p><p><b>Hat:</b> ${esc(line)}</p><p><b>Makine:</b> ${esc(machine)}</p><p><b>Durum:</b> ${machineState(factory,line,machine).text}</p></div><div class="info-card"><h4>Son Kayıt</h4>${hist[0]?`<p><b>${esc(hist[0].subject)}</b></p><p>${fmtDate(hist[0].createdAt)}</p><p>${durationText(hist[0])}</p>`:"<p>Kayıt yok.</p>"}</div></div>`;
 
@@ -1875,7 +2008,7 @@ function allowedNavItems(){
     ["dashboard","⌂","Panel"],
     ["new","+","Arıza Aç"],
     ["faults","≡","Arızalar"],
-    ["report","▥","Raporlar"],
+    ["report","▥","Grafikler"],
     ["layout","⌘","Hat Planı"]
   ];
   return items.filter(([page])=>canAccess(page));
