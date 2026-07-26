@@ -227,6 +227,91 @@ function dailyAssetIcon(type){
     other:"⚙"
   })[type]||"□";
 }
+function dailyResultLabel(value){
+  return ({
+    normal:"Normal",
+    cleaned:"Temizlik / küçük müdahale yapıldı",
+    warning:"Takip edilmesi gereken durum var",
+    fault:"Arıza / uygunsuzluk tespit edildi"
+  })[value]||"Belirtilmedi";
+}
+function dailyControlDetailModal(){
+  const detail=s.dailyControlDetail;
+  if(!detail?.assetId)return "";
+  const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===detail.assetId);
+  if(!asset)return "";
+
+  const isContractor=detail.kind==="contractor";
+  const period=isContractor?s.contractorControlMonth:s.dailyControlDate;
+  const record=isContractor
+    ?contractorCheckRecord(period,asset.factory,asset.id)
+    :dailyCheckRecord(period,asset.factory,asset.id);
+  const done=record?.status==="done";
+  const photoKey=isContractor
+    ?contractorCheckKey(period,asset.factory,asset.id)
+    :dailyCheckKey(period,asset.factory,asset.id);
+  const periodLabel=isContractor
+    ?new Date(`${period}-01T12:00:00`).toLocaleDateString("tr-TR",{month:"long",year:"numeric"})
+    :new Date(`${dailyCheckDateKey(period)}T12:00:00`).toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
+  const assignees=isContractor?[]:dailyDutyMembers(asset.factory,asset.team,period);
+  const consumption=!isContractor&&asset.special?utilityConsumption(asset,period,record):null;
+  const canAct=isContractor?canRecordContractorCheck(asset):(asset.special?canCompleteUtilityAsset(asset,period):canCompleteDailyAsset(asset,period));
+  const detailKind=isContractor
+    ?"AYLIK TAŞERON KONTROLÜ"
+    :asset.special
+      ?"GÜNLÜK SAYAÇ KONTROLÜ"
+      :"GÜNLÜK EKİPMAN KONTROLÜ";
+
+  const utilityDetails=!isContractor&&asset.type==="water"?`
+    <article><small>GELEN SU SAYACI</small><b>${record?.readings?.incoming??"-"} m³</b><span>Günlük kullanım: ${consumption?.incoming??"-"} m³</span></article>
+    <article><small>A BLOK SU SAYACI</small><b>${record?.readings?.aBlock??"-"} m³</b><span>Günlük kullanım: ${consumption?.aBlock??"-"} m³</span></article>
+    <article><small>B BLOK SU SAYACI</small><b>${record?.readings?.bBlock??"-"} m³</b><span>Günlük kullanım: ${consumption?.bBlock??"-"} m³</span></article>
+  `:!isContractor&&asset.type==="gas"?`
+    <article><small>GELEN GAZ SAYACI</small><b>${record?.readings?.incoming??"-"} m³</b><span>Günlük kullanım: ${consumption?.incoming??"-"} m³</span></article>
+  `:"";
+
+  return `<div class="modal-backdrop" id="dailyControlDetailBackdrop">
+    <div class="modal daily-control-detail-modal">
+      <div class="modal-head">
+        <div><span>${detailKind}</span><h2>${esc(asset.name)}</h2><p>${esc(asset.factory)} · ${esc(periodLabel)}</p></div>
+        <button type="button" id="closeDailyControlDetail" aria-label="Kapat">×</button>
+      </div>
+
+      <section class="daily-detail-hero">
+        <article><small>KONTROL DURUMU</small><b class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</b></article>
+        <article><small>KONTROL TÜRÜ</small><b>${esc(dailyAssetTypeLabel(asset.type))}</b></article>
+        <article><small>SORUMLU EKİP</small><b>${esc(asset.team)}</b></article>
+        <article><small>PERİYOT</small><b>${isContractor?"Aylık":"Günlük"}</b></article>
+      </section>
+
+      <section class="daily-detail-grid">
+        ${isContractor?`
+          <article><small>TAŞERON FİRMA</small><b>${esc(record?.company||"Henüz girilmedi")}</b></article>
+          <article><small>RAPOR / FORM NUMARASI</small><b>${esc(record?.reportNo||"Henüz girilmedi")}</b></article>
+        `:`
+          <article class="wide"><small>08:00–16:00 SORUMLU PERSONELİ</small><b>${assignees.length?esc(assignees.join(", ")):"Atanmış personel yok"}</b></article>
+        `}
+        ${utilityDetails}
+        <article><small>KONTROL SONUCU</small><b class="control-result ${esc(record?.result||"")}">${esc(done?dailyResultLabel(record.result):"Henüz girilmedi")}</b></article>
+        <article><small>KONTROL EDEN</small><b>${esc(record?.checkedBy||"Henüz kontrol edilmedi")}</b></article>
+        <article><small>KONTROL ZAMANI</small><b>${record?.checkedAt?fmtDate(record.checkedAt):"-"}</b>${record?.entryTiming?`<span>${esc(utilityEntryTimingLabel(record))}</span>`:""}</article>
+        <article class="wide"><small>KONTROL NOTU / AÇIKLAMA</small><p>${esc(record?.note||"Kontrol notu bulunmuyor.")}</p></article>
+      </section>
+
+      <div class="daily-detail-info ${done?"done":"pending"}">
+        <b>${done?"Kontrol kaydı tamamlandı.":"Bu kontrol henüz tamamlanmadı."}</b>
+        <span>${done
+          ?record?.photoStored?"Fotoğraflı kontrol kaydı oluşturuldu.":"Kontrol kaydında fotoğraf bulunmuyor."
+          :canAct?"Kontrolü ana kart üzerindeki alanlardan tamamlayabilirsiniz.":"Bu kayıt mevcut yetkinizle salt okunur görüntüleniyor."}</span>
+      </div>
+
+      <div class="modal-actions">
+        ${done&&record?.photoStored?`<button type="button" class="secondary view-control-photo" data-photo-key="${esc(photoKey)}" data-photo-title="${esc(asset.name)}">▣ Kontrol Fotoğrafını Gör</button>`:""}
+        <button type="button" class="primary" id="closeDailyControlDetailBottom">Kapat</button>
+      </div>
+    </div>
+  </div>`;
+}
 function dailyCompletionStats(factory,dateValue){
   const assets=dailyAssetsForFactory(factory);
   const done=assets.filter(asset=>dailyCheckRecord(dateValue,factory,asset.id)?.status==="done").length;
@@ -279,6 +364,112 @@ function utilityConsumption(asset,dateValue,record=dailyCheckRecord(dateValue,as
   return {
     incoming:meterDifference(record.readings?.incoming,previous.readings?.incoming)
   };
+}
+function utilityReadingState(record,previous,fields){
+  if(!record||record.status!=="done")return "missing";
+  if(!previous||previous.status!=="done")return "missing_previous";
+  const currentRaw=fields.map(field=>record.readings?.[field]);
+  const previousRaw=fields.map(field=>previous.readings?.[field]);
+  if([...currentRaw,...previousRaw].some(value=>value===null||value===undefined||String(value).trim()===""))return "invalid";
+  const currentValues=currentRaw.map(Number);
+  const previousValues=previousRaw.map(Number);
+  if([...currentValues,...previousValues].some(value=>!Number.isFinite(value)))return "invalid";
+  if(currentValues.some((value,index)=>value<previousValues[index]))return "reset";
+  return "valid";
+}
+function utilityStatisticsRows(factory,endDate,days=14){
+  const normalizedDays=[7,14,30].includes(Number(days))?Number(days):14;
+  const waterAsset=dailyAssetsForFactory(factory).find(asset=>asset.type==="water");
+  const gasAsset=dailyAssetsForFactory(factory).find(asset=>asset.type==="gas");
+  const rows=[];
+
+  for(let offset=normalizedDays-1;offset>=0;offset--){
+    const date=dateBeforeKey(endDate,offset);
+    const previousDate=dateBeforeKey(date,1);
+    const waterRecord=waterAsset?dailyCheckRecord(date,factory,waterAsset.id):null;
+    const previousWater=waterAsset?dailyCheckRecord(previousDate,factory,waterAsset.id):null;
+    const gasRecord=gasAsset?dailyCheckRecord(date,factory,gasAsset.id):null;
+    const previousGas=gasAsset?dailyCheckRecord(previousDate,factory,gasAsset.id):null;
+    const waterState=waterAsset?utilityReadingState(waterRecord,previousWater,["incoming","aBlock","bBlock"]):"missing";
+    const gasState=gasAsset?utilityReadingState(gasRecord,previousGas,["incoming"]):"missing";
+    let water=null;
+    let gas=null;
+
+    if(waterState==="valid"){
+      const incoming=meterDifference(waterRecord.readings.incoming,previousWater.readings.incoming);
+      const aBlock=meterDifference(waterRecord.readings.aBlock,previousWater.readings.aBlock);
+      const bBlock=meterDifference(waterRecord.readings.bBlock,previousWater.readings.bBlock);
+      water={
+        incoming,
+        aBlock,
+        bBlock,
+        balance:Number((incoming-aBlock-bBlock).toFixed(2))
+      };
+    }
+    if(gasState==="valid"){
+      gas={incoming:meterDifference(gasRecord.readings.incoming,previousGas.readings.incoming)};
+    }
+    rows.push({date,water,gas,waterState,gasState});
+  }
+  return rows;
+}
+function utilityNumber(value,digits=2){
+  if(!Number.isFinite(Number(value)))return "-";
+  return Number(value).toLocaleString("tr-TR",{maximumFractionDigits:digits});
+}
+function utilityValues(rows,selector){
+  return rows.map(selector).filter(value=>Number.isFinite(Number(value))).map(Number);
+}
+function utilitySum(values){
+  return Number(values.reduce((sum,value)=>sum+value,0).toFixed(2));
+}
+function utilityTotal(values){
+  return values.length?utilitySum(values):null;
+}
+function utilityAverage(values){
+  return values.length?Number((utilitySum(values)/values.length).toFixed(2)):null;
+}
+function utilityMaximum(rows,selector){
+  return rows.reduce((best,row)=>{
+    const value=selector(row);
+    return Number.isFinite(Number(value))&&(!best||Number(value)>best.value)
+      ?{value:Number(value),date:row.date}
+      :best;
+  },null);
+}
+function utilityStateLabel(state){
+  return ({
+    valid:"Hesaplandı",
+    missing:"Kayıt yok",
+    missing_previous:"Önceki gün yok",
+    invalid:"Geçersiz değer",
+    reset:"Sayaç düşüşü / sıfırlama"
+  })[state]||"Kayıt yok";
+}
+function utilityTrendChart(rows,selector,title,theme){
+  const values=utilityValues(rows,selector);
+  const max=values.length?Math.max(...values):0;
+  return `<article class="utility-trend-card ${theme}">
+    <div class="utility-trend-head">
+      <div><small>GÜNLÜK EĞİLİM</small><h3>${esc(title)}</h3></div>
+      <span>En yüksek <b>${values.length?`${utilityNumber(max)} m³`:"-"}</b></span>
+    </div>
+    <div class="utility-chart-scroll">
+      <div class="utility-bar-chart" style="--utility-bars:${rows.length}">
+        ${rows.map(row=>{
+          const raw=selector(row);
+          const value=Number.isFinite(Number(raw))?Number(raw):null;
+          const height=value!==null&&max>0?Math.max(3,Math.round(value/max*100)):0;
+          const label=new Date(`${row.date}T12:00:00`).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"});
+          return `<div class="utility-bar-item ${value===null?"missing":""}" title="${value===null?"Geçerli tüketim verisi yok":`${utilityNumber(value)} m³`}">
+            <div class="utility-bar-value">${value===null?"–":utilityNumber(value,1)}</div>
+            <div class="utility-bar-track"><i style="height:${height}%"></i></div>
+            <small>${label}</small>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+  </article>`;
 }
 function utilityEntryTimingLabel(record){
   if(!record)return "";
@@ -435,7 +626,7 @@ function dailyChecksPage(){
     const assignees=dailyDutyMembers(factory,asset.team,date);
     const photoKey=dailyCheckKey(date,factory,asset.id);
 
-    return `<article class="daily-check-card photo-required ${done?"done":"pending"}">
+    return `<article class="daily-check-card photo-required ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
       <div class="daily-check-main">
         <div class="daily-check-title">
@@ -491,7 +682,7 @@ function dailyChecksPage(){
           ?"Rutin ölçüm saati sona erdi."
           :"Geçmiş tarih kaydı";
 
-    return `<article class="daily-reading-card photo-required ${done?"done":"pending"}">
+    return `<article class="daily-reading-card photo-required ${done?"done":"pending"}" data-daily-detail-kind="daily" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="daily-reading-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
         <div><small>${esc(factory)}</small><h3>${esc(asset.name)}</h3><p>Rutin değer alma saati: 08:00–09:00 · ${esc(assignees.join(", ")||"Atanmış personel yok")}</p></div>
@@ -543,7 +734,7 @@ function dailyChecksPage(){
     const canEdit=canRecordContractorCheck(asset);
     const photoKey=contractorCheckKey(s.contractorControlMonth,factory,asset.id);
 
-    return `<article class="contractor-check-card ${done?"done":"pending"}">
+    return `<article class="contractor-check-card ${done?"done":"pending"}" data-daily-detail-kind="contractor" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="contractor-check-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
         <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>Aylık periyodik kontrol · Taşeron firma</p></div>
@@ -585,6 +776,78 @@ function dailyChecksPage(){
       <span>Su sayaçları: Gelen <b>${waterRecord?.readings?.incoming??"-"}</b> · A Blok <b>${waterRecord?.readings?.aBlock??"-"}</b> · B Blok <b>${waterRecord?.readings?.bBlock??"-"}</b> m³</span>
       <span>Gaz sayacı: Gelen <b>${gasRecord?.readings?.incoming??"-"}</b> m³</span>
     </div>
+  </section>`;
+
+  const utilityStatsDays=[7,14,30].includes(Number(s.utilityStatsDays))?Number(s.utilityStatsDays):14;
+  s.utilityStatsDays=utilityStatsDays;
+  const utilityRows=utilityStatisticsRows(factory,date,utilityStatsDays);
+  const waterIncomingValues=utilityValues(utilityRows,row=>row.water?.incoming);
+  const waterAValues=utilityValues(utilityRows,row=>row.water?.aBlock);
+  const waterBValues=utilityValues(utilityRows,row=>row.water?.bBlock);
+  const gasIncomingValues=utilityValues(utilityRows,row=>row.gas?.incoming);
+  const waterMaximum=utilityMaximum(utilityRows,row=>row.water?.incoming);
+  const gasMaximum=utilityMaximum(utilityRows,row=>row.gas?.incoming);
+  const resetCount=utilityRows.filter(row=>row.waterState==="reset"||row.gasState==="reset").length;
+  const invalidCount=utilityRows.filter(row=>row.waterState==="invalid"||row.gasState==="invalid").length;
+  const missingCount=utilityRows.filter(row=>["missing","missing_previous"].includes(row.waterState)||["missing","missing_previous"].includes(row.gasState)).length;
+  const shortDate=value=>value
+    ?new Date(`${value}T12:00:00`).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric"})
+    :"-";
+  const utilityStatistics=`<section class="utility-statistics-card">
+    <div class="section-modern-head utility-statistics-head">
+      <div>
+        <span>SU VE GAZ ANALİZİ</span>
+        <h2>Sayaç Tüketim İstatistikleri</h2>
+        <p>${esc(factory)} · ${shortDate(date)} tarihinde biten dönem. Yalnızca ardışık ve geçerli sayaç kayıtları hesaplamaya katılır.</p>
+      </div>
+      <label>Dönem
+        <select id="utilityStatsDays">
+          <option value="7" ${utilityStatsDays===7?"selected":""}>Son 7 gün</option>
+          <option value="14" ${utilityStatsDays===14?"selected":""}>Son 14 gün</option>
+          <option value="30" ${utilityStatsDays===30?"selected":""}>Son 30 gün</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="utility-stat-kpis">
+      <article class="water"><small>GELEN SU TOPLAMI</small><b data-utility-stat="water-total">${waterIncomingValues.length?`${utilityNumber(utilityTotal(waterIncomingValues))} m³`:"-"}</b><span>${waterIncomingValues.length} geçerli gün</span></article>
+      <article class="water"><small>A BLOK SU TOPLAMI</small><b>${waterAValues.length?`${utilityNumber(utilityTotal(waterAValues))} m³`:"-"}</b><span>${waterAValues.length} geçerli gün</span></article>
+      <article class="water"><small>B BLOK SU TOPLAMI</small><b>${waterBValues.length?`${utilityNumber(utilityTotal(waterBValues))} m³`:"-"}</b><span>${waterBValues.length} geçerli gün</span></article>
+      <article class="gas"><small>GELEN GAZ TOPLAMI</small><b data-utility-stat="gas-total">${gasIncomingValues.length?`${utilityNumber(utilityTotal(gasIncomingValues))} m³`:"-"}</b><span>${gasIncomingValues.length} geçerli gün</span></article>
+    </div>
+
+    <div class="utility-stat-insights">
+      <article><small>ORTALAMA GÜNLÜK SU</small><b>${utilityNumber(utilityAverage(waterIncomingValues))} m³</b><span>geçerli günlerin ortalaması</span></article>
+      <article><small>ORTALAMA GÜNLÜK GAZ</small><b>${utilityNumber(utilityAverage(gasIncomingValues))} m³</b><span>geçerli günlerin ortalaması</span></article>
+      <article><small>EN YÜKSEK SU TÜKETİMİ</small><b>${utilityNumber(waterMaximum?.value)} m³</b><span>${shortDate(waterMaximum?.date)}</span></article>
+      <article><small>EN YÜKSEK GAZ TÜKETİMİ</small><b>${utilityNumber(gasMaximum?.value)} m³</b><span>${shortDate(gasMaximum?.date)}</span></article>
+    </div>
+
+    <div class="utility-trend-grid">
+      ${utilityTrendChart(utilityRows,row=>row.water?.incoming,"İşletmeye Gelen Su","water")}
+      ${utilityTrendChart(utilityRows,row=>row.gas?.incoming,"İşletmeye Gelen Gaz","gas")}
+    </div>
+
+    <div class="utility-data-quality ${resetCount||invalidCount?"warning":missingCount?"info":"ok"}">
+      <b>Veri kalitesi</b>
+      <span>${resetCount?`${resetCount} günde sayaç düşüşü veya sıfırlama tespit edildi ve tüketim toplamına katılmadı. `:""}${invalidCount?`${invalidCount} günde geçersiz değer bulundu. `:""}${missingCount?`${missingCount} günde su veya gaz için ardışık kayıt bulunamadı. `:""}${!resetCount&&!invalidCount&&!missingCount?"Seçilen dönemdeki tüm sayaç farkları güvenle hesaplandı.":""}</span>
+    </div>
+
+    <div class="table-wrap utility-history-wrap">
+      <table class="utility-history-table">
+        <thead><tr><th>Tarih</th><th>Gelen Su</th><th>A Blok</th><th>B Blok</th><th>Dağıtım Farkı</th><th>Gelen Gaz</th><th>Veri Durumu</th></tr></thead>
+        <tbody>${[...utilityRows].reverse().map(row=>`<tr>
+          <td><b>${shortDate(row.date)}</b></td>
+          <td>${row.water?`${utilityNumber(row.water.incoming)} m³`:"-"}</td>
+          <td>${row.water?`${utilityNumber(row.water.aBlock)} m³`:"-"}</td>
+          <td>${row.water?`${utilityNumber(row.water.bBlock)} m³`:"-"}</td>
+          <td>${row.water?`${utilityNumber(row.water.balance)} m³`:"-"}</td>
+          <td>${row.gas?`${utilityNumber(row.gas.incoming)} m³`:"-"}</td>
+          <td><span class="utility-state ${row.waterState}">Su: ${esc(utilityStateLabel(row.waterState))}</span><span class="utility-state ${row.gasState}">Gaz: ${esc(utilityStateLabel(row.gasState))}</span></td>
+        </tr>`).join("")}</tbody>
+      </table>
+    </div>
+    <p class="utility-balance-note"><b>Dağıtım farkı</b>, gelen su tüketiminden A ve B blok sayaç tüketimlerinin çıkarılmasıyla hesaplanır. Bu değer tek başına kaçak veya kayıp anlamına gelmez.</p>
   </section>`;
 
   return `${clockBlock()}
@@ -646,6 +909,7 @@ function dailyChecksPage(){
     </section>
 
     ${utilityOutput}
+    ${utilityStatistics}
 
     <section class="daily-section-card">
       <div class="daily-list-heading">

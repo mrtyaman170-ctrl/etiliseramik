@@ -31,6 +31,7 @@ function bind(){
       const nextPage=b.dataset.p;
       markNotificationsSeen(nextPage);
       s.workDetailId=null;
+      s.dailyControlDetail=null;
       if(nextPage!=="faults")s.faultModalId=null;
       s.page=nextPage;
       render();
@@ -160,6 +161,13 @@ function bind(){
     render();
   };
 
+  const utilityStatsDays=document.getElementById("utilityStatsDays");
+  if(utilityStatsDays)utilityStatsDays.onchange=()=>{
+    const days=Number(utilityStatsDays.value);
+    s.utilityStatsDays=[7,14,30].includes(days)?days:14;
+    render();
+  };
+
   const contractorControlMonth=document.getElementById("contractorControlMonth");
   if(contractorControlMonth)contractorControlMonth.onchange=()=>{
     s.contractorControlMonth=contractorControlMonth.value||monthKeyLocal(new Date());
@@ -203,6 +211,39 @@ function bind(){
     deleteDailyControlFromCatalog(button.dataset.deleteDailyControl);
     render();
   });
+
+  const openDailyControlDetail=(card,event)=>{
+    if(event?.target?.closest("button,input,select,textarea,label,a,form"))return;
+    const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===card.dataset.dailyDetailAssetId);
+    if(!asset)return;
+    s.dailyControlDetail={
+      kind:card.dataset.dailyDetailKind==="contractor"?"contractor":"daily",
+      assetId:asset.id
+    };
+    render();
+  };
+  document.querySelectorAll("[data-daily-detail-asset-id]").forEach(card=>{
+    card.onclick=event=>openDailyControlDetail(card,event);
+    card.onkeydown=event=>{
+      if(event.key!=="Enter"&&event.key!==" ")return;
+      if(event.target!==card)return;
+      event.preventDefault();
+      openDailyControlDetail(card,event);
+    };
+  });
+
+  const closeDailyControlDetail=()=>{
+    s.dailyControlDetail=null;
+    render();
+  };
+  const dailyControlDetailBackdrop=document.getElementById("dailyControlDetailBackdrop");
+  const closeDailyControlDetailButton=document.getElementById("closeDailyControlDetail");
+  const closeDailyControlDetailBottom=document.getElementById("closeDailyControlDetailBottom");
+  if(closeDailyControlDetailButton)closeDailyControlDetailButton.onclick=closeDailyControlDetail;
+  if(closeDailyControlDetailBottom)closeDailyControlDetailBottom.onclick=closeDailyControlDetail;
+  if(dailyControlDetailBackdrop)dailyControlDetailBackdrop.onclick=event=>{
+    if(event.target===dailyControlDetailBackdrop)closeDailyControlDetail();
+  };
 
   document.querySelectorAll(".complete-daily-check").forEach(btn=>btn.onclick=async()=>{
     const asset=DAILY_CONTROL_ASSETS.find(item=>item.id===btn.dataset.assetId);

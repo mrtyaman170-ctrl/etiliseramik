@@ -80,6 +80,8 @@ let s={
   contractorControlMonth:monthKeyLocal(new Date()),
   dailyControlFactory:"1. Fabrika",
   dailyControlCategory:"Tümü",
+  dailyControlDetail:null,
+  utilityStatsDays:14,
   workTab:"requests",
   workCreateMode:"",
   calendarDate:new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString(),
@@ -650,7 +652,7 @@ function app(){
     <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
     ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
     <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>
-  </aside><main>${page()}</main></div>${personnelDetailModal()}${faultDetailModal()}${machineModal()}${workDetailModal()}${maintenanceLogModal()}${materialEditorModal()}${qrModal()}${shiftPersonModal()}`;
+  </aside><main>${page()}</main></div>${personnelDetailModal()}${faultDetailModal()}${machineModal()}${workDetailModal()}${dailyControlDetailModal()}${maintenanceLogModal()}${materialEditorModal()}${qrModal()}${shiftPersonModal()}`;
 }
 function login(){
   return `<div class="login login-redesign">
