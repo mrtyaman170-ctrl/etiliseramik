@@ -1,0 +1,327 @@
+/* Arıza ve makine geçmişi verileri */
+const MACHINE_QR_REGISTRY={
+  "F2A-H1-MAS-SD-001":{
+    factory:"2. Fabrika A Blok",
+    line:"1. Hat",
+    department:"Masse Bölümü",
+    machine:"Spray Dryer",
+    machineCode:"F2A-H1-MAS-SD-001"
+  }
+};
+
+const SUBJECTS={
+  "Elektrik":["Motor termik attı","Sigorta açtı","Kontaktör çekmiyor","Sensör beslemesi yok","Kablo bağlantısı gevşek","Sürücü alarmı","Faz hatası","Etiket yazıcı enerjisiz"],
+  "Mekanik":["Rulman sesi","Kayış gevşek","Zincir uzaması","Redüktör yağ kaçağı","Rulo sıkışması","Kaplin aşınması","Titreşim yüksek","Mekanik sürtünme"],
+  "Otomasyon":["PLC haberleşme hatası","Encoder senkron hatası","Servo alarmı","HMI bağlantı hatası","Program çevrim hatası","Pozisyon sapması","Profinet bağlantı kesildi","Reçete yüklenemedi"],
+  "Pnömatik":["Hava kaçağı","Piston yavaş","Valf bobini arızalı","Basınç düşük","Vakum oluşmuyor","Regülatör ayarsız"],
+  "Hidrolik":["Yağ basıncı düşük","Hidrolik kaçak","Valf sıkışması","Pompa sesi","Yağ sıcaklığı yüksek","Filtre tıkalı"],
+  "Diğer":["Operatör bildirimi","Temizlik ihtiyacı","Ayar problemi","Malzeme sıkışması","Kalite kaynaklı duruş"]
+};
+
+function seededRandom(seed){
+  let value=seed % 2147483647;
+  return function(){
+    value=value*16807%2147483647;
+    return (value-1)/2147483646;
+  }
+}
+
+function generateHistory(){
+  const rnd=seededRandom(20260725);
+  const factories=Object.keys(FACTORIES);
+  const departments=Object.keys(STRUCTURE);
+  const types=TYPES;
+  const arr=[];
+  let id=2000;
+  const now=new Date();
+
+  for(let i=0;i<260;i++){
+    const factory=factories[Math.floor(rnd()*factories.length)];
+    const line=FACTORIES[factory][Math.floor(rnd()*FACTORIES[factory].length)];
+    const department=departments[Math.floor(rnd()*departments.length)];
+    const machine=STRUCTURE[department][Math.floor(rnd()*STRUCTURE[department].length)];
+    const type=types[Math.floor(rnd()*types.length)];
+    const subjectList=SUBJECTS[type];
+    const subject=subjectList[Math.floor(rnd()*subjectList.length)];
+    const daysAgo=2+Math.floor(rnd()*205);
+    const start=new Date(now);
+    start.setDate(now.getDate()-daysAgo);
+    start.setHours(Math.floor(rnd()*24),Math.floor(rnd()*60),0,0);
+    const duration=5+Math.floor(rnd()*235);
+    const end=new Date(start.getTime()+duration*60000);
+    const stopped=rnd()>0.58;
+    arr.push({
+      id:id++,
+      factory,line,department,machine,type,subject,
+      description:"Geçmiş örnek arıza kaydı. Müdahale tamamlandı ve kayıt kapatıldı.",
+      stopped,photoName:"",status:"done",
+      openedBy:deterministicPerson(DEMO_FAULT_OPENERS,id,i),
+      assignedTo:"",
+      createdAt:start.toISOString(),closedAt:end.toISOString()
+    });
+    arr[arr.length-1].assignedTo=deterministicPerson(
+      maintenanceOptionsForFault(arr[arr.length-1]),arr[arr.length-1].id,i+11
+    );
+  }
+
+  arr.push(
+    {id:1001,factory:"1. Fabrika",line:"1. Hat",department:"Pres Bölümü",machine:"Presler",type:"Hidrolik",subject:"Yağ basıncı düşük",description:"Basınç normal seviyenin altında.",stopped:true,photoName:"",status:"open",openedBy:"Hakan Yıldız",assignedTo:"Üzeyir Toy",createdAt:new Date(Date.now()-42*60000).toISOString(),closedAt:null},
+    {id:1002,factory:"2. Fabrika B Blok",line:"2. Hat",department:"Paketleme",machine:"Etiket Yazıcı",type:"Elektrik",subject:"Etiket yazdırmıyor",description:"Yazıcı çevrimiçi ancak çıktı alınamıyor.",stopped:false,photoName:"",status:"progress",openedBy:"Burak Demir",assignedTo:"Mert Yaman",createdAt:new Date(Date.now()-18*60000).toISOString(),closedAt:null}
+  );
+  return arr;
+}
+
+/* Arıza, rapor ve makine ekranları */
+function newf(){
+  if(!canCreateFault())return `<div class="card empty-panel"><h3>Yetkisiz işlem</h3><p>Arıza kaydını yalnızca operatörler ve bölüm formenleri açabilir.</p></div>`;
+  return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">▣ QR Kod Tara</button></div>
+  <div id="qrFilledInfo" class="qr-filled-info"></div><div class="fault-opener-preview"><span>ARIZA KAYDINI AÇAN</span><div><i>${esc((s.user?.name||"?").charAt(0))}</i><b>${esc(s.user?.name||"Giriş yapan kullanıcı")}</b><small>Kullanıcı ID: ${esc(s.user?.id||"-")}</small></div></div>
+  <div class="card form"><form id="fault"><div class="formgrid">
+  <div class="field"><label>Fabrika</label><select id="factory" required>${opts(userFactories(),"Fabrika seçiniz")}</select></div>
+  <div class="field"><label>Hat / Alan</label><select id="line" required disabled>${opts([],"Önce fabrika seçiniz")}</select></div>
+  <div class="field"><label>Bölüm</label><select id="department" required disabled>${opts([],"Önce hat seçiniz")}</select></div>
+  <div class="field"><label>Makine</label><select id="machine" required disabled>${opts([],"Önce bölüm seçiniz")}</select></div>
+  <div class="field"><label>Arıza Tipi</label><select id="type" required>${opts(TYPES)}</select></div>
+  <div class="field"><label>Arıza Konusu</label><input id="subject" required></div>
+  <div class="field full"><label>Arıza Açıklaması</label><textarea id="desc" required></textarea></div>
+  <div class="field"><label>Fotoğraf</label><input type="file" id="photo" accept="image/*" capture="environment"></div>
+  <div class="field check"><label><input type="checkbox" id="stopped"> Üretim durdu mu?</label></div>
+  </div><div class="actions"><button type="button" class="secondary" data-p="dashboard">İptal</button><button class="primary">Kaydı Oluştur</button></div></form></div>`;
+}
+function reportPage(){
+  let base=visibleFaults();
+  if(s.reportFactory!=="Tümü")base=base.filter(x=>x.factory===s.reportFactory);
+  if(s.reportStart)base=base.filter(x=>new Date(x.createdAt)>=new Date(s.reportStart+"T00:00:00"));
+  if(s.reportEnd)base=base.filter(x=>new Date(x.createdAt)<=new Date(s.reportEnd+"T23:59:59"));
+
+  const trend=trendDataFor(base,"trend");
+  const shiftTrend=trendDataFor(base,"shiftTrend");
+  const departmentData=countBy(chartRangeFaultsFor(base,"department"),"department").slice(0,10).map(([label,value])=>({label,value}));
+  const typeData=countBy(chartRangeFaultsFor(base,"type"),"type").map(([label,value])=>({label,value}));
+  const downtimeData=countBy(chartRangeFaultsFor(base,"downtime").filter(x=>x.stopped),"department").slice(0,10).map(([label,value])=>({label,value}));
+  const statusData=[
+    {label:"Yeni",value:chartRangeFaultsFor(base,"status").filter(x=>x.status==="open").length},
+    {label:"İşlemde",value:chartRangeFaultsFor(base,"status").filter(x=>x.status==="progress").length},
+    {label:"Tamamlandı",value:chartRangeFaultsFor(base,"status").filter(x=>x.status==="done").length}
+  ];
+  const machineData=countBy(chartRangeFaultsFor(base,"machineRank"),"machine").slice(0,12).map(([label,value])=>({label,value}));
+  const factoryOptions=permissions().allFactories?["Tümü",...Object.keys(FACTORIES)]:["Tümü",...userFactories()];
+
+  return `${clockBlock()}
+  <section class="desktop-page-title charts-title">
+    <div><span>ANALİZ MERKEZİ</span><h1>Grafikler</h1><p>Tüm grafiklerin zaman aralığını birbirinden bağımsız seçebilirsiniz.</p></div>
+  </section>
+  <section class="charts-global-filter">
+    <label>Başlangıç Tarihi<input type="date" id="reportStart" value="${s.reportStart}"></label>
+    <label>Bitiş Tarihi<input type="date" id="reportEnd" value="${s.reportEnd}"></label>
+    <label>Fabrika<select id="reportFactory">${factoryOptions.map(x=>`<option ${x===s.reportFactory?"selected":""}>${x}</option>`).join("")}</select></label>
+    <button class="secondary" id="clearReport">Filtreleri Temizle</button>
+  </section>
+  <section class="charts-dashboard-grid">
+    <article class="analytics-chart-card wide">
+      <div class="chart-panel-head"><div><h3>Arıza Trendi</h3><p>Zamana göre açılan arıza sayısı</p></div>${chartRangeControlsFor("trend")}</div>
+      ${lineChartSVG(trend.length?trend:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Vardiya Trendi</h3><p>Vardiyalara göre arıza yoğunluğu</p></div>${chartRangeControlsFor("shiftTrend")}</div>
+      ${lineChartSVG(shiftTrend.length?shiftTrend:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Durum Dağılımı</h3><p>Yeni, işlemde ve tamamlanan işler</p></div>${chartRangeControlsFor("status")}</div>
+      ${barChartSVG(statusData,"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Bölümlere Göre Arıza</h3><p>En yoğun bölümler</p></div>${chartRangeControlsFor("department")}</div>
+      ${barChartSVG(departmentData.length?departmentData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Arıza Tipleri</h3><p>Elektrik, mekanik ve diğer tipler</p></div>${chartRangeControlsFor("type")}</div>
+      ${barChartSVG(typeData.length?typeData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card">
+      <div class="chart-panel-head"><div><h3>Üretim Duruşları</h3><p>Bölümlere göre duruş oluşturan arızalar</p></div>${chartRangeControlsFor("downtime")}</div>
+      ${barChartSVG(downtimeData.length?downtimeData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+    <article class="analytics-chart-card wide">
+      <div class="chart-panel-head"><div><h3>En Çok Arıza Çıkaran Makineler</h3><p>Makine bazında arıza sıralaması</p></div>${chartRangeControlsFor("machineRank")}</div>
+      ${barChartSVG(machineData.length?machineData:[{label:"Kayıt Yok",value:0}],"")}
+    </article>
+  </section>`;
+}
+function machineState(factory,line,machine){
+  const active=s.faults.find(x=>x.factory===factory&&x.line===line&&x.machine===machine&&x.status!=="done");
+  if(!active)return {cls:"running",text:"Çalışıyor"};
+  if(active.stopped)return {cls:"stopped",text:"Duruş"};
+  return {cls:"warning",text:"Arızalı"};
+}
+function layoutPage(){
+  const factory=s.layoutFactory;
+  const lines=catalogLines(factory);
+  if(!lines.includes(s.layoutLine))s.layoutLine=lines[0]||"";
+  const line=s.layoutLine;
+
+  const availableDepartments=catalogDepartments(factory,line);
+  if(!s.layoutDepartment || !availableDepartments.includes(s.layoutDepartment)){
+    s.layoutDepartment=roleIsDepartmentLimited()&&s.user?.department&&availableDepartments.includes(s.user.department)
+      ?s.user.department
+      :availableDepartments[0]||"";
+  }
+
+  const department=s.layoutDepartment;
+  const machines=catalogMachines(factory,line,department);
+
+  const iconFor=m=>{
+    const u=m.toLocaleUpperCase("tr-TR");
+    return u.includes("SİLO")?"⬡":u.includes("DEĞİRMEN")?"✣":u.includes("SPRAY")?"♨":
+      u.includes("PRES")?"▣":u.includes("FIRIN")?"🔥":u.includes("DİJİTAL")?"▦":
+      u.includes("POLİSAJ")||u.includes("PARLATMA")?"◉":u.includes("PAKET")?"▤":
+      u.includes("PALET")?"♜":u.includes("STREÇ")?"◎":u.includes("BANT")||u.includes("KONVEYÖR")?"⇢":
+      u.includes("AGV")||u.includes("TGV")?"◆":u.includes("TANK")||u.includes("KAZAN")?"◒":"⚙";
+  };
+
+  const departmentCards=availableDepartments
+    .filter(dept=>!roleIsDepartmentLimited()||dept===s.user.department)
+    .map(dept=>{
+      const deptMachines=catalogMachines(factory,line,dept);
+      const activeCount=deptMachines.filter(m=>machineState(factory,line,m).cls!=="running").length;
+      return `<button class="factory-department-card ${dept===department?"active":""}" data-department="${esc(dept)}">
+        <div><span>${deptMachines.length}</span><small>makine</small></div>
+        <section><h3>${esc(dept)}</h3><p>${activeCount?`${activeCount} aktif arıza / uyarı`:"Tüm makineler çalışıyor"}</p></section>
+        <b>›</b>
+      </button>`;
+    }).join("");
+
+  const managementPanel=canManageMachines()?`<details class="machine-management-panel">
+    <summary><span>＋</span><div><b>Makine Kataloğunu Yönet</b><small>Seçili fabrika, hat ve bölüme yeni makine ekleyin. Makine silme yalnızca makine detay ekranından yapılır.</small></div><i>⌄</i></summary>
+    <form id="machineCatalogForm" class="machine-management-form">
+      <label>Fabrika<input value="${esc(factory)}" readonly></label>
+      <label>Hat / Alan<input value="${esc(line)}" readonly></label>
+      <label>Bölüm<input value="${esc(department)}" readonly></label>
+      <label class="machine-name-input">Yeni Makine / Ekipman Adı<input id="newMachineName" maxlength="120" placeholder="Örn. 5. PRES BESLEME KONVEYÖRÜ" required></label>
+      <button type="submit" class="primary">Seçili Bölüme Ekle</button>
+    </form>
+    <p class="machine-management-note">Makine silindiğinde eski arıza ve bakım kayıtları korunur; yalnızca yeni seçim listelerinden kaldırılır.</p>
+  </details>`:"";
+
+  return `
+  <section class="layout-hero">
+    <div><span>FABRİKA VE BÖLÜM GÖRÜNÜMÜ</span><h1>Fabrika Şeması</h1><p>${esc(factory)} · ${esc(line)} · ${esc(department||"Bölüm seçiniz")}</p></div>
+    <div class="layout-live-dot">● CANLI</div>
+  </section>
+
+  <section class="layout-control-modern factory-schema-controls">
+    <label>Fabrika<select id="layoutFactory">${opts(userFactories(),"Seçiniz",factory)}</select></label>
+    <label>Hat / Alan<select id="layoutLine">${opts(lines,"Seçiniz",line)}</select></label>
+    <label>Bölüm<select id="layoutDepartment">${opts(availableDepartments,"Bölüm seçiniz",department)}</select></label>
+    <div class="layout-status-legend"><span><i class="running"></i>Çalışıyor</span><span><i class="warning"></i>Arızalı</span><span><i class="stopped"></i>Duruş</span></div>
+  </section>
+
+  ${managementPanel}
+
+  <section class="factory-schema-layout">
+    <aside class="factory-department-list">
+      <div class="factory-department-head"><h2>Bölümler</h2><p>Görüntülemek istediğin bölümü seç</p></div>
+      <div class="factory-department-cards">${departmentCards||'<div class="compact-empty"><span>!</span><p>Bu hatta bölüm bulunamadı.</p></div>'}</div>
+    </aside>
+
+    <section class="factory-machine-area">
+      <div class="factory-machine-head">
+        <div><span>SEÇİLİ BÖLÜM</span><h2>${esc(department||"Bölüm seçiniz")}</h2><p>${machines.length} makine / ekipman listeleniyor.</p></div>
+        <div class="factory-machine-summary">
+          <div><small>TOPLAM</small><b>${machines.length}</b></div>
+          <div><small>ARIZALI</small><b>${machines.filter(m=>machineState(factory,line,m).cls!=="running").length}</b></div>
+        </div>
+      </div>
+
+      <div class="factory-machine-grid">
+        ${machines.map((machine,index)=>{
+          const state=machineState(factory,line,machine);
+          return `<article class="factory-machine-card-shell ${state.cls}">
+            <button class="factory-machine-card ${state.cls}" data-machine="${esc(machine)}" data-mf="${esc(factory)}" data-ml="${esc(line)}" data-md="${esc(department)}">
+              <div class="factory-machine-icon">${iconFor(machine)}</div>
+              <div class="factory-machine-copy">
+                <span>Makine ${String(index+1).padStart(2,"0")} ${isCustomMachine(factory,line,department,machine)?"· Kullanıcı Eklemesi":""}</span>
+                <h3>${esc(machine)}</h3>
+                <p>${esc(department)}</p>
+              </div>
+              <div class="factory-machine-status"><i></i><b>${state.text}</b></div>
+            </button>
+          </article>`;
+        }).join("")||'<div class="compact-empty"><span>!</span><p>Bu bölümde makine bulunamadı.</p></div>'}
+      </div>
+    </section>
+  </section>`;
+}
+
+function faultDetailModal(){
+  if(!s.faultModalId)return "";
+  const f=s.faults.find(x=>Number(x.id)===Number(s.faultModalId));
+  if(!f)return "";
+  const isDone=f.status==="done";
+  const productionText=f.stopped?"Evet — üretim durdu":"Hayır";
+  const closeDate=f.closedAt?fmtDate(f.closedAt):"-";
+  const photo=f.photoName?`<div class="fault-detail-photo"><span>EKLENEN FOTOĞRAF</span><b>${esc(f.photoName)}</b><small>Demo sürümünde yalnızca dosya adı saklanmaktadır.</small></div>`:"";
+  const participants=faultParticipants(f);
+  const canManageParticipants=canManageFaultParticipants(f);
+  const candidates=participantCandidateNames(f);
+  const assignmentControl=canManageParticipants
+    ?`<div class="participant-selector"><div class="participant-help">${s.user?.role==="Bakım Personeli"?"Aktif vardiyadaki ekip arkadaşlarınız ve daha önce müdahale edenler gösterilir.":"Birden fazla bakım personeli seçebilirsiniz."}</div>${candidates.map(name=>`<label><input type="checkbox" class="fault-participant-check" value="${esc(name)}" ${participants.includes(name)?"checked":""}><span>${esc(name)}</span>${activeParticipantCandidates(f).includes(name)?'<small>Aktif vardiya</small>':""}</label>`).join("")}</div>`
+    :`<div class="participant-chips">${participants.map(name=>`<span>${esc(name)}</span>`).join("")||'<span>Personel atanmadı</span>'}</div>`;
+  const selfJoin=canSelfJoinFault(f)?`<button type="button" class="primary fault-self-join" id="faultSelfJoin">+ Ben de Müdahale Ediyorum</button>`:"";
+  const handoverCandidates=nextShiftMembersForFault(f);
+  const handoverSection=canHandoverFault(f)?`<section class="fault-detail-card wide fault-handover-card"><div class="fault-handover-head"><div><span>VARDİYA DEVİR İŞLEMİ</span><p>Devam eden arızayı bir sonraki vardiyadaki personele devredin. Önceki müdahale edenler kayıtta kalır.</p></div><b>${esc(currentShiftLabel())} → ${esc(nextShiftLabel())}</b></div><form id="faultHandoverForm" class="fault-handover-form"><div class="field"><label>Devredilecek Personel *</label><select id="faultHandoverTo" required><option value="">Sonraki vardiyadan seçiniz</option>${handoverCandidates.map(name=>`<option>${esc(name)}</option>`).join("")}</select></div><div class="field handover-note"><label>Devir Notu *</label><input id="faultHandoverNote" maxlength="500" placeholder="Yapılan işlem, beklenen parça ve sonraki kontrol bilgisi" required></div><button type="submit" class="primary">Arızayı Devret</button></form>${handoverCandidates.length?"":'<div class="solution-missing-message">Sonraki vardiyada uygun personel bulunamadı. Bakım formeni vardiya planını kontrol etmelidir.</div>'}</section>`:"";
+  const handoverHistory=(f.handovers||[]).length?`<section class="fault-detail-card wide"><div class="section-modern-head"><div><h3>Arıza Devir Geçmişi</h3><p>Vardiyalar arasındaki teslim kayıtları</p></div></div><div class="fault-handover-history">${[...(f.handovers||[])].reverse().map(h=>`<article><span>${fmtDate(h.at)}</span><b>${esc(h.from)} → ${esc(h.to)}</b><small>${esc(h.fromShift||"-")} → ${esc(h.toShift||"-")}</small><p>${esc(h.note||"Devir notu girilmedi.")}</p></article>`).join("")}</div></section>`:"";
+  const statusControl=permissions().editStatus?`<select id="faultModalStatus" class="sel fault-modal-status"><option value="open" ${f.status==="open"?"selected":""}>Yeni</option><option value="progress" ${f.status==="progress"?"selected":""}>İşlemde</option><option value="done" ${f.status==="done"?"selected":""}>Tamamlandı</option></select>`:`<span class="status ${f.status}">${statusLabel(f.status)}</span>`;
+  const canEditSolution=!!permissions().editStatus;
+  const solutionText=String(f.solutionText||"");
+  const hasSolution=solutionText.trim().length>0;
+  const solutionMeta=f.solutionBy||f.solutionAt?`<div class="fault-solution-meta"><span>Yazan: <b>${esc(f.solutionBy||"Bilinmiyor")}</b></span><span>${f.solutionAt?fmtDate(f.solutionAt):""}</span></div>`:"";
+  const solutionStateText=isDone?(hasSolution?"Tamamlandı":"Arıza açıklaması yazılmadı"):(hasSolution?"Çözüm kaydedildi":"Çözüm bekleniyor");
+  const solutionSection=`<section class="fault-detail-card wide fault-solution-card ${isDone?"completed":""} ${isDone&&!hasSolution?"missing-solution":""}"><div class="fault-solution-head"><div><span>ÇÖZÜM VE YAPILAN İŞLEM</span><p>Arıza tamamlandığında yapılan işlemi yazabilirsiniz. Çözüm yazısı zorunlu değildir.</p></div><strong>${solutionStateText}</strong></div>${canEditSolution?`<textarea id="faultSolutionText" maxlength="1500" placeholder="Yapılan işlem ve sonucu yazın.">${esc(solutionText)}</textarea><div class="fault-solution-actions"><small><span id="faultSolutionCount">${solutionText.length}</span>/1500 karakter</small><button type="button" class="secondary" id="faultSolutionSave">Çözüm Yazısını Kaydet</button></div>${isDone&&!hasSolution?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':""}${solutionMeta}`:`${solutionText?`<p class="fault-solution-text">${esc(solutionText)}</p>${solutionMeta}`:(isDone?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':'<div class="compact-empty"><span>✎</span><p>Henüz çözüm yazısı girilmedi.</p></div>')}`}</section>`;
+  const usedMaterials=faultUsedMaterials(f);
+  const canEditMaterials=canManageFaultMaterials();
+  const materialCategories=[...new Set(MATERIALS.map(m=>m.category))].sort((a,b)=>a.localeCompare(b,"tr"));
+  const materialOptions=materialCategories.map(category=>`<optgroup label="${esc(category)}">${MATERIALS.filter(m=>m.category===category).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.id)}">${esc(m.code)} · ${esc(m.name)} (${esc(m.unit)})</option>`).join("")}</optgroup>`).join("");
+  const materialSection=`<section class="fault-detail-card wide fault-material-card"><div class="fault-material-head"><div><span>KULLANILAN MALZEMELER</span><p>Bu arızada değiştirilen veya tüketilen yedek parçalar.</p></div><b>${usedMaterials.length} kayıt</b></div><div class="fault-material-list">${usedMaterials.map((item,index)=>{const m=materialById(item.materialId);return `<article><div><small>${esc(m?.code||item.code||"-")}</small><b>${esc(m?.name||item.name||"Malzeme")}</b><span>${esc(item.note||"Açıklama girilmedi.")}</span></div><strong>${Number(item.quantity)||0} ${esc(item.unit||m?.unit||"Adet")}</strong>${canEditMaterials?`<button type="button" class="fault-material-remove danger" data-material-index="${index}">Sil</button>`:""}</article>`}).join("")||'<div class="compact-empty"><span>□</span><p>Bu arızaya henüz malzeme eklenmedi.</p></div>'}</div>${canEditMaterials?`<form id="faultMaterialForm" class="fault-material-form"><div class="field"><label>Malzeme</label><select id="faultMaterialId" required><option value="">Malzeme seçiniz</option>${materialOptions}</select></div><div class="field"><label>Miktar</label><input id="faultMaterialQuantity" type="number" min="0.01" step="0.01" value="1" required></div><div class="field material-note-field"><label>Açıklama</label><input id="faultMaterialNote" placeholder="Örn. Motor rulmanı değiştirildi"></div><button class="primary" type="submit">+ Malzeme Ekle</button></form>`:""}</section>`;
+
+  return `<div class="modal-backdrop fault-detail-backdrop" id="faultModalCloseBg"><div class="modal fault-detail-modal"><div class="modal-head"><div><span class="fault-detail-id">ARIZA KAYDI #${esc(f.id)}</span><h2>${esc(f.subject)}</h2><p>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</p></div><button type="button" id="faultModalClose">×</button></div><div class="fault-detail-statusbar"><div><small>DURUM</small>${statusControl}</div><div><small>SÜRE</small><b class="duration" data-id="${f.id}">${durationText(f)}</b></div><div><small>ÜRETİM DURDU MU?</small><b class="${f.stopped?"fault-stop-yes":""}">${productionText}</b></div></div><div class="fault-detail-grid">
+    <section class="fault-detail-card wide"><span>ARIZA AÇIKLAMASI</span><h3>${esc(f.subject)}</h3><p>${esc(f.description||"Açıklama girilmemiş.")}</p>${photo}</section>
+    <section class="fault-detail-card"><span>KONUM BİLGİLERİ</span><dl><div><dt>Fabrika</dt><dd>${esc(f.factory)}</dd></div><div><dt>Hat / Alan</dt><dd>${esc(f.line)}</dd></div><div><dt>Bölüm</dt><dd>${esc(f.department)}</dd></div><div><dt>Makine</dt><dd>${esc(f.machine)}</dd></div><div><dt>Arıza Türü</dt><dd>${esc(f.type||"-")}</dd></div></dl></section>
+    <section class="fault-detail-card"><span>PERSONEL BİLGİLERİ</span><dl><div><dt>Kaydı Açan</dt><dd>${esc(f.openedBy||"Bilinmiyor")}</dd></div><div class="fault-assignment-row"><dt>Müdahale Edenler</dt><dd>${assignmentControl}${selfJoin}</dd></div></dl></section>
+    <section class="fault-detail-card"><span>ZAMAN BİLGİLERİ</span><dl><div><dt>Açılış Tarihi</dt><dd>${fmtDate(f.createdAt)}</dd></div><div><dt>Kapanış Tarihi</dt><dd>${closeDate}</dd></div><div><dt>Geçen Süre</dt><dd class="duration" data-id="${f.id}">${durationText(f)}</dd></div></dl></section>
+    <section class="fault-detail-card"><span>KAYIT ÖZETİ</span><dl><div><dt>Kayıt No</dt><dd>#${esc(f.id)}</dd></div><div><dt>Aktif mi?</dt><dd>${isDone?"Hayır":"Evet"}</dd></div><div><dt>Duruş Kaydı</dt><dd>${f.stopped?"Var":"Yok"}</dd></div></dl></section>
+    ${handoverSection}${handoverHistory}${solutionSection}${materialSection}
+  </div></div></div>`;
+}
+
+function machineModal(){
+  if(!s.machineModal)return "";
+  const {factory,line,machine}=s.machineModal;
+  const department=s.machineModal.department||findMachineDepartment(factory,line,machine);
+  const hist=visibleFaults().filter(x=>x.factory===factory&&x.line===line&&x.machine===machine).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const total=hist.length,active=hist.filter(x=>x.status!=="done").length,totalMin=Math.round(hist.reduce((sum,x)=>sum+durationMs(x)/60000,0));
+  const mttr=total?Math.round(totalMin/total):0;
+  const sorted=[...hist].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  let mtbf=0;
+  if(sorted.length>1){let sum=0,count=0;for(let i=1;i<sorted.length;i++){sum+=(new Date(sorted[i].createdAt)-new Date(sorted[i-1].createdAt))/3600000;count++}mtbf=Math.round(sum/count)}
+  const machineTrend=trendDataFor(hist,"machineTrend");
+  const typeData=countBy(chartRangeFaultsFor(hist,"machineType"),"type").map(([label,value])=>({label,value}));
+  const machineDowntime=countBy(chartRangeFaultsFor(hist,"machineDowntime").filter(x=>x.stopped),"subject").slice(0,8).map(([label,value])=>({label,value}));
+  const topSubject=countBy(hist,"subject")[0]?.[0]||"-";
+
+  let body="";
+  if(s.machineTab==="history")body=table(hist);
+  else if(s.machineTab==="charts")body=`<div class="machine-chart-grid">
+    <article class="analytics-chart-card wide"><div class="chart-panel-head"><div><h3>Makine Arıza Trendi</h3><p>${esc(machine)} için zaman bazlı arıza sayısı</p></div>${chartRangeControlsFor("machineTrend")}</div>${lineChartSVG(machineTrend.length?machineTrend:[{label:"Yok",value:0}],"")}</article>
+    <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Arıza Tipi Dağılımı</h3><p>Makinenin arıza türleri</p></div>${chartRangeControlsFor("machineType")}</div>${barChartSVG(typeData.length?typeData:[{label:"Yok",value:0}],"")}</article>
+    <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Duruş Nedenleri</h3><p>Üretimi durduran arıza konuları</p></div>${chartRangeControlsFor("machineDowntime")}</div>${barChartSVG(machineDowntime.length?machineDowntime:[{label:"Yok",value:0}],"")}</article>
+  </div>`;
+  else if(s.machineTab==="documents")body=`<div class="empty-panel"><h3>Makine Dokümanları</h3><p>Bu alana elektrik şeması, mekanik çizim, kullanım kılavuzu ve PLC yedekleri eklenecek.</p><button class="secondary">+ Doküman Ekle</button></div>`;
+  else body=`<div class="machine-kpis"><div class="metric"><span>Toplam Arıza</span><b>${total}</b></div><div class="metric"><span>Aktif Arıza</span><b>${active}</b></div><div class="metric"><span>Toplam Duruş</span><b>${totalMin} dk</b></div><div class="metric"><span>MTTR</span><b>${mttr} dk</b></div><div class="metric"><span>MTBF</span><b>${mtbf} sa</b></div><div class="metric wide"><span>En Sık Arıza</span><b>${esc(topSubject)}</b></div></div><div class="machine-info-grid"><div class="info-card"><h4>Makine Bilgileri</h4><p><b>Fabrika:</b> ${esc(factory)}</p><p><b>Hat:</b> ${esc(line)}</p><p><b>Bölüm:</b> ${esc(department||"-")}</p><p><b>Makine:</b> ${esc(machine)}</p><p><b>Son Kaydı Açan:</b> ${esc(hist[0]?.openedBy||"-")}</p><p><b>Durum:</b> ${machineState(factory,line,machine).text}</p></div><div class="info-card"><h4>Son Kayıt</h4>${hist[0]?`<p><b>${esc(hist[0].subject)}</b></p><p>${fmtDate(hist[0].createdAt)}</p><p>${durationText(hist[0])}</p>`:"<p>Kayıt yok.</p>"}</div></div>`;
+
+  return `<div class="modal-backdrop" id="modalCloseBg"><div class="modal machine-modal">
+    <div class="modal-head"><div><h2>${esc(machine)}</h2><p>${esc(factory)} · ${esc(line)} · ${esc(department||"-")}</p></div><div class="modal-head-actions"><button type="button" class="machine-qr-button" data-qr-machine="${esc(machine)}" data-qr-factory="${esc(factory)}" data-qr-line="${esc(line)}">QR</button>${canManageMachines()?`<button type="button" class="danger machine-detail-delete" data-delete-machine="${esc(machine)}" data-delete-factory="${esc(factory)}" data-delete-line="${esc(line)}" data-delete-department="${esc(department)}">Makineyi Sil</button>`:""}<button id="modalClose">×</button></div></div>
+    <div class="tabs"><button data-tab="overview" class="${s.machineTab==="overview"?"active":""}">Genel Bakış</button><button data-tab="history" class="${s.machineTab==="history"?"active":""}">Arıza Geçmişi</button>${roleHasCharts()?`<button data-tab="charts" class="${s.machineTab==="charts"?"active":""}">Grafikler</button>`:""}<button data-tab="documents" class="${s.machineTab==="documents"?"active":""}">Dokümanlar</button></div>
+    ${body}
+  </div></div>`;
+}
