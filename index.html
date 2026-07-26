@@ -1080,6 +1080,142 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   }
 }
 
+
+/* === Fabrika Şeması - bölüm bazlı görünüm === */
+.factory-schema-controls{
+  display:grid!important;
+  grid-template-columns:1fr 1fr 1fr auto!important;
+}
+.factory-schema-layout{
+  display:grid;
+  grid-template-columns:300px minmax(0,1fr);
+  gap:16px;
+  align-items:start;
+}
+.factory-department-list,
+.factory-machine-area{
+  background:#fff;
+  border:1px solid #dfe5ec;
+  border-radius:20px;
+  box-shadow:0 8px 26px rgba(22,34,52,.055);
+}
+.factory-department-list{
+  padding:15px;
+  position:sticky;
+  top:95px;
+}
+.factory-department-head h2,
+.factory-department-head p{margin:0}
+.factory-department-head h2{font-size:17px}
+.factory-department-head p{font-size:10px;color:#7d8692;margin-top:4px}
+.factory-department-cards{display:grid;gap:8px;margin-top:14px}
+.factory-department-card{
+  width:100%;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) 18px;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border:1px solid #e3e7ed;
+  border-radius:14px;
+  background:#fbfcfd;
+  text-align:left;
+}
+.factory-department-card:hover{background:#fff9e8;border-color:#e8c25d}
+.factory-department-card.active{
+  background:linear-gradient(135deg,#192335,#263650);
+  color:#fff;
+  border-color:#263650;
+}
+.factory-department-card>div{
+  width:48px;height:48px;
+  display:grid;place-items:center;align-content:center;
+  border-radius:12px;
+  background:#eef3f9;
+}
+.factory-department-card.active>div{background:rgba(255,255,255,.1)}
+.factory-department-card>div span{font-size:17px;font-weight:900;line-height:1}
+.factory-department-card>div small{font-size:8px;margin-top:3px;color:#798391}
+.factory-department-card.active>div small{color:#c3ccd8}
+.factory-department-card section{min-width:0}
+.factory-department-card h3{font-size:12px;margin:0}
+.factory-department-card p{font-size:9px;margin:4px 0 0;color:#75808d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.factory-department-card.active p{color:#bdc7d4}
+.factory-department-card>b{font-size:20px;color:#8d96a3}
+.factory-department-card.active>b{color:#efbd31}
+
+.factory-machine-area{padding:17px;min-width:0}
+.factory-machine-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:16px;padding:2px 2px 15px;border-bottom:1px solid #e9ecf0
+}
+.factory-machine-head span{font-size:9px;font-weight:900;letter-spacing:.9px;color:#d39a00}
+.factory-machine-head h2{font-size:23px;margin:5px 0 0}
+.factory-machine-head p{font-size:10.5px;color:#77818d;margin:5px 0 0}
+.factory-machine-summary{display:flex;gap:8px}
+.factory-machine-summary div{min-width:78px;padding:9px 12px;border:1px solid #e1e6ec;border-radius:12px;text-align:right}
+.factory-machine-summary small,.factory-machine-summary b{display:block}
+.factory-machine-summary small{font-size:8px;color:#818a96;font-weight:900}
+.factory-machine-summary b{font-size:20px;margin-top:3px}
+
+.factory-machine-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px;
+  margin-top:15px;
+}
+.factory-machine-card{
+  min-width:0;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  gap:11px;
+  position:relative;
+  padding:13px;
+  border:1px solid #e3e7ed;
+  border-radius:16px;
+  background:#fbfcfd;
+  text-align:left;
+  overflow:hidden;
+}
+.factory-machine-card:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(22,34,52,.08)}
+.factory-machine-card.running{border-left:4px solid #19a667}
+.factory-machine-card.warning{border-left:4px solid #e1a919;background:#fffaf0}
+.factory-machine-card.stopped{border-left:4px solid #df4051;background:#fff5f6}
+.factory-machine-icon{
+  width:48px;height:48px;display:grid;place-items:center;
+  border-radius:13px;background:#eef3f9;font-size:24px
+}
+.factory-machine-copy{min-width:0}
+.factory-machine-copy span{font-size:8px;color:#8a939f;font-weight:800}
+.factory-machine-copy h3{font-size:12px;margin:4px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.factory-machine-copy p{font-size:9px;color:#78818d;margin:4px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.factory-machine-status{
+  grid-column:1/-1;
+  display:flex;align-items:center;gap:6px;
+  padding-top:8px;border-top:1px solid #e9ecf0
+}
+.factory-machine-status i{width:8px;height:8px;border-radius:50%;background:#19a667}
+.factory-machine-card.warning .factory-machine-status i{background:#e1a919}
+.factory-machine-card.stopped .factory-machine-status i{background:#df4051}
+.factory-machine-status b{font-size:9px}
+
+@media(max-width:1250px){
+  .factory-machine-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:1000px){
+  .factory-schema-layout{grid-template-columns:1fr}
+  .factory-department-list{position:static}
+  .factory-department-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .factory-schema-controls{grid-template-columns:1fr!important}
+  .factory-machine-grid{grid-template-columns:1fr}
+  .factory-department-cards{grid-template-columns:1fr}
+  .factory-machine-head{align-items:flex-start;flex-direction:column}
+  .factory-machine-summary{width:100%}
+  .factory-machine-summary div{flex:1}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -1309,6 +1445,7 @@ let s={
   reportEnd:"",
   layoutFactory:"1. Fabrika",
   layoutLine:"1. Hat",
+  layoutDepartment:"",
   machineModal:null,
   machineTab:"overview",
   chartRanges:{
@@ -1775,8 +1912,8 @@ function dashboard(){
 
   <section class="line-preview-card">
     <div class="section-modern-head">
-      <div><h2>Hat Yerleşim Özeti</h2><p>Makine durumlarını hızlı kontrol et</p></div>
-      <button data-p="layout">Hatları Aç ›</button>
+      <div><h2>Fabrika Şeması Özeti</h2><p>Makine durumlarını hızlı kontrol et</p></div>
+      <button data-p="layout">Fabrika Şemasını Aç ›</button>
     </div>
     <div class="mini-process-flow">
       ${["Hammadde Silo","Değirmen","Spray Dryer","Pres","Fırın","Dijital Baskı","Paketleme","Paletleme"].map((m,i)=>{
@@ -2117,7 +2254,18 @@ function layoutPage(){
   const lines=catalogLines(factory);
   if(!lines.includes(s.layoutLine))s.layoutLine=lines[0]||"";
   const line=s.layoutLine;
-  const departments=MACHINE_CATALOG_2_FACTORY[factory]?.[line]||STRUCTURE;
+
+  const availableDepartments=catalogDepartments(factory,line);
+  if(!s.layoutDepartment || !availableDepartments.includes(s.layoutDepartment)){
+    s.layoutDepartment=roleIsDepartmentLimited()&&s.user?.department&&availableDepartments.includes(s.user.department)
+      ? s.user.department
+      : availableDepartments[0]||"";
+  }
+
+  const department=s.layoutDepartment;
+  const allDepartments=MACHINE_CATALOG_2_FACTORY[factory]?.[line]||STRUCTURE;
+  const machines=allDepartments[department]||[];
+
   const iconFor=m=>{
     const u=m.toLocaleUpperCase("tr-TR");
     return u.includes("SİLO")?"⬡":u.includes("DEĞİRMEN")?"✣":u.includes("SPRAY")?"♨":
@@ -2126,30 +2274,63 @@ function layoutPage(){
       u.includes("PALET")?"♜":u.includes("STREÇ")?"◎":u.includes("BANT")||u.includes("KONVEYÖR")?"⇢":
       u.includes("AGV")||u.includes("TGV")?"◆":u.includes("TANK")||u.includes("KAZAN")?"◒":"⚙";
   };
+
+  const departmentCards=availableDepartments
+    .filter(dept=>!roleIsDepartmentLimited()||dept===s.user.department)
+    .map(dept=>{
+      const deptMachines=allDepartments[dept]||[];
+      const activeCount=deptMachines.filter(m=>machineState(factory,line,m).cls!=="running").length;
+      return `<button class="factory-department-card ${dept===department?"active":""}" data-department="${esc(dept)}">
+        <div><span>${deptMachines.length}</span><small>makine</small></div>
+        <section><h3>${esc(dept)}</h3><p>${activeCount?`${activeCount} aktif arıza / uyarı`:"Tüm makineler çalışıyor"}</p></section>
+        <b>›</b>
+      </button>`;
+    }).join("");
+
   return `
   <section class="layout-hero">
-    <div><span>CANLI HAT GÖRÜNÜMÜ</span><h1>Hat Yerleşim Planı</h1><p>${esc(factory)} · ${esc(line)} için gerçek makine listesi görüntüleniyor.</p></div>
+    <div><span>FABRİKA VE BÖLÜM GÖRÜNÜMÜ</span><h1>Fabrika Şeması</h1><p>${esc(factory)} · ${esc(line)} · ${esc(department||"Bölüm seçiniz")}</p></div>
     <div class="layout-live-dot">● CANLI</div>
   </section>
-  <section class="layout-control-modern">
+
+  <section class="layout-control-modern factory-schema-controls">
     <label>Fabrika<select id="layoutFactory">${opts(userFactories(),"Seçiniz",factory)}</select></label>
     <label>Hat / Alan<select id="layoutLine">${opts(lines,"Seçiniz",line)}</select></label>
+    <label>Bölüm<select id="layoutDepartment">${opts(availableDepartments,"Bölüm seçiniz",department)}</select></label>
     <div class="layout-status-legend"><span><i class="running"></i>Çalışıyor</span><span><i class="warning"></i>Arızalı</span><span><i class="stopped"></i>Duruş</span></div>
   </section>
-  <div class="visual-plant-map">
-    ${Object.entries(departments).filter(([dept])=>!roleIsDepartmentLimited()||dept===s.user.department).map(([dept,machines],di)=>`
-      <section class="visual-department">
-        <div class="visual-dept-title"><span>${String(di+1).padStart(2,"0")}</span><div><h2>${esc(dept)}</h2><p>${machines.length} makine / ekipman</p></div></div>
-        <div class="visual-machine-flow">
-          ${machines.map((m,i)=>{
-            const ms=machineState(factory,line,m);
-            return `<button class="visual-machine ${ms.cls}" data-machine="${esc(m)}" data-mf="${esc(factory)}" data-ml="${esc(line)}">
-              <div class="machine-illustration">${iconFor(m)}</div><b>${esc(m)}</b><small>${ms.text}</small><i class="machine-state-dot"></i>
-            </button>${i<machines.length-1?'<div class="visual-connector"><span></span><b>›</b></div>':''}`;
-          }).join("")}
+
+  <section class="factory-schema-layout">
+    <aside class="factory-department-list">
+      <div class="factory-department-head"><h2>Bölümler</h2><p>Görüntülemek istediğin bölümü seç</p></div>
+      <div class="factory-department-cards">${departmentCards||'<div class="compact-empty"><span>!</span><p>Bu hatta bölüm bulunamadı.</p></div>'}</div>
+    </aside>
+
+    <section class="factory-machine-area">
+      <div class="factory-machine-head">
+        <div><span>SEÇİLİ BÖLÜM</span><h2>${esc(department||"Bölüm seçiniz")}</h2><p>${machines.length} makine / ekipman listeleniyor.</p></div>
+        <div class="factory-machine-summary">
+          <div><small>TOPLAM</small><b>${machines.length}</b></div>
+          <div><small>ARIZALI</small><b>${machines.filter(m=>machineState(factory,line,m).cls!=="running").length}</b></div>
         </div>
-      </section>`).join("")}
-  </div>`;
+      </div>
+
+      <div class="factory-machine-grid">
+        ${machines.map((m,i)=>{
+          const ms=machineState(factory,line,m);
+          return `<button class="factory-machine-card ${ms.cls}" data-machine="${esc(m)}" data-mf="${esc(factory)}" data-ml="${esc(line)}">
+            <div class="factory-machine-icon">${iconFor(m)}</div>
+            <div class="factory-machine-copy">
+              <span>Makine ${String(i+1).padStart(2,"0")}</span>
+              <h3>${esc(m)}</h3>
+              <p>${esc(department)}</p>
+            </div>
+            <div class="factory-machine-status"><i></i><b>${ms.text}</b></div>
+          </button>`;
+        }).join("")||'<div class="compact-empty"><span>!</span><p>Bu bölümde makine bulunamadı.</p></div>'}
+      </div>
+    </section>
+  </section>`;
 }
 function machineModal(){
   if(!s.machineModal)return "";
@@ -2307,7 +2488,7 @@ function allowedNavItems(){
     ["faults","≡","Arızalar"],
     ["report","▥","Grafikler"],
     ["planned","▦","Planlı Bakım"],
-    ["layout","⌘","Hat Planı"]
+    ["layout","⌘","Fabrika Şeması"]
   ];
   return items.filter(([page])=>canAccess(page));
 }
@@ -2425,7 +2606,20 @@ function bind(){
   document.querySelectorAll(".sel").forEach(x=>x.onchange=()=>{let f=s.faults.find(y=>y.id==x.dataset.id);f.status=x.value;if(x.value==="done"&&!f.closedAt)f.closedAt=new Date().toISOString();if(x.value!=="done")f.closedAt=null;save();render()});
   const rf=document.getElementById("reportFactory"),rs=document.getElementById("reportStart"),re=document.getElementById("reportEnd");if(rf)rf.onchange=()=>{s.reportFactory=rf.value;render()};if(rs)rs.onchange=()=>{s.reportStart=rs.value;render()};if(re)re.onchange=()=>{s.reportEnd=re.value;render()};
   const cr=document.getElementById("clearReport");if(cr)cr.onclick=()=>{s.reportFactory="Tümü";s.reportStart="";s.reportEnd="";render()};
-  const lf=document.getElementById("layoutFactory"),ll=document.getElementById("layoutLine");if(lf)lf.onchange=()=>{s.layoutFactory=lf.value;s.layoutLine=catalogLines(lf.value)[0]||"";render()};if(ll)ll.onchange=()=>{s.layoutLine=ll.value;render()};
+  const lf=document.getElementById("layoutFactory"),ll=document.getElementById("layoutLine"),ld=document.getElementById("layoutDepartment");
+  if(lf)lf.onchange=()=>{
+    s.layoutFactory=lf.value;
+    s.layoutLine=catalogLines(lf.value)[0]||"";
+    s.layoutDepartment=catalogDepartments(s.layoutFactory,s.layoutLine)[0]||"";
+    render();
+  };
+  if(ll)ll.onchange=()=>{
+    s.layoutLine=ll.value;
+    s.layoutDepartment=catalogDepartments(s.layoutFactory,s.layoutLine)[0]||"";
+    render();
+  };
+  if(ld)ld.onchange=()=>{s.layoutDepartment=ld.value;render()};
+  document.querySelectorAll("[data-department]").forEach(x=>x.onclick=()=>{s.layoutDepartment=x.dataset.department;render()});
   const addPm=document.getElementById("addPlannedMaintenance");
   if(addPm)addPm.onclick=()=>{s.plannedSelectedDate=dateOnly(new Date());s.plannedModal=true;render()};
   const calPrev=document.getElementById("calendarPrev");
