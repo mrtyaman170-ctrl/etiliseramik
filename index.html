@@ -594,6 +594,117 @@
 @media(max-width:900px){.quick-actions{grid-template-columns:repeat(2,1fr)}.pro-kpi-grid{grid-template-columns:repeat(2,1fr)}.desktop-active-table{display:none}.app-hero{padding:18px}.hero-copy h1{font-size:25px}.hero-qr{width:78px}.layout-control-modern{grid-template-columns:1fr 1fr}.layout-status-legend{grid-column:1/-1}.visual-machine{flex-basis:135px}}
 @media(max-width:520px){.app-hero{border-radius:20px}.hero-copy p,.hero-meta{font-size:11px}.hero-qr{width:70px;height:70px}.quick-actions button{padding:11px}.quick-actions button>span{width:34px;height:34px}.pro-kpi{min-height:111px;padding:13px}.pro-kpi i{width:43px;height:43px;font-size:21px}.pro-kpi strong{font-size:27px}.mobile-filter-card select{max-width:155px}.priority-fault{padding:12px}.line-preview-card,.trend-preview{padding:14px}.layout-hero{padding:18px}.layout-hero p{font-size:11px}.layout-live-dot{display:none}.layout-control-modern{grid-template-columns:1fr}.layout-status-legend{grid-column:auto}}
 
+
+/* === ETİLİSMART PC PRO v1 === */
+:root{
+  --y:#efb51d;
+  --y2:#ffcf52;
+  --navy:#151c2b;
+  --navy2:#202b40;
+  --blue:#2579d8;
+  --cyan:#1aa6b7;
+  --green:#16a66a;
+  --red:#e04454;
+  --purple:#7657c8;
+  --bg:#f2f5f9;
+  --text:#202633;
+}
+html,body{font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
+body{background:linear-gradient(180deg,#eef2f7 0,#f7f9fc 380px,#f2f5f9 100%)}
+.top{background:linear-gradient(100deg,var(--navy),var(--navy2));box-shadow:0 5px 20px rgba(17,25,39,.18)}
+.brand{display:flex;align-items:baseline;gap:3px;font-size:20px;letter-spacing:-.4px}
+.brand small{font-size:10px;font-weight:500;color:#b9c2d0;margin-left:12px;letter-spacing:.2px}
+.layout{grid-template-columns:250px minmax(0,1fr)}
+aside{background:#fff;border-right:1px solid #e1e6ed;padding:20px 14px;box-shadow:5px 0 20px rgba(24,34,50,.025)}
+.aside-user{padding:14px;margin-bottom:15px;border-radius:14px;background:linear-gradient(135deg,#f7f8fb,#eef2f7)}
+.aside-user b,.aside-user small{display:block}.aside-user small{margin-top:4px;color:#747e8c;font-size:11px}
+.nav{display:flex;align-items:center;min-height:45px;font-size:13px;color:#56606f}
+.nav:hover,.nav.active{background:linear-gradient(90deg,#fff1b6,#fff9df);color:#1d2430}
+.aside-scope{margin-top:22px;padding:13px;border:1px solid #e3e7ed;border-radius:13px;background:#fafbfd}
+.aside-scope small,.aside-scope b,.aside-scope span{display:block}.aside-scope small{font-size:9px;letter-spacing:.8px;color:#9299a3}.aside-scope b{font-size:11px;margin-top:6px}.aside-scope span{font-size:10px;color:#7a8390;margin-top:5px}
+main{padding:28px 32px 40px;max-width:1600px;width:100%}
+.head h1,.app-hero h1,.layout-hero h1{letter-spacing:-.7px}
+.head h1{font-size:27px}.head p{font-size:13px}
+.card,.line-preview-card,.trend-preview,.top-machines-card{border-color:#e0e5ec;box-shadow:0 7px 24px rgba(22,34,52,.055)}
+.primary{background:linear-gradient(135deg,var(--y),var(--y2));color:#202020;box-shadow:0 5px 14px rgba(225,167,12,.2)}
+.status.open{background:#ffe8eb;color:#b92739}.status.progress{background:#fff3cc;color:#876300}.status.done{background:#def6ea;color:#0e7045}
+.pro-kpi.red{background:linear-gradient(145deg,#fff,#fff8f9)}
+.pro-kpi.amber{background:linear-gradient(145deg,#fff,#fffbef)}
+.pro-kpi.green{background:linear-gradient(145deg,#fff,#f3fff9)}
+.pro-kpi.blue{background:linear-gradient(145deg,#fff,#f3f9ff)}
+.top-machines-card{background:#fff;border:1px solid #e3e7ed;border-radius:21px;padding:18px;margin-top:20px}
+.top-machine-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.top-machine-row{display:flex;align-items:center;gap:11px;border:1px solid #e6e9ee;background:#fbfcfd;border-radius:14px;padding:11px;text-align:left}
+.top-machine-row:hover{border-color:#efbf3d;background:#fffbef}
+.machine-rank{width:31px;height:31px;display:grid;place-items:center;border-radius:10px;background:#202a3d;color:#fff;font-size:12px;font-weight:900}
+.machine-rank-copy{flex:1;min-width:0}.machine-rank-copy b,.machine-rank-copy small{display:block}.machine-rank-copy b{font-size:12px}.machine-rank-copy small{font-size:10px;color:#808894;margin:3px 0 7px}
+.machine-rank-copy i{display:block;height:5px;background:#e9edf2;border-radius:999px;overflow:hidden}.machine-rank-copy em{display:block;height:100%;background:linear-gradient(90deg,#efb51d,#f06a49);border-radius:999px}
+.top-machine-row strong{font-size:18px;color:#293246}
+
+/* PC arıza tablosu: daha küçük ve tutarlı */
+.table-wrap{padding:0!important;overflow:auto;background:#fff}
+.table-wrap table{min-width:960px;table-layout:fixed;font-size:12px}
+.table-wrap th{padding:11px 12px;font-size:10px;letter-spacing:.35px;text-transform:uppercase;background:#f5f7fa;color:#707987}
+.table-wrap td{padding:11px 12px;font-size:12px;line-height:1.35;vertical-align:middle;overflow-wrap:anywhere}
+.table-wrap td b{font-size:12px}.table-wrap td small{font-size:10.5px;color:#737c89}
+.table-wrap th:nth-child(1),.table-wrap td:nth-child(1){width:135px}
+.table-wrap th:nth-child(2),.table-wrap td:nth-child(2){width:150px}
+.table-wrap th:nth-child(3),.table-wrap td:nth-child(3){width:170px}
+.table-wrap th:nth-child(4),.table-wrap td:nth-child(4){width:auto}
+.table-wrap th:nth-child(5),.table-wrap td:nth-child(5){width:135px}
+.table-wrap th:nth-child(6),.table-wrap td:nth-child(6){width:105px}
+.table-wrap th:nth-child(7),.table-wrap td:nth-child(7){width:135px}
+.table-wrap .status{font-size:10px;padding:5px 8px;white-space:nowrap}
+.table-wrap select{font-size:11px;min-height:36px;padding:7px 8px}
+.stop-tag{display:inline-block;margin-top:5px;background:#ffe5e8;color:#bd2e3e;border-radius:999px;padding:3px 6px;font-size:9px;font-weight:800}
+
+/* Login */
+.login-redesign{padding:28px;background:
+  radial-gradient(circle at 15% 15%,rgba(239,181,29,.23),transparent 30%),
+  linear-gradient(135deg,#101725,#202a3d)}
+.login-shell{width:min(1040px,100%);min-height:610px;display:grid;grid-template-columns:1.1fr .9fr;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.3)}
+.login-brand-panel{position:relative;padding:58px;background:
+  linear-gradient(140deg,rgba(16,23,37,.95),rgba(36,47,69,.92)),
+  radial-gradient(circle,#efb51d 1px,transparent 1px);background-size:auto,20px 20px;color:#fff}
+.login-brand-mark{width:65px;height:65px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,#efb51d,#ffd96a);color:#161b24;font-size:24px;font-weight:950;box-shadow:0 12px 30px rgba(239,181,29,.25)}
+.login-brand-panel>span{display:block;color:#efb51d;font-size:11px;font-weight:900;letter-spacing:1.4px;margin-top:34px}
+.login-brand-panel h1{font-size:38px;line-height:1.14;letter-spacing:-1px;margin:13px 0 18px}.login-brand-panel>p{max-width:500px;color:#c7cfdb;line-height:1.65}
+.login-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:43px}.login-feature-grid div{padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.05)}.login-feature-grid b,.login-feature-grid span{display:block}.login-feature-grid b{font-size:21px;color:#efbd32}.login-feature-grid span{font-size:10px;color:#cbd2dc;margin-top:5px}
+.login-form-panel{padding:58px;display:flex;flex-direction:column;justify-content:center}.login-title>span{font-size:23px;font-weight:950}.login-title>span span{color:#e8ad13}.login-title>small{display:block;color:#7f8793;margin-top:4px}
+.login-form-panel h2{font-size:27px;margin:38px 0 8px}.login-form-panel>p{color:#777f8b;margin:0 0 27px}
+.login-form-panel .field{margin-bottom:16px}.login-form-panel label{font-size:12px}.login-form-panel input{min-height:50px;background:#f8fafc;border-color:#dfe4eb}
+.login-submit{width:100%;min-height:50px;display:flex;justify-content:space-between;align-items:center;padding:0 18px}
+.login-demo-note{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #e5e8ed;margin-top:24px;padding-top:16px;font-size:10px;color:#7c8490}.login-demo-note b{color:#333b47}
+
+/* Mobile arıza kartı taşmasını tamamen düzelt */
+@media(max-width:620px){
+  .table-wrap tr{padding:10px 13px!important;overflow:hidden}
+  .table-wrap td{
+    display:grid!important;
+    grid-template-columns:112px minmax(0,1fr)!important;
+    gap:10px!important;
+    align-items:start!important;
+    padding:11px 0!important;
+    min-height:0!important;
+    font-size:13px!important;
+  }
+  .table-wrap td::before{
+    position:static!important;
+    width:auto!important;
+    font-size:10.5px!important;
+    line-height:1.4!important;
+  }
+  .table-wrap td>*{min-width:0}
+  .table-wrap td b{font-size:13px!important}
+  .table-wrap td small{font-size:11px!important}
+  .table-wrap select{width:100%;max-width:100%;font-size:13px!important}
+}
+@media(max-width:900px){
+  .login-shell{grid-template-columns:1fr;min-height:0}.login-brand-panel{display:none}.login-form-panel{padding:32px 25px}
+  main{max-width:none}
+  .top-machine-list{grid-template-columns:1fr}
+}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -643,6 +754,26 @@ const STRUCTURE={
 
 const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
+
+const AUTH_VERSION="pc-v1";
+const DEMO_USERS={
+  "1111":{password:"1111",name:"Genel Yönetici",role:"Genel Müdür",factories:["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],department:""},
+  "2222":{password:"2222",name:"1. Fabrika Yöneticisi",role:"Fabrika Müdürü",factories:["1. Fabrika"],department:""},
+  "3333":{password:"3333",name:"2. Fabrika Yöneticisi",role:"Fabrika Müdürü",factories:["2. Fabrika A Blok","2. Fabrika B Blok"],department:""},
+  "4444":{password:"4444",name:"1. Fabrika Bölüm Formeni",role:"Bölüm Formeni",factories:["1. Fabrika"],department:"Pres Bölümü"},
+  "5555":{password:"5555",name:"2. Fabrika Bölüm Formeni",role:"Bölüm Formeni",factories:["2. Fabrika A Blok","2. Fabrika B Blok"],department:"Pres Bölümü"},
+  "6666":{password:"6666",name:"1. Fabrika Operatörü",role:"Operatör",factories:["1. Fabrika"],department:"Pres Bölümü"},
+  "7777":{password:"7777",name:"2. Fabrika Operatörü",role:"Operatör",factories:["2. Fabrika A Blok","2. Fabrika B Blok"],department:"Pres Bölümü"},
+  "8888":{password:"8888",name:"1. Fabrika Bakım Personeli",role:"Bakım Personeli",factories:["1. Fabrika"],department:""},
+  "9999":{password:"9999",name:"2. Fabrika Bakım Personeli",role:"Bakım Personeli",factories:["2. Fabrika A Blok","2. Fabrika B Blok"],department:""}
+};
+const ROLE_PERMISSIONS={
+  "Genel Müdür":{dashboard:true,newFault:true,faults:true,report:true,layout:true,editStatus:true,allFactories:true},
+  "Fabrika Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,editStatus:true},
+  "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,editStatus:true,departmentOnly:true},
+  "Bakım Personeli":{dashboard:true,newFault:true,faults:true,report:false,layout:true,editStatus:true},
+  "Operatör":{dashboard:true,newFault:true,faults:false,report:false,layout:false,editStatus:false,departmentOnly:true}
+};
 
 const MACHINE_QR_REGISTRY={
   "F2A-H1-MAS-SD-001":{
@@ -731,9 +862,11 @@ function storageRemove(storage,key){
 function storageClear(storage){
   try{storage.clear()}catch(e){}
 }
+const storedUser=safeJson(storageGet(sessionStorage,"esuser","null"),null);
+const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION;
 let s={
-  login:storageGet(sessionStorage,"eslogin","0")==="1",
-  user:safeJson(storageGet(sessionStorage,"esuser","null"),null),
+  login:sessionIsCurrent&&storageGet(sessionStorage,"eslogin","0")==="1"&&!!storedUser,
+  user:sessionIsCurrent?storedUser:null,
   page:"dashboard",
   faults:safeJson(storageGet(localStorage,K,"null"),null)||generateHistory(),
   dashboardFactory:"Tümü",
@@ -858,22 +991,37 @@ function save(){storageSet(localStorage,K,JSON.stringify(s.faults))}
 function isOperator(){
   return s.user?.role==="Operatör";
 }
+function permissions(){
+  return ROLE_PERMISSIONS[s.user?.role]||{};
+}
+function canAccess(page){
+  const p=permissions();
+  if(page==="dashboard")return !!p.dashboard;
+  if(page==="new")return !!p.newFault;
+  if(page==="faults")return !!p.faults;
+  if(page==="report")return !!p.report;
+  if(page==="layout")return !!p.layout;
+  return false;
+}
 function roleHasCharts(){
-  return !["Operatör","Bakım Personeli"].includes(s.user?.role);
+  return !!permissions().report;
 }
 function isManagementRole(){
-  return ["Bölüm Yöneticisi","Bakım Formeni","Bakım Müdürü","Fabrika Müdürü","Genel Müdür"].includes(s.user?.role);
+  return ["Bölüm Formeni","Fabrika Müdürü","Genel Müdür"].includes(s.user?.role);
 }
 function roleIsDepartmentLimited(){
-  return ["Bölüm Formeni","Bölüm Yöneticisi"].includes(s.user?.role);
+  return !!permissions().departmentOnly;
+}
+function userFactories(){
+  return Array.isArray(s.user?.factories)&&s.user.factories.length?s.user.factories:Object.keys(FACTORIES);
+}
+function userCanSeeFactory(factory){
+  return permissions().allFactories||userFactories().includes(factory);
 }
 function visibleFaults(base=s.faults){
-  let a=[...base];
-  if(roleIsDepartmentLimited() && s.user?.department){
+  let a=[...base].filter(x=>userCanSeeFactory(x.factory));
+  if(roleIsDepartmentLimited()&&s.user?.department){
     a=a.filter(x=>x.department===s.user.department);
-  }
-  if(s.user?.role==="Fabrika Müdürü" && s.user?.factory){
-    a=a.filter(x=>x.factory===s.user.factory);
   }
   return a;
 }
@@ -992,7 +1140,8 @@ function dashboard(){
   const stopped=currentShiftActive.filter(x=>x.stopped).length;
   const shiftTotal=currentShiftActive.length;
 
-  const factoryOptions=s.user?.role==="Fabrika Müdürü" ? [s.user.factory] : ["Tümü",...Object.keys(FACTORIES)];
+  const allowedFactories=userFactories();
+  const factoryOptions=permissions().allFactories?["Tümü",...Object.keys(FACTORIES)]:["Tümü",...allowedFactories];
   const departmentBadge=roleIsDepartmentLimited()?`<div class="scope-badge">Yetki alanı: ${esc(s.user.department)}</div>`:"";
   const shift=shiftInfo();
 
@@ -1101,6 +1250,23 @@ function dashboard(){
           </div>
           <button class="fault-chevron" data-p="faults">›</button>
         </article>`).join(""):`<div class="modern-empty"><span>✓</span><b>Aktif arıza yok</b><p>Sistem normal çalışıyor.</p></div>`}
+    </div>
+  </section>
+
+  <section class="top-machines-card">
+    <div class="section-modern-head">
+      <div><h2>En Çok Arıza Çıkaran Makineler</h2><p>Yetki alanınızdaki tüm kayıtlara göre ilk 6 makine</p></div>
+      ${roleHasCharts()?'<button data-p="report">Detaylı Analiz ›</button>':""}
+    </div>
+    <div class="top-machine-list">
+      ${countBy(all,"machine").slice(0,6).map(([machine,total],index)=>{
+        const pct=Math.round(total/Math.max(1,countBy(all,"machine")[0]?.[1]||1)*100);
+        return `<button class="top-machine-row" data-p="faults">
+          <span class="machine-rank">${index+1}</span>
+          <div class="machine-rank-copy"><b>${esc(machine)}</b><small>${total} arıza kaydı</small><i><em style="width:${pct}%"></em></i></div>
+          <strong>${total}</strong>
+        </button>`;
+      }).join("")}
     </div>
   </section>
 
@@ -1414,7 +1580,7 @@ function layoutPage(){
     <div class="layout-live-dot">● CANLI</div>
   </section>
   <section class="layout-control-modern">
-    <label>Fabrika<select id="layoutFactory">${opts(Object.keys(FACTORIES),"Seçiniz",factory)}</select></label>
+    <label>Fabrika<select id="layoutFactory">${opts(userFactories(),"Seçiniz",factory)}</select></label>
     <label>Hat<select id="layoutLine">${opts(lines,"Seçiniz",line)}</select></label>
     <div class="layout-status-legend"><span><i class="running"></i>Çalışıyor</span><span><i class="warning"></i>Arızalı</span><span><i class="stopped"></i>Duruş</span></div>
   </section>
@@ -1465,39 +1631,68 @@ function machineModal(){
   </div></div>`;
 }
 function page(){
-  if(isOperator() && !["dashboard","new"].includes(s.page))s.page="dashboard";
+  if(!canAccess(s.page))s.page="dashboard";
   if(s.page==="new")return newf();
-  if(s.page==="faults")return `${clockBlock()}<div class="head"><div><h1>Arıza Kayıtları</h1><p>Tüm kayıtlar</p></div><button class="primary" data-p="new">+ Yeni Arıza</button></div>${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),true)}`;
+  if(s.page==="faults")return `${clockBlock()}<div class="head"><div><h1>Arıza Kayıtları</h1><p>Yetki alanınızdaki kayıtlar</p></div>${canAccess("new")?'<button class="primary" data-p="new">+ Yeni Arıza</button>':""}</div>${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),!!permissions().editStatus)}`;
   if(s.page==="layout")return layoutPage();
-  if(s.page==="report")return roleHasCharts()?reportPage():dashboard();
+  if(s.page==="report")return reportPage();
   return dashboard();
 }
+function allowedNavItems(){
+  const items=[
+    ["dashboard","⌂","Panel"],
+    ["new","+","Arıza Aç"],
+    ["faults","≡","Arızalar"],
+    ["report","▥","Raporlar"],
+    ["layout","⌘","Hat Planı"]
+  ];
+  return items.filter(([page])=>canAccess(page));
+}
 function mobileNav(){
-  const items=isOperator()
-    ?[["dashboard","⌂","Ana Sayfa"],["new","+","Arıza Aç"]]
-    :[["dashboard","⌂","Panel"],["new","+","Arıza Aç"],["faults","≡","Arızalar"],...(roleHasCharts()?[["report","▥","Rapor"]]:[]),["layout","⌘","Hatlar"]];
-  return `<nav class="mobile-top-tabs">${items.map(([page,icon,label])=>`
+  return `<nav class="mobile-top-tabs">${allowedNavItems().map(([page,icon,label])=>`
     <button type="button" data-p="${page}" class="${s.page===page?"active":""}">
       <span>${icon}</span><small>${label}</small>
     </button>`).join("")}</nav>`;
 }
 function app(){
-  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span></div>
+  return `<div class="top"><div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
     <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
   </div>
   ${mobileNav()}
-  <div class="layout"><aside>${isOperator()?`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}`:`${nav("dashboard","Ana Panel")}${nav("new","Arıza Kaydı Oluştur")}${nav("faults","Arıza Kayıtları")}${roleHasCharts()?nav("report","Geçmiş Arıza Raporu"):""}${nav("layout","Hat Yerleşim Planı")}`}</aside><main>${page()}</main></div>${machineModal()}${qrModal()}`;
+  <div class="layout"><aside>
+    <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
+    ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
+    <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>
+  </aside><main>${page()}</main></div>${machineModal()}${qrModal()}`;
 }
 function login(){
-  return `<div class="login"><div class="loginbox"><div class="logo">ES</div><h1>ETİLİSMART</h1><p>Dijital Bakım Yönetim Sistemi</p><div class="notice">Demo şifresi: <strong>1234</strong></div>
-  <form id="login">
-    <div class="field"><label>Ad Soyad</label><input id="name" value="Mert Yaman" required></div>
-    <div class="field"><label>Rol</label><select id="role">${ROLES.map(x=>`<option>${x}</option>`).join("")}</select></div>
-    <div class="field" id="loginFactoryWrap"><label>Bağlı Fabrika</label><select id="loginFactory">${opts(Object.keys(FACTORIES),"Seçiniz","1. Fabrika")}</select></div>
-    <div class="field hidden" id="loginDepartmentWrap"><label>Bağlı Bölüm</label><select id="loginDepartment">${opts(Object.keys(STRUCTURE),"Seçiniz","Pres Bölümü")}</select></div>
-    <div class="field"><label>Şifre</label><input id="password" type="password" required></div>
-    <div id="loginError" class="login-error"></div><button class="primary">Giriş Yap</button>
-  </form></div></div>`;
+  return `<div class="login login-redesign">
+    <div class="login-shell">
+      <section class="login-brand-panel">
+        <div class="login-brand-mark">ES</div>
+        <span>ETİLİ SERAMİK</span>
+        <h1>Bakım yönetimini<br>daha görünür hale getirin.</h1>
+        <p>Arıza kayıtları, hat durumu, bakım performansı ve makine analizleri tek ekranda.</p>
+        <div class="login-feature-grid">
+          <div><b>QR</b><span>Makineye hızlı erişim</span></div>
+          <div><b>7/24</b><span>Canlı arıza takibi</span></div>
+          <div><b>3</b><span>Fabrika görünümü</span></div>
+        </div>
+      </section>
+      <section class="login-form-panel">
+        <div class="login-title"><span>ETİLİ<span>SMART</span></span><small>Dijital Bakım Yönetim Sistemi</small></div>
+        <h2>Hesabınıza giriş yapın</h2>
+        <p>Size tanımlanan kullanıcı ID ve parolayı girin.</p>
+        <form id="login">
+          <div class="field"><label>Kullanıcı ID</label><input id="userId" inputmode="numeric" autocomplete="username" placeholder="Örn. 1111" required></div>
+          <div class="field"><label>Parola</label><input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••" required></div>
+          <div id="loginError" class="login-error"></div>
+          <button class="primary login-submit">Giriş Yap <span>→</span></button>
+        </form>
+        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span></div>
+      </section>
+    </div>
+  </div>`;
 }
 function updateClockAndDurations(){
   const x=liveDateTime(),d=document.getElementById("liveDate"),t=document.getElementById("liveTime"),v=document.getElementById("liveShift");
@@ -1508,26 +1703,28 @@ function render(){window.__etiliStarted=true;document.getElementById("app").inne
 function bind(){
   document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{s.page=b.dataset.p;render()});
   const l=document.getElementById("login");
-  const roleEl=document.getElementById("role");
-  const deptWrap=document.getElementById("loginDepartmentWrap");
-  if(roleEl)roleEl.onchange=()=>{deptWrap.classList.toggle("hidden",!["Bölüm Formeni","Bölüm Yöneticisi"].includes(roleEl.value))};
   if(l)l.onsubmit=e=>{
     e.preventDefault();
-    if(document.getElementById("password").value!=="1234"){document.getElementById("loginError").textContent="Şifre hatalı.";return;}
-    s.user={
-      name:document.getElementById("name").value,
-      role:roleEl.value,
-      factory:document.getElementById("loginFactory").value,
-      department:["Bölüm Formeni","Bölüm Yöneticisi"].includes(roleEl.value)?document.getElementById("loginDepartment").value:""
-    };
-    s.dashboardFactory=s.user.role==="Fabrika Müdürü"?s.user.factory:"Tümü";
+    const userId=document.getElementById("userId").value.trim();
+    const password=document.getElementById("password").value;
+    const account=DEMO_USERS[userId];
+    if(!account||account.password!==password){
+      document.getElementById("loginError").textContent="Kullanıcı ID veya parola hatalı.";
+      return;
+    }
+    s.user={id:userId,name:account.name,role:account.role,factories:[...account.factories],department:account.department||""};
+    s.dashboardFactory=permissions().allFactories?"Tümü":(s.user.factories.length===1?s.user.factories[0]:"Tümü");
     s.reportFactory=s.dashboardFactory;
+    s.layoutFactory=s.user.factories[0]||"1. Fabrika";
+    s.layoutLine=(FACTORIES[s.layoutFactory]||["1. Hat"])[0];
+    s.page="dashboard";
     s.login=true;
+    storageSet(sessionStorage,"esauthversion",AUTH_VERSION);
     storageSet(sessionStorage,"eslogin","1");
     storageSet(sessionStorage,"esuser",JSON.stringify(s.user));
     render();
   };
-  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);s.login=false;s.user=null;render()};
+  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);s.login=false;s.user=null;s.page="dashboard";render()};
   const df=document.getElementById("dashboardFactory");if(df)df.onchange=()=>{s.dashboardFactory=df.value;render()};
   document.querySelectorAll(".chart-unit").forEach(el=>el.onchange=()=>{
     const id=el.dataset.chart;
