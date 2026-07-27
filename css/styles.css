@@ -103,6 +103,23 @@
   .section-title-row{align-items:flex-start;flex-direction:column}
 }
 
+/* v1.3.0 — Mekanik Atölye */
+.workshop-create-panel{margin-bottom:14px;border:1px solid #d5dfe6;border-radius:17px;background:#fff;overflow:hidden}
+.workshop-create-panel>summary{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:14px 16px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#eef5f7,#fff)}
+.workshop-create-panel>summary::-webkit-details-marker{display:none}.workshop-create-panel>summary>span{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#34434c;color:#fff;font-size:20px}.workshop-create-panel>summary b,.workshop-create-panel>summary small{display:block}.workshop-create-panel>summary b{font-size:11px;color:#293740}.workshop-create-panel>summary small{margin-top:3px;font-size:8px;color:#77858e}
+.workshop-create-form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px;border-top:1px solid #e2e8ec}.workshop-create-form .field{margin:0}.workshop-create-form .wide{grid-column:1/-1}
+.workshop-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}.workshop-kpis article{padding:14px;border:1px solid #dfe5e9;border-radius:14px;background:#fff}.workshop-kpis small,.workshop-kpis b{display:block}.workshop-kpis small{font-size:7px;font-weight:900;color:#73818b}.workshop-kpis b{margin-top:5px;font-size:21px;color:#2e3e47}
+.workshop-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.workshop-tabs{display:flex;gap:6px;padding:5px;border:1px solid #dce3e8;border-radius:12px;background:#fff}.workshop-tabs button{border:0;border-radius:8px;padding:9px 12px;background:transparent;color:#697782;font-size:9px;font-weight:900}.workshop-tabs button.active{background:#34434c;color:#fff}.workshop-tabs span{margin-left:5px}
+.workshop-table{min-width:1180px}.workshop-sort-button{display:flex;align-items:center;justify-content:space-between;gap:5px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}.workshop-sort-button.active{color:#936800}.workshop-detail-row{cursor:pointer}.workshop-detail-row:hover{background:#fff9e9}.workshop-detail-row td small{display:block;margin-top:3px;color:#7d8992}
+.workshop-status{display:inline-flex;padding:6px 8px;border-radius:999px;background:#eef2f4;color:#5f6d76;font-size:7px;font-weight:900}.workshop-status.done,.workshop-status.approved{background:#e7f4ec;color:#287047}.workshop-status.progress{background:#fff1cf;color:#876212}.workshop-status.rejected{background:#fde8e8;color:#a23840}
+.workshop-detail-modal{width:min(980px,96vw);max-height:93vh;overflow:auto}.workshop-detail-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.workshop-detail-hero>div{padding:11px;border:1px solid #dfe6ea;border-radius:11px;background:#fafcfd}.workshop-detail-hero small,.workshop-detail-hero b{display:block}.workshop-detail-hero small{font-size:7px;color:#77858e}.workshop-detail-hero b{margin-top:4px;font-size:10px}
+.workshop-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.workshop-detail-grid>section{padding:14px;border:1px solid #e0e6ea;border-radius:13px;background:#fff}.workshop-detail-grid>section>span{font-size:7px;font-weight:900;color:#9a700c}.workshop-detail-grid p{font-size:8.5px;line-height:1.5;color:#53616a}.workshop-drawing-link,.workshop-file-name{display:inline-flex;margin-top:7px}.workshop-file-name{font-size:8px;color:#4e748d}.workshop-file-name.empty{color:#929ba2}
+.workshop-manage-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding:14px;border:1px solid #d6e1e7;border-radius:13px;background:#f8fbfc}.workshop-manage-form .field{margin:0}.workshop-manage-form .wide{grid-column:1/-1}
+.workshop-material-link{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;padding:14px;border:1px solid #e2d49d;border-radius:13px;background:#fffaf0}.workshop-material-link span,.workshop-material-link b{display:block}.workshop-material-link span{font-size:7px;font-weight:900;color:#956d0b}.workshop-material-link b{margin-top:4px;font-size:10px}.workshop-material-link p{margin:4px 0 0;font-size:8px;color:#756a50}
+.machine-workshop-list{display:grid;gap:9px}.machine-workshop-list article{display:grid;grid-template-columns:1fr 230px;gap:12px;padding:12px;border:1px solid #e0e6ea;border-left:4px solid #b98a20;border-radius:11px;background:#fff}.machine-workshop-list small,.machine-workshop-list b,.machine-workshop-list span{display:block}.machine-workshop-list small{font-size:7px;color:#7b8790}.machine-workshop-list b{margin:4px 0;font-size:10px}.machine-workshop-list span{font-size:8px;color:#66747d}
+@media(max-width:900px){.workshop-create-form{grid-template-columns:1fr 1fr}.workshop-kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.workshop-create-form{grid-template-columns:1fr}.workshop-create-form .wide{grid-column:auto}.workshop-toolbar{align-items:stretch;flex-direction:column}.workshop-tabs{display:grid;grid-template-columns:1fr 1fr}.workshop-detail-hero,.workshop-detail-grid,.workshop-manage-form{grid-template-columns:1fr}.workshop-manage-form .wide{grid-column:auto}.workshop-material-link{align-items:stretch;flex-direction:column}.machine-workshop-list article{grid-template-columns:1fr}}
+
 .operator-head{align-items:center}
 .operator-new-btn{font-size:16px;padding:13px 18px}
 .operator-grid{margin-top:18px}
@@ -2052,6 +2069,9 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .work-detail-decision b{font-size:10px;color:#2d3e4a}
 .work-detail-decision p{margin-top:3px;font-size:8px;color:#7c8993}
 .work-detail-decision-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.purchase-action{border:1px solid #b7791f;background:#fff7df;color:#8a5700;font-weight:800}
+.purchase-action:hover{background:#ffedb5}
+.procurement-badge{display:inline-flex;align-items:center;width:max-content;margin:6px 0;padding:5px 9px;border:1px solid #e1b653;border-radius:999px;background:#fff4ce;color:#855700;font-size:11px;font-weight:900;letter-spacing:.05em}
 .work-detail-material-form{display:grid;grid-template-columns:1fr 110px auto;gap:8px;margin-bottom:10px}
 @media(max-width:900px){
   .dashboard-fault-hub.optimized{min-height:auto}
@@ -2743,3 +2763,30 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .shift-report-empty{color:#7d8993!important;font-size:9px;text-align:center}
 @media(max-width:1000px){.shift-report-grid{grid-template-columns:1fr}.shift-report-list{max-height:240px}}
 @media(max-width:700px){.fault-record-toolbar{align-items:stretch}.fault-date-range{display:grid;grid-template-columns:1fr 1fr}.fault-date-range button{grid-column:1/-1}.fault-date-range input{width:100%}.shift-report-section{padding:13px}}
+.fault-record-table{width:1500px!important;min-width:1500px;table-layout:fixed}
+.fault-record-table .fault-col-date{width:145px}.fault-record-table .fault-col-factory{width:150px}.fault-record-table .fault-col-machine{width:180px}.fault-record-table .fault-col-subject{width:260px}.fault-record-table .fault-col-opener{width:170px}.fault-record-table .fault-col-assignee{width:210px}.fault-record-table .fault-col-status{width:170px}.fault-record-table .fault-col-duration{width:105px}.fault-record-table .fault-col-action{width:110px}
+.fault-record-table th:nth-child(6),.fault-record-table td:nth-child(6){width:190px;min-width:190px}
+.fault-record-table th:nth-child(7),.fault-record-table td:nth-child(7){width:150px;min-width:150px}
+.fault-record-table .personnel-sel{display:block;width:100%;max-width:180px;min-width:0}
+.fault-record-table .assigned-person,.fault-record-table .status,.fault-record-table .missing-solution-tag{position:static;display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.shift-view-switch{display:grid;grid-template-columns:1fr 1fr;align-self:end;padding:4px;border:1px solid #dbe2e8;border-radius:11px;background:#f5f7f9}
+.shift-view-switch button{min-height:34px;border:0;border-radius:8px;background:transparent;color:#697783;font-size:9px;font-weight:900;cursor:pointer}
+.shift-view-switch button.active{background:#26333f;color:#fff;box-shadow:0 2px 7px rgba(25,35,44,.18)}
+.shift-filter-card.team-only{grid-template-columns:auto 1fr 1fr 1.2fr}
+.monthly-shift-wrap{max-width:100%}
+.monthly-shift-table{width:max-content;min-width:100%;table-layout:fixed}
+.monthly-shift-table th:first-child,.monthly-shift-table td:first-child{width:190px;min-width:190px}
+.monthly-shift-table th:not(:first-child),.monthly-shift-table td:not(:first-child){width:76px;min-width:76px;padding:7px 5px}
+.monthly-shift-table th.today{background:#fff2c8;color:#7d5b00}
+.shift-assignment-select.monthly{width:66px;min-width:66px;padding:6px 3px;font-size:8px}
+.fault-record-table .fault-assignee-column{width:200px!important;min-width:200px!important;max-width:200px!important}
+.fault-record-table .fault-status-column{width:165px!important;min-width:165px!important;max-width:165px!important}
+.fault-record-table .fault-assignee-column .personnel-sel{width:180px;max-width:180px}
+@media(max-width:1000px){.shift-filter-card.team-only{grid-template-columns:1fr 1fr}.shift-view-switch{grid-column:1/-1}}
+@media(max-width:700px){
+  .shift-filter-card.team-only{grid-template-columns:1fr}
+  .fault-record-table{width:100%!important;min-width:0;table-layout:fixed}
+  .fault-record-table .fault-assignee-column,.fault-record-table .fault-status-column{width:auto!important;min-width:0!important;max-width:none!important}
+  .fault-record-table .personnel-sel{max-width:100%}
+  .monthly-shift-table th:first-child,.monthly-shift-table td:first-child{position:sticky;left:0;width:150px;min-width:150px;z-index:3}
+}

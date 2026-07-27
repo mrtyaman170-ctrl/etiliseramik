@@ -11,6 +11,7 @@ function render(){
   updateClockAndDurations();
 }
 function bind(){
+  bindWorkshopPage();
   const appRoot=document.getElementById("app");
   if(appRoot)appRoot.addEventListener("click",event=>{
     const detailTarget=event.target.closest("[data-work-detail-id]");
@@ -468,11 +469,11 @@ function bind(){
     const photo=form.querySelector(".contractor-photo")?.files?.[0];
 
     if(!company||!reportNo||!result){
-      alert("Taşeron firma, rapor numarası ve kontrol sonucunu giriniz.");
+      alert("Kontrol firması veya sorumlu, rapor numarası ve kontrol sonucunu giriniz.");
       return;
     }
     if(!photo&&!existing?.photoStored){
-      alert("Taşeron kontrol fotoğrafı veya rapor fotoğrafı zorunludur.");
+      alert("Periyodik kontrol fotoğrafı veya rapor fotoğrafı zorunludur.");
       return;
     }
 
@@ -496,7 +497,7 @@ function bind(){
       render();
     }catch(error){
       console.error(error);
-      alert("Taşeron kontrol kaydı kaydedilemedi.");
+      alert("Periyodik kontrol kaydı kaydedilemedi.");
       if(submit){submit.disabled=false;submit.textContent=existing?"Kaydı Güncelle":"Aylık Kontrolü Kaydet"}
     }
   });
@@ -912,17 +913,18 @@ function bind(){
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{
     const item=findWorkItemById(btn.dataset.workId);if(!item)return;
     const action=btn.dataset.workRequestAction;
-    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","cancelled"].includes(action))return;
+    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","purchase","cancelled"].includes(action))return;
     const actor=s.user?.name||"Bilinmeyen Kullanıcı";
     const at=new Date().toISOString();
     if(action==="cancelled"&&permissions().createRequest&&item.createdBy===s.user?.name){item.status="cancelled";item.cancelledBy=actor;item.cancelledAt=at;saveWorkItems();render();return}
     if(!canManageWorkRequest(item))return;
-    if(action==="convert"){
+    if(action==="convert"||action==="purchase"){
       const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
       if(linked){item.status="converted";saveWorkItems();s.workTab="orders";render();return}
       const team=item.assignedTeam||workTeamForCategory(item.category);const people=workMaintenanceOptions(item.factory,team);const assignedTo=people[0]||"";
-      s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:assignedTo?"assigned":"open",createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,workDescription:"",completedAt:null,usedMaterials:[]});
-      item.status="converted";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
+      const procurementRequired=action==="purchase";
+      s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:procurementRequired?`SATIN ALINACAK\n\n${item.description}`:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:procurementRequired?"material":(assignedTo?"assigned":"open"),createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,procurementRequired,workDescription:procurementRequired?"SATIN ALINACAK — Satın alma tamamlandıktan sonra iş emri yürütülecek.":"",completedAt:null,usedMaterials:[]});
+      item.status="converted";item.conversionType=procurementRequired?"purchase":"workorder";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
     }else{
       item.status=action;
       if(action==="reviewing"){item.reviewedBy=actor;item.reviewedAt=at}
@@ -1194,8 +1196,8 @@ function bind(){
 
   const prevShiftWeek=document.getElementById("prevShiftWeek");
   const nextShiftWeek=document.getElementById("nextShiftWeek");
-  if(prevShiftWeek)prevShiftWeek.onclick=()=>{s.shiftWeekOffset--;render()};
-  if(nextShiftWeek)nextShiftWeek.onclick=()=>{s.shiftWeekOffset++;render()};
+  if(prevShiftWeek)prevShiftWeek.onclick=()=>{if(s.shiftViewMode==="monthly"){const d=new Date(s.shiftMonthDate);d.setMonth(d.getMonth()-1);s.shiftMonthDate=new Date(d.getFullYear(),d.getMonth(),1).toISOString()}else s.shiftWeekOffset--;render()};
+  if(nextShiftWeek)nextShiftWeek.onclick=()=>{if(s.shiftViewMode==="monthly"){const d=new Date(s.shiftMonthDate);d.setMonth(d.getMonth()+1);s.shiftMonthDate=new Date(d.getFullYear(),d.getMonth(),1).toISOString()}else s.shiftWeekOffset++;render()};
 
   const shiftFactory=document.getElementById("shiftFactory");
   const shiftTeam=document.getElementById("shiftTeam");
@@ -1354,6 +1356,7 @@ function bind(){
 
   if(shiftFactory)shiftFactory.onchange=()=>{s.shiftFactory=shiftFactory.value;render()};
   if(shiftTeam)shiftTeam.onchange=()=>{s.shiftTeam=shiftTeam.value;render()};
+  document.querySelectorAll("[data-shift-view]").forEach(button=>button.onclick=()=>{s.shiftViewMode=button.dataset.shiftView==="monthly"?"monthly":"weekly";render()});
   if(shiftSearch)shiftSearch.oninput=()=>{
     s.shiftSearch=shiftSearch.value;
     render();
@@ -1364,7 +1367,8 @@ function bind(){
     if(!canManageShiftTeam(s.shiftTeam)){render();return}
     const personId=el.dataset.shiftPersonId;
     const dayIndex=Number(el.dataset.shiftDay);
-    setShiftOverride(s.shiftFactory,s.shiftTeam,s.shiftWeekOffset,personId,dayIndex,el.value);
+    const weekOffset=Number.isFinite(Number(el.dataset.shiftWeekOffset))?Number(el.dataset.shiftWeekOffset):s.shiftWeekOffset;
+    setShiftOverride(s.shiftFactory,s.shiftTeam,weekOffset,personId,dayIndex,el.value);
     render();
   });
 

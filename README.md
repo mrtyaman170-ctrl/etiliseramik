@@ -1,7 +1,29 @@
-# ETİLİSMART Modüler Proje — v1.1.0
+# ETİLİSMART Modüler Proje — v1.3.0
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## v1.3.0 yenilikleri
+
+- Mekanik atölye talep, onay, tahmini süre, üretim ve arşiv modülü eklendi.
+- İş talepleri normal veya “Satın Alınacak” notlu, Malzeme Bekliyor durumundaki iş emrine dönüştürülebilir.
+- Atölye işleri teknik resim, parça tipi ve kullanılacağı makineyle ilişkilendirildi.
+- Tamamlanan atölye parçalarının malzeme kartına dönüştürülmesi ve makine detayında görüntülenmesi sağlandı.
+- Aylık taşeron kontrolleri “Periyodik Kontroller” olarak yenilendi; trafo, kesici, gaz istasyonu ve yangın sistemi kapsama alındı.
+
+## v1.2.0 yenilikleri
+
+- Vardiya çizelgesine düzenlenebilir aylık görünüm ve aylar arasında geçiş eklendi.
+- Arıza tablolarındaki sorumlu bakımcı ve durum sütunu çakışmaları giderildi.
+- Eksik çözüm uyarısı “Arıza çözümü yazılmadı” olarak güncellendi.
+
+## v1.1.2 yenilikleri
+
+- Makine detay penceresinden makine silme alanı tamamen kaldırıldı. Silme işlemi yalnızca yetkili makine yönetim ekranında tutuldu.
+
+## v1.1.1 yenilikleri
+
+- Makine silme işlemi kapatma düğmesinin yanından kaldırılarak detay penceresinin en altındaki ayrı tehlikeli işlemler alanına taşındı.
 
 ## v1.1.0 yenilikleri
 

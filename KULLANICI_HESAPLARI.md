@@ -6,6 +6,13 @@
 | --- | --- | --- | --- |
 | Depo Sorumlusu | Depo Sorumlusu | 8001 | 8001 |
 
+## Mekanik atölye hesapları
+
+| Kullanıcı | Rol | ID | Şifre |
+| --- | --- | --- | --- |
+| Atölye Sorumlusu | Atölye Personeli | 8101 | 8101 |
+| Atölye Personeli | Atölye Personeli | 8102 | 8102 |
+
 Bu liste yerel kullanıcı hesaplarını gösterir. Veritabanı ve
 sunucu tarafı kimlik doğrulama eklenene kadar şifreler tarayıcı tarafında
 tutulur; gerçek kullanıma geçmeden önce güvenli kimlik doğrulama kurulmalıdır.

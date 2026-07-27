@@ -166,7 +166,7 @@ function renderWorkOrderCards(records,emptyText){
   return records.map(item=>{
     const materials=workMaterials(item);
     return `<article class="work-card order-card clickable-work-card priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
-      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b><small>${fmtDate(item.createdAt)}</small></div></div>
+      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3>${item.procurementRequired?'<b class="procurement-badge">SATIN ALINACAK</b>':""}<p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b><small>${fmtDate(item.createdAt)}</small></div></div>
       <p class="work-description">${esc(item.description)}</p>
       <div class="work-meta"><span>Ekip: <b>${esc(item.assignedTeam)}</b></span><span>Sorumlu: <b>${esc(item.assignedTo||"Atama Bekliyor")}</b></span><span>Plan: <b>${esc(item.planStart||"-")} → ${esc(item.planEnd||"-")}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span></div>
       <div class="work-material-chips">${materials.map(material=>{const catalog=materialById(material.materialId);return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${esc(material.quantity)} ${esc(material.unit||catalog?.unit||"Adet")}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
@@ -380,6 +380,7 @@ function workDetailModal(){
         <div>
           <span class="work-detail-kind">${isRequest?"İŞ TALEBİ":"İŞ EMRİ"}</span>
           <h2>${esc(item.id)} · ${esc(item.title)}</h2>
+          ${!isRequest&&item.procurementRequired?'<b class="procurement-badge">SATIN ALINACAK</b>':""}
           <p>${esc(item.factory)} · ${esc(item.department||"-")} · ${esc(item.location||"-")}</p>
         </div>
         <button type="button" id="closeWorkDetail">×</button>
@@ -495,6 +496,7 @@ function workDetailModal(){
           ${item.status!=="approved"?`<button type="button" data-work-request-action="approved" data-work-id="${esc(item.id)}" class="secondary">Onayla</button>`:""}
           <button type="button" data-work-request-action="rejected" data-work-id="${esc(item.id)}" class="danger">Reddet</button>
           <button type="button" data-work-request-action="convert" data-work-id="${esc(item.id)}" class="primary">İş Emrine Dönüştür</button>
+          <button type="button" data-work-request-action="purchase" data-work-id="${esc(item.id)}" class="purchase-action">Satın Alınacak Olarak İş Emrine Dönüştür</button>
         </div>
       </section>`:""}
 

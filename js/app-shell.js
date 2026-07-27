@@ -81,6 +81,13 @@ let s={
   faults:storageJsonRecordArray(localStorage,K,generateHistory()),
   plannedMaintenances:storageJsonRecordArray(localStorage,PM_KEY,generatePlannedMaintenances()),
   workItems:storageJsonRecordArray(localStorage,WORK_KEY,generateWorkItems()),
+  workshopJobs:loadWorkshopJobs(),
+  workshopTab:"active",
+  workshopSearch:"",
+  workshopSortKey:"date",
+  workshopSortDir:"desc",
+  workshopDetailId:null,
+  workshopCreateOpen:false,
   workDetailId:null,
   maintenanceLogs:storageJsonRecordArray(localStorage,MAINTENANCE_LOG_KEY,[]),
   maintenanceLogModal:false,
@@ -120,6 +127,8 @@ let s={
   layoutLine:"1. Hat",
   layoutDepartment:"",
   shiftWeekOffset:0,
+  shiftViewMode:"weekly",
+  shiftMonthDate:new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString(),
   shiftFactory:"1. Fabrika",
   shiftLine:"",
   shiftDepartment:"",
@@ -267,15 +276,15 @@ function faultSortHeader(label,key,sortable){
 function table(items,editable=false,options={}){
   const sortable=!!options.sortable;
   if(!items.length)return `<div class="card empty-panel"><h3>Kayıt bulunamadı</h3><p>Seçilen kriterlere uygun arıza kaydı yok.</p></div>`;
-  return `<div class="card table-wrap"><table>
+  return `<div class="card table-wrap fault-record-table-wrap"><table class="fault-record-table"><colgroup><col class="fault-col-date"><col class="fault-col-factory"><col class="fault-col-machine"><col class="fault-col-subject"><col class="fault-col-opener"><col class="fault-col-assignee"><col class="fault-col-status"><col class="fault-col-duration">${editable?'<col class="fault-col-action">':""}</colgroup>
     <thead><tr>
       <th>${faultSortHeader("Tarih","createdAt",sortable)}</th>
       <th>Fabrika / Hat</th>
       <th>${faultSortHeader("Bölüm / Makine","department",sortable)}</th>
       <th>Arıza</th>
       <th>${faultSortHeader("Kaydı Açan","openedBy",sortable)}</th>
-      <th>${faultSortHeader("Sorumlu Bakımcı","assignedTo",sortable)}</th>
-      <th>Durum</th>
+      <th class="fault-assignee-column">${faultSortHeader("Sorumlu Bakımcı","assignedTo",sortable)}</th>
+      <th class="fault-status-column">Durum</th>
       <th>${faultSortHeader("Süre","duration",sortable)}</th>
       ${editable?"<th>İşlem</th>":""}
     </tr></thead>
@@ -285,10 +294,10 @@ function table(items,editable=false,options={}){
       <td data-label="Bölüm / Makine"><b>${esc(f.department)}</b><br><small>${esc(f.machine)}</small></td>
       <td data-label="Arıza"><b>${esc(f.subject)}</b>${f.description?`<br><small>${esc(f.description)}</small>`:""}${f.stopped?'<br><span class="stop-tag">Üretim durdu</span>':""}</td>
       <td data-label="Kaydı Açan"><span class="person-cell"><i>${esc((f.openedBy||"?").charAt(0))}</i><b>${esc(f.openedBy||"Bilinmiyor")}</b></span></td>
-      <td data-label="Sorumlu Bakımcı">${canRedirectFault(f)
+      <td class="fault-assignee-column" data-label="Sorumlu Bakımcı">${canRedirectFault(f)
         ?`<select class="sel personnel-sel" data-personnel-id="${esc(f.id)}">${personnelSelectOptions(f)}</select>`
         :`<span class="assigned-person">${esc(f.assignedTo||"Otomatik atanıyor")}</span>`}</td>
-      <td data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza açıklaması yazılmadı</span>':""}</td>
+      <td class="fault-status-column" data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza çözümü yazılmadı</span>':""}</td>
       <td data-label="Süre"><span class="duration" data-id="${esc(f.id)}">${durationText(f)}</span></td>
       ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${esc(f.id)}">
         <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
@@ -459,6 +468,7 @@ function canAccess(page){
   if(page==="personnel")return !!(p.personnel||p.viewPerformance||p.manageOwnTeam||p.manageAllPersonnel);
   if(page==="materials")return !!p.materials;
   if(page==="work")return !!p.workRequests;
+  if(page==="workshop")return !!p.workshop;
   if(page==="dailyChecks")return !!p.dailyChecks;
   return false;
 }
@@ -747,6 +757,7 @@ function page(){
   if(s.page==="materials")return materialsManagementPage();
   if(s.page==="dailyChecks")return dailyChecksPage();
   if(s.page==="work")return workManagementPage();
+  if(s.page==="workshop")return workshopPage();
   if(s.page==="report")return reportPage();
   return dashboard();
 }
@@ -762,6 +773,7 @@ function allowedNavItems(){
     ["materials","□","Malzeme Yönetimi"],
     ["dailyChecks","✓","Günlük Kontroller"],
     ["work","◇","Talepler ve İş Emirleri"],
+    ["workshop","⚙","Mekanik Atölye"],
     ["layout","⌘","Fabrika Şeması"]
   ];
   return items.filter(([page])=>canAccess(page));

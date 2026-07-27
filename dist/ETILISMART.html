@@ -104,6 +104,23 @@
   .section-title-row{align-items:flex-start;flex-direction:column}
 }
 
+/* v1.3.0 — Mekanik Atölye */
+.workshop-create-panel{margin-bottom:14px;border:1px solid #d5dfe6;border-radius:17px;background:#fff;overflow:hidden}
+.workshop-create-panel>summary{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:14px 16px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#eef5f7,#fff)}
+.workshop-create-panel>summary::-webkit-details-marker{display:none}.workshop-create-panel>summary>span{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#34434c;color:#fff;font-size:20px}.workshop-create-panel>summary b,.workshop-create-panel>summary small{display:block}.workshop-create-panel>summary b{font-size:11px;color:#293740}.workshop-create-panel>summary small{margin-top:3px;font-size:8px;color:#77858e}
+.workshop-create-form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px;border-top:1px solid #e2e8ec}.workshop-create-form .field{margin:0}.workshop-create-form .wide{grid-column:1/-1}
+.workshop-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}.workshop-kpis article{padding:14px;border:1px solid #dfe5e9;border-radius:14px;background:#fff}.workshop-kpis small,.workshop-kpis b{display:block}.workshop-kpis small{font-size:7px;font-weight:900;color:#73818b}.workshop-kpis b{margin-top:5px;font-size:21px;color:#2e3e47}
+.workshop-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.workshop-tabs{display:flex;gap:6px;padding:5px;border:1px solid #dce3e8;border-radius:12px;background:#fff}.workshop-tabs button{border:0;border-radius:8px;padding:9px 12px;background:transparent;color:#697782;font-size:9px;font-weight:900}.workshop-tabs button.active{background:#34434c;color:#fff}.workshop-tabs span{margin-left:5px}
+.workshop-table{min-width:1180px}.workshop-sort-button{display:flex;align-items:center;justify-content:space-between;gap:5px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}.workshop-sort-button.active{color:#936800}.workshop-detail-row{cursor:pointer}.workshop-detail-row:hover{background:#fff9e9}.workshop-detail-row td small{display:block;margin-top:3px;color:#7d8992}
+.workshop-status{display:inline-flex;padding:6px 8px;border-radius:999px;background:#eef2f4;color:#5f6d76;font-size:7px;font-weight:900}.workshop-status.done,.workshop-status.approved{background:#e7f4ec;color:#287047}.workshop-status.progress{background:#fff1cf;color:#876212}.workshop-status.rejected{background:#fde8e8;color:#a23840}
+.workshop-detail-modal{width:min(980px,96vw);max-height:93vh;overflow:auto}.workshop-detail-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.workshop-detail-hero>div{padding:11px;border:1px solid #dfe6ea;border-radius:11px;background:#fafcfd}.workshop-detail-hero small,.workshop-detail-hero b{display:block}.workshop-detail-hero small{font-size:7px;color:#77858e}.workshop-detail-hero b{margin-top:4px;font-size:10px}
+.workshop-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.workshop-detail-grid>section{padding:14px;border:1px solid #e0e6ea;border-radius:13px;background:#fff}.workshop-detail-grid>section>span{font-size:7px;font-weight:900;color:#9a700c}.workshop-detail-grid p{font-size:8.5px;line-height:1.5;color:#53616a}.workshop-drawing-link,.workshop-file-name{display:inline-flex;margin-top:7px}.workshop-file-name{font-size:8px;color:#4e748d}.workshop-file-name.empty{color:#929ba2}
+.workshop-manage-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding:14px;border:1px solid #d6e1e7;border-radius:13px;background:#f8fbfc}.workshop-manage-form .field{margin:0}.workshop-manage-form .wide{grid-column:1/-1}
+.workshop-material-link{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;padding:14px;border:1px solid #e2d49d;border-radius:13px;background:#fffaf0}.workshop-material-link span,.workshop-material-link b{display:block}.workshop-material-link span{font-size:7px;font-weight:900;color:#956d0b}.workshop-material-link b{margin-top:4px;font-size:10px}.workshop-material-link p{margin:4px 0 0;font-size:8px;color:#756a50}
+.machine-workshop-list{display:grid;gap:9px}.machine-workshop-list article{display:grid;grid-template-columns:1fr 230px;gap:12px;padding:12px;border:1px solid #e0e6ea;border-left:4px solid #b98a20;border-radius:11px;background:#fff}.machine-workshop-list small,.machine-workshop-list b,.machine-workshop-list span{display:block}.machine-workshop-list small{font-size:7px;color:#7b8790}.machine-workshop-list b{margin:4px 0;font-size:10px}.machine-workshop-list span{font-size:8px;color:#66747d}
+@media(max-width:900px){.workshop-create-form{grid-template-columns:1fr 1fr}.workshop-kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.workshop-create-form{grid-template-columns:1fr}.workshop-create-form .wide{grid-column:auto}.workshop-toolbar{align-items:stretch;flex-direction:column}.workshop-tabs{display:grid;grid-template-columns:1fr 1fr}.workshop-detail-hero,.workshop-detail-grid,.workshop-manage-form{grid-template-columns:1fr}.workshop-manage-form .wide{grid-column:auto}.workshop-material-link{align-items:stretch;flex-direction:column}.machine-workshop-list article{grid-template-columns:1fr}}
+
 .operator-head{align-items:center}
 .operator-new-btn{font-size:16px;padding:13px 18px}
 .operator-grid{margin-top:18px}
@@ -2053,6 +2070,9 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .work-detail-decision b{font-size:10px;color:#2d3e4a}
 .work-detail-decision p{margin-top:3px;font-size:8px;color:#7c8993}
 .work-detail-decision-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.purchase-action{border:1px solid #b7791f;background:#fff7df;color:#8a5700;font-weight:800}
+.purchase-action:hover{background:#ffedb5}
+.procurement-badge{display:inline-flex;align-items:center;width:max-content;margin:6px 0;padding:5px 9px;border:1px solid #e1b653;border-radius:999px;background:#fff4ce;color:#855700;font-size:11px;font-weight:900;letter-spacing:.05em}
 .work-detail-material-form{display:grid;grid-template-columns:1fr 110px auto;gap:8px;margin-bottom:10px}
 @media(max-width:900px){
   .dashboard-fault-hub.optimized{min-height:auto}
@@ -2744,6 +2764,33 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .shift-report-empty{color:#7d8993!important;font-size:9px;text-align:center}
 @media(max-width:1000px){.shift-report-grid{grid-template-columns:1fr}.shift-report-list{max-height:240px}}
 @media(max-width:700px){.fault-record-toolbar{align-items:stretch}.fault-date-range{display:grid;grid-template-columns:1fr 1fr}.fault-date-range button{grid-column:1/-1}.fault-date-range input{width:100%}.shift-report-section{padding:13px}}
+.fault-record-table{width:1500px!important;min-width:1500px;table-layout:fixed}
+.fault-record-table .fault-col-date{width:145px}.fault-record-table .fault-col-factory{width:150px}.fault-record-table .fault-col-machine{width:180px}.fault-record-table .fault-col-subject{width:260px}.fault-record-table .fault-col-opener{width:170px}.fault-record-table .fault-col-assignee{width:210px}.fault-record-table .fault-col-status{width:170px}.fault-record-table .fault-col-duration{width:105px}.fault-record-table .fault-col-action{width:110px}
+.fault-record-table th:nth-child(6),.fault-record-table td:nth-child(6){width:190px;min-width:190px}
+.fault-record-table th:nth-child(7),.fault-record-table td:nth-child(7){width:150px;min-width:150px}
+.fault-record-table .personnel-sel{display:block;width:100%;max-width:180px;min-width:0}
+.fault-record-table .assigned-person,.fault-record-table .status,.fault-record-table .missing-solution-tag{position:static;display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.shift-view-switch{display:grid;grid-template-columns:1fr 1fr;align-self:end;padding:4px;border:1px solid #dbe2e8;border-radius:11px;background:#f5f7f9}
+.shift-view-switch button{min-height:34px;border:0;border-radius:8px;background:transparent;color:#697783;font-size:9px;font-weight:900;cursor:pointer}
+.shift-view-switch button.active{background:#26333f;color:#fff;box-shadow:0 2px 7px rgba(25,35,44,.18)}
+.shift-filter-card.team-only{grid-template-columns:auto 1fr 1fr 1.2fr}
+.monthly-shift-wrap{max-width:100%}
+.monthly-shift-table{width:max-content;min-width:100%;table-layout:fixed}
+.monthly-shift-table th:first-child,.monthly-shift-table td:first-child{width:190px;min-width:190px}
+.monthly-shift-table th:not(:first-child),.monthly-shift-table td:not(:first-child){width:76px;min-width:76px;padding:7px 5px}
+.monthly-shift-table th.today{background:#fff2c8;color:#7d5b00}
+.shift-assignment-select.monthly{width:66px;min-width:66px;padding:6px 3px;font-size:8px}
+.fault-record-table .fault-assignee-column{width:200px!important;min-width:200px!important;max-width:200px!important}
+.fault-record-table .fault-status-column{width:165px!important;min-width:165px!important;max-width:165px!important}
+.fault-record-table .fault-assignee-column .personnel-sel{width:180px;max-width:180px}
+@media(max-width:1000px){.shift-filter-card.team-only{grid-template-columns:1fr 1fr}.shift-view-switch{grid-column:1/-1}}
+@media(max-width:700px){
+  .shift-filter-card.team-only{grid-template-columns:1fr}
+  .fault-record-table{width:100%!important;min-width:0;table-layout:fixed}
+  .fault-record-table .fault-assignee-column,.fault-record-table .fault-status-column{width:auto!important;min-width:0!important;max-width:none!important}
+  .fault-record-table .personnel-sel{max-width:100%}
+  .monthly-shift-table th:first-child,.monthly-shift-table td:first-child{position:sticky;left:0;width:150px;min-width:150px;z-index:3}
+}
 
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
@@ -2970,10 +3017,10 @@ function findMachineDepartment(factory,line,machine){
 </script>
 <script>
 /* Kullanıcılar, roller ve personel yetkileri */
-const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Depo Sorumlusu","Genel Müdür","Yazılımcı"];
+const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Depo Sorumlusu","Atölye Personeli","Genel Müdür","Yazılımcı"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 
-const APP_VERSION="1.1.0";
+const APP_VERSION="1.3.0";
 const APP_RELEASE_DATE="27.07.2026";
 const AUTH_VERSION="pc-v5";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
@@ -3003,6 +3050,10 @@ const DEVELOPER_USERS={
 const WAREHOUSE_USERS={
   "8001":{"password":"8001","name":"Depo Sorumlusu","role":"Depo Sorumlusu","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Depo"}
 };
+const WORKSHOP_USERS={
+  "8101":{"password":"8101","name":"Atölye Sorumlusu","role":"Atölye Personeli","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Atölye"},
+  "8102":{"password":"8102","name":"Atölye Personeli","role":"Atölye Personeli","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Atölye"}
+};
 const VALID_ACCOUNT_ROLES=new Set([...ROLES,"Elektrik Bakım Formeni","Mekanik Bakım Formeni","Fabrika Müdürü"]);
 let DELETED_PERSONNEL_IDS=new Set(storageJsonArray(localStorage,DELETED_PERSONNEL_KEY,[]).map(String));
 const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
@@ -3010,7 +3061,7 @@ function removeLegacyUsers(users){
   REMOVED_LEGACY_USER_IDS.forEach(id=>delete users[id]);
   return users;
 }
-const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS,...WAREHOUSE_USERS});
+const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS,...WAREHOUSE_USERS,...WORKSHOP_USERS});
 const PROTECTED_USERS=Object.fromEntries(
   Object.entries(DEFAULT_USERS)
     .filter(([,account])=>account.role!=="Bakım Personeli")
@@ -3437,16 +3488,17 @@ function deleteMaintenancePersonnelAccount(id){
 
 const ROLE_PERMISSIONS={
   "Genel Müdür":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:false,personnel:true,materials:true,workRequests:true,editPlanned:false,editStatus:false,viewPerformance:true,allFactories:true,dailyChecks:true},
-  "Bakım Müdürü":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,viewPerformance:true,allFactories:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Elektrik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Mekanik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,createRequest:true,editPlanned:true,editStatus:false,departmentOnly:true},
-  "Üretim Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,createRequest:true,editPlanned:true,editStatus:false,allDepartments:true,allDepartmentForemanRights:true},
-  "Bakım Personeli":{dashboard:true,newFault:false,faults:true,report:false,layout:true,planned:true,shiftSchedule:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:false,editStatus:true,manageFaultMaterials:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,dailyChecks:true,completeDailyChecks:true},
+  "Bakım Müdürü":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,viewPerformance:true,allFactories:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Elektrik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Mekanik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,workshop:true,createWorkshopRequest:true,createRequest:true,editPlanned:true,editStatus:false,departmentOnly:true},
+  "Üretim Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,workshop:true,createWorkshopRequest:true,createRequest:true,editPlanned:true,editStatus:false,allDepartments:true,allDepartmentForemanRights:true},
+  "Bakım Personeli":{dashboard:true,newFault:false,faults:true,report:false,layout:true,planned:true,shiftSchedule:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,editPlanned:false,editStatus:true,manageFaultMaterials:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,dailyChecks:true,completeDailyChecks:true},
   "Depo Sorumlusu":{dashboard:true,newFault:false,faults:false,report:false,layout:false,planned:false,shiftSchedule:false,personnel:false,materials:true,manageMaterials:true,workRequests:false,dailyChecks:false,allFactories:true},
+  "Atölye Personeli":{dashboard:true,newFault:false,faults:false,report:false,layout:true,planned:false,shiftSchedule:false,personnel:false,materials:true,workRequests:false,workshop:true,manageWorkshopJobs:true,createWorkshopDirect:true,dailyChecks:false,allFactories:true},
   "Operatör":{dashboard:true,newFault:true,faults:true,report:false,layout:false,planned:true,shiftSchedule:true,workRequests:false,editPlanned:false,editStatus:false,departmentOnly:true,ownFaultsOnly:true,viewCurrentShiftMaintenance:true},
-  "Yazılımcı":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,dailyChecks:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,manageAllUserAccounts:true,manageOwnTeam:true,viewPerformance:true,allFactories:true,allDepartments:true,allDepartmentForemanRights:true,manageFaultMaterials:true,manageRequests:true,createRequest:true,createDirectWorkOrder:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,manageDailyChecks:true,completeDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true}
+  "Yazılımcı":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,createWorkshopDirect:true,manageWorkshopJobs:true,dailyChecks:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,manageAllUserAccounts:true,manageOwnTeam:true,viewPerformance:true,allFactories:true,allDepartments:true,allDepartmentForemanRights:true,manageFaultMaterials:true,manageRequests:true,createRequest:true,createDirectWorkOrder:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,manageDailyChecks:true,completeDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true}
 };
 
 /* Personel ekranları */
@@ -3645,10 +3697,12 @@ function dailyAsset(id,factory,type,index,team){
     compensation:"Kompanzasyon Panosu",
     breakerRoom:"Kesici Odası",
     breakerPanel:"Kesici Panosu",
-    gas:"Gaz İstasyonu",
+    gas:"Gaz Sayacı",
+    gasStation:"Gaz İstasyonu",
+    fireSystem:"Yangın Sistemi",
     water:"Su Deposu"
   };
-  const contractorMonthly=["transformer","breakerRoom","breakerPanel"].includes(type);
+  const contractorMonthly=["transformer","breakerRoom","breakerPanel","gasStation","fireSystem"].includes(type);
   return {
     id,
     factory,
@@ -3667,11 +3721,15 @@ const DAILY_CONTROL_ASSETS=[
   ...Array.from({length:2},(_,i)=>dailyAsset(`F1-UPS-${i+1}`,"1. Fabrika","ups",i+1,"Elektrik Bakım")),
   ...Array.from({length:3},(_,i)=>dailyAsset(`F1-KOMPZ-${i+1}`,"1. Fabrika","compensation",i+1,"Elektrik Bakım")),
   ...Array.from({length:3},(_,i)=>dailyAsset(`F1-KES-${i+1}`,"1. Fabrika","breakerRoom",i+1,"Taşeron")),
+  dailyAsset("F1-GAZ-IST","1. Fabrika","gasStation",0,"Periyodik Kontrol"),
+  dailyAsset("F1-YANGIN","1. Fabrika","fireSystem",0,"Periyodik Kontrol"),
   dailyAsset("F1-GAZ-1","1. Fabrika","gas",1,"Mekanik Bakım"),
   dailyAsset("F1-SU-1","1. Fabrika","water",1,"Mekanik Bakım"),
 
   ...Array.from({length:5},(_,i)=>dailyAsset(`F2-TR-${i+1}`,"2. Fabrika","transformer",i+1,"Taşeron")),
   ...Array.from({length:5},(_,i)=>dailyAsset(`F2-KES-${i+1}`,"2. Fabrika","breakerPanel",i+1,"Taşeron")),
+  dailyAsset("F2-GAZ-IST","2. Fabrika","gasStation",0,"Periyodik Kontrol"),
+  dailyAsset("F2-YANGIN","2. Fabrika","fireSystem",0,"Periyodik Kontrol"),
   ...Array.from({length:2},(_,i)=>dailyAsset(`F2-KOMP-${i+1}`,"2. Fabrika","compressor",i+1,"Mekanik Bakım")),
   ...Array.from({length:2},(_,i)=>dailyAsset(`F2-JEN-${i+1}`,"2. Fabrika","generator",i+1,"Elektrik Bakım")),
   ...Array.from({length:4},(_,i)=>dailyAsset(`F2-UPS-${i+1}`,"2. Fabrika","ups",i+1,"Elektrik Bakım")),
@@ -3853,7 +3911,7 @@ function canCompleteUtilityAsset(asset,dateValue){
 function canRecordContractorCheck(asset){
   if(!asset?.contractorMonthly)return false;
   if(!dailyControlFactories().includes(asset.factory))return false;
-  return isDeveloper()||["Bakım Müdürü","Elektrik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return isDeveloper()||["Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
 }
 function dailyAssetTypeLabel(type){
   return ({
@@ -3865,6 +3923,8 @@ function dailyAssetTypeLabel(type){
     breakerRoom:"Kesici Odası",
     breakerPanel:"Kesici Panosu",
     gas:"Gaz İstasyonu",
+    gasStation:"Gaz İstasyonu",
+    fireSystem:"Yangın Sistemi",
     water:"Su Deposu",
     other:"Diğer Ekipman"
   })[type]||type;
@@ -4387,15 +4447,15 @@ function dailyChecksPage(){
     return `<article class="contractor-check-card ${done?"done":"pending"}" data-daily-detail-kind="contractor" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="contractor-check-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
-        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>Aylık periyodik kontrol · Taşeron firma</p></div>
+        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>Aylık periyodik tesis kontrolü</p></div>
         <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
       </div>
       <form class="contractor-check-form" data-asset-id="${esc(asset.id)}">
-        <div class="field"><label>Taşeron firma *</label><input class="contractor-company" value="${esc(record?.company||"")}" placeholder="Firma adı" ${canEdit?"":"disabled"} required></div>
+        <div class="field"><label>Kontrol firması / sorumlu *</label><input class="contractor-company" value="${esc(record?.company||"")}" placeholder="Firma veya sorumlu kişi" ${canEdit?"":"disabled"} required></div>
         <div class="field"><label>Rapor / form numarası *</label><input class="contractor-report-no" value="${esc(record?.reportNo||"")}" placeholder="Rapor no" ${canEdit?"":"disabled"} required></div>
         <div class="field"><label>Kontrol sonucu *</label><select class="contractor-result" ${canEdit?"":"disabled"}>${resultOptions(record)}</select></div>
         <div class="field"><label>Rapor / kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="contractor-photo" type="file" accept="image/*" capture="environment" ${canEdit&&!record?.photoStored?"required":""} ${canEdit?"":"disabled"}></div>
-        <div class="field contractor-note"><label>Taşeron kontrol açıklaması</label><input class="contractor-note-input" value="${esc(record?.note||"")}" placeholder="Yapılan kontroller ve tespitler" ${canEdit?"":"disabled"}></div>
+        <div class="field contractor-note"><label>Periyodik kontrol açıklaması</label><input class="contractor-note-input" value="${esc(record?.note||"")}" placeholder="Yapılan kontroller ve tespitler" ${canEdit?"":"disabled"}></div>
         <div class="contractor-actions">
           ${canEdit?`<button type="submit" class="primary">${done?"Kaydı Güncelle":"Aylık Kontrolü Kaydet"}</button>${done?`<button type="button" class="secondary undo-contractor-check" data-asset-id="${esc(asset.id)}">Kaydı Geri Al</button>`:""}`:""}
         </div>
@@ -4505,7 +4565,7 @@ function dailyChecksPage(){
     <div>
       <span>TESİS KONTROL VE SAYAÇ TAKİBİ</span>
       <h1>Günlük Kontroller</h1>
-      <p>Bakım ekibi günlük ekipman kontrollerini fotoğrafla tamamlar. Trafo ve kesiciler yalnızca aylık taşeron periyodik kontrolünde takip edilir.</p>
+      <p>Bakım ekibi günlük ekipman kontrollerini tamamlar; tesisin aylık kontrolleri Periyodik Kontroller bölümünde takip edilir.</p>
     </div>
     <div class="daily-control-toolbar">
       <select id="dailyControlFactory">${factories.map(item=>`<option ${item===factory?"selected":""}>${esc(item)}</option>`).join("")}</select>
@@ -4517,7 +4577,7 @@ function dailyChecksPage(){
 
   <div class="daily-control-tabs">
     <button type="button" class="${activeTab==="daily"?"active":""}" data-daily-control-tab="daily">Günlük Bakım Kontrolleri</button>
-    <button type="button" class="${activeTab==="contractor"?"active":""}" data-daily-control-tab="contractor">Aylık Taşeron Kontrolleri</button>
+    <button type="button" class="${activeTab==="contractor"?"active":""}" data-daily-control-tab="contractor">Periyodik Kontroller</button>
   </div>
 
   ${activeTab==="daily"&&canManageDailyControlCatalog()?`<details class="daily-control-management-panel">
@@ -4598,19 +4658,19 @@ function dailyChecksPage(){
     </details>
   `:`
     <section class="contractor-info-banner">
-      <div><span>⚠</span><div><b>Trafo ve kesiciler günlük bakım ekibi kontrolüne dahil değildir.</b><p>Bu ekipmanların kontrolleri ayda bir defa yetkili taşeron tarafından yapılır; rapor numarası, sonuç ve fotoğraf sisteme kaydedilir.</p></div></div>
+      <div><span>✓</span><div><b>Periyodik tesis kontrolleri tek ekranda takip edilir.</b><p>Trafolar, kesiciler, gaz istasyonu ve yangın sistemi için firma/sorumlu, rapor numarası, sonuç ve kontrol fotoğrafı kaydedilir.</p></div></div>
     </section>
 
     <section class="daily-control-kpis contractor-kpis">
-      <article><small>AYLIK EKİPMAN</small><b>${contractorStats.total}</b><span>trafo ve kesici</span></article>
-      <article><small>YAPILDI</small><b>${contractorStats.done}</b><span>taşeron kaydı</span></article>
+      <article><small>PERİYODİK EKİPMAN</small><b>${contractorStats.total}</b><span>tesis kontrol noktası</span></article>
+      <article><small>YAPILDI</small><b>${contractorStats.done}</b><span>kontrol kaydı</span></article>
       <article><small>YAPILMADI</small><b>${contractorStats.pending}</b><span>bekleyen periyodik kontrol</span></article>
       <article><small>TAMAMLANMA</small><b>%${contractorStats.percent}</b><span>${esc(s.contractorControlMonth)}</span></article>
     </section>
 
     <section class="daily-section-card">
       <div class="section-modern-head">
-        <div><h2>Aylık Taşeron Periyodik Kontrol Listesi</h2><p>Kontrol kaydını bakım müdürü, elektrik bakım formeni veya bakım formeni sisteme işler.</p></div>
+        <div><h2>Periyodik Kontrol Listesi</h2><p>Kontrol kayıtlarını bakım müdürü ile elektrik, mekanik ve genel bakım formenleri düzenleyebilir.</p></div>
       </div>
       <div class="contractor-check-list">${contractorAssets.map(contractorCard).join("")}</div>
     </section>
@@ -4787,7 +4847,7 @@ function renderWorkOrderCards(records,emptyText){
   return records.map(item=>{
     const materials=workMaterials(item);
     return `<article class="work-card order-card clickable-work-card priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.title)} iş emri detaylarını aç">
-      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3><p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b><small>${fmtDate(item.createdAt)}</small></div></div>
+      <div class="work-card-head"><div><span>${esc(item.id)} · ${item.sourceRequestId?`Talep: ${esc(item.sourceRequestId)}`:"Doğrudan İş Emri"}</span><h3>${esc(item.title)}</h3>${item.procurementRequired?'<b class="procurement-badge">SATIN ALINACAK</b>':""}<p>${esc(item.factory)} · ${esc(item.department)} · ${esc(item.location)}</p></div><div class="work-card-side"><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b><small>${fmtDate(item.createdAt)}</small></div></div>
       <p class="work-description">${esc(item.description)}</p>
       <div class="work-meta"><span>Ekip: <b>${esc(item.assignedTeam)}</b></span><span>Sorumlu: <b>${esc(item.assignedTo||"Atama Bekliyor")}</b></span><span>Plan: <b>${esc(item.planStart||"-")} → ${esc(item.planEnd||"-")}</b></span><span>Öncelik: <b>${esc(item.priority)}</b></span></div>
       <div class="work-material-chips">${materials.map(material=>{const catalog=materialById(material.materialId);return `<span>${esc(catalog?.name||material.name||"Malzeme")} · ${esc(material.quantity)} ${esc(material.unit||catalog?.unit||"Adet")}</span>`}).join("")||'<small>Kullanılan malzeme girilmedi.</small>'}</div>
@@ -5001,6 +5061,7 @@ function workDetailModal(){
         <div>
           <span class="work-detail-kind">${isRequest?"İŞ TALEBİ":"İŞ EMRİ"}</span>
           <h2>${esc(item.id)} · ${esc(item.title)}</h2>
+          ${!isRequest&&item.procurementRequired?'<b class="procurement-badge">SATIN ALINACAK</b>':""}
           <p>${esc(item.factory)} · ${esc(item.department||"-")} · ${esc(item.location||"-")}</p>
         </div>
         <button type="button" id="closeWorkDetail">×</button>
@@ -5116,6 +5177,7 @@ function workDetailModal(){
           ${item.status!=="approved"?`<button type="button" data-work-request-action="approved" data-work-id="${esc(item.id)}" class="secondary">Onayla</button>`:""}
           <button type="button" data-work-request-action="rejected" data-work-id="${esc(item.id)}" class="danger">Reddet</button>
           <button type="button" data-work-request-action="convert" data-work-id="${esc(item.id)}" class="primary">İş Emrine Dönüştür</button>
+          <button type="button" data-work-request-action="purchase" data-work-id="${esc(item.id)}" class="purchase-action">Satın Alınacak Olarak İş Emrine Dönüştür</button>
         </div>
       </section>`:""}
 
@@ -5393,6 +5455,184 @@ function materialsManagementPage(){
       }).join("")}</tbody>
     </table></div>
   </section>`;
+}
+
+</script>
+<script>
+/* Mekanik Atölye — parça üretim talepleri, üretim ve arşiv */
+const WORKSHOP_KEY="etilismart_workshop_jobs_v1";
+const WORKSHOP_STATUSES=["Talep Açıldı","İnceleniyor","Onaylandı","Üretimde","Kontrol Bekliyor","Tamamlandı","Reddedildi"];
+const WORKSHOP_PART_TYPES=["Mil","Burç","Flanş","Dişli","Kasnak","Rulo","Yatak","Bağlantı Parçası","Koruyucu / Muhafaza","Kaynaklı İmalat","Revizyon","Diğer"];
+function workshopSeed(){
+  const now=Date.now();
+  return [
+    {id:"AT-1001",title:"Pres rulo mili imalatı",partName:"Pres Rulo Mili",partCode:"ATM-PRM-001",partType:"Mil",quantity:2,factory:"1. Fabrika",line:"1. Hat",department:"Pres Bölümü",machine:"Pres Rulo ve Kayışlar",description:"Aşınan mil numuneye göre işlenecek. Rulman yatakları ölçülerek tolerans korunacak.",materialSpec:"C45 çelik",technicalDrawingName:"",technicalDrawingData:"",priority:"Yüksek",status:"Üretimde",requestedBy:"Halil İbrahim Utku",requestedAt:new Date(now-26*3600000).toISOString(),approvedBy:"Atölye Sorumlusu",approvedAt:new Date(now-20*3600000).toISOString(),estimatedHours:12,startedAt:new Date(now-18*3600000).toISOString(),completedAt:null,workNotes:"Kaba tornalama tamamlandı.",linkedMaterialId:""},
+    {id:"AT-0998",title:"Konveyör yatak burcu",partName:"Konveyör Yatak Burcu",partCode:"ATM-KYB-004",partType:"Burç",quantity:4,factory:"2. Fabrika A Blok",line:"1. Hat",department:"Sır Bantları",machine:"Konveyör Bantlar",description:"Eski parçaya göre bronz burç üretildi.",materialSpec:"Bronz",technicalDrawingName:"KYB-004.pdf",technicalDrawingData:"",priority:"Orta",status:"Tamamlandı",requestedBy:"Kemal Ayrancı",requestedAt:new Date(now-12*86400000).toISOString(),approvedBy:"Atölye Sorumlusu",approvedAt:new Date(now-11*86400000).toISOString(),estimatedHours:6,startedAt:new Date(now-10*86400000).toISOString(),completedAt:new Date(now-9*86400000).toISOString(),completedBy:"Atölye Sorumlusu",workNotes:"Ölçü kontrolü yapıldı ve bölüme teslim edildi.",linkedMaterialId:""}
+  ];
+}
+function loadWorkshopJobs(){return storageJsonRecordArray(localStorage,WORKSHOP_KEY,workshopSeed())}
+function saveWorkshopJobs(){storageSet(localStorage,WORKSHOP_KEY,JSON.stringify(s.workshopJobs||[]))}
+function canCreateWorkshopRequest(){return !!permissions().createWorkshopRequest}
+function canCreateWorkshopDirect(){return !!permissions().createWorkshopDirect}
+function canManageWorkshopJobs(){return !!permissions().manageWorkshopJobs}
+function workshopVisibleJobs(){
+  let jobs=[...(s.workshopJobs||[])].filter(job=>userCanSeeFactory(job.factory));
+  if(roleIsDepartmentLimited()&&s.user?.department)jobs=jobs.filter(job=>job.department===s.user.department);
+  return jobs;
+}
+function workshopStatusClass(status){
+  if(status==="Tamamlandı")return "done";
+  if(status==="Reddedildi")return "rejected";
+  if(["Üretimde","Kontrol Bekliyor"].includes(status))return "progress";
+  if(status==="Onaylandı")return "approved";
+  return "open";
+}
+function workshopDateValue(job){return new Date(job.completedAt||job.requestedAt).getTime()||0}
+function workshopSortValue(job,key){
+  if(key==="date")return workshopDateValue(job);
+  if(key==="estimatedHours"||key==="quantity")return Number(job[key])||0;
+  return String(job[key]||"").toLocaleLowerCase("tr-TR");
+}
+function workshopSortHead(key,label){
+  const active=s.workshopSortKey===key;
+  return `<th><button type="button" class="workshop-sort-button ${active?"active":""}" data-workshop-sort="${esc(key)}">${esc(label)} <span>${active?(s.workshopSortDir==="asc"?"▲":"▼"):"↕"}</span></button></th>`;
+}
+function workshopMatches(job,query){
+  if(!query)return true;
+  return [job.id,job.title,job.partName,job.partCode,job.partType,job.factory,job.line,job.department,job.machine,job.materialSpec,job.requestedBy,job.status].join(" ").toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR"));
+}
+function workshopCreatePanel(){
+  if(!canCreateWorkshopRequest()&&!canCreateWorkshopDirect())return "";
+  const direct=canCreateWorkshopDirect()&&!canCreateWorkshopRequest();
+  const factories=userFactories();
+  const factory=factories[0]||"1. Fabrika";
+  const line=(FACTORIES[factory]||[])[0]||"";
+  const departments=roleIsDepartmentLimited()&&s.user?.department?[s.user.department]:catalogDepartments(factory,line);
+  const department=departments[0]||"";
+  return `<details class="workshop-create-panel" ${s.workshopCreateOpen?"open":""}>
+    <summary><span>＋</span><div><b>${direct?"Talep Olmadan Yapılan İş Ekle":"Yeni Atölye Talebi"}</b><small>${direct?"Atölyede doğrudan yapılan veya başlatılan işi kaydedin.":"Üretilecek veya revize edilecek mekanik parçayı tanımlayın."}</small></div><i>⌄</i></summary>
+    <form id="workshopCreateForm" class="workshop-create-form">
+      <div class="field"><label>Fabrika *</label><select id="workshopFactory" required>${factories.map(item=>`<option>${esc(item)}</option>`).join("")}</select></div>
+      <div class="field"><label>Hat *</label><select id="workshopLine" required>${(FACTORIES[factory]||[]).map(item=>`<option>${esc(item)}</option>`).join("")}</select></div>
+      <div class="field"><label>Bölüm *</label><select id="workshopDepartment" ${roleIsDepartmentLimited()?"disabled":""} required>${departments.map(item=>`<option>${esc(item)}</option>`).join("")}</select></div>
+      <div class="field"><label>Makine *</label><select id="workshopMachine" required>${catalogMachines(factory,line,department).map(item=>`<option>${esc(item)}</option>`).join("")}</select></div>
+      <div class="field wide"><label>Talep Başlığı *</label><input id="workshopTitle" maxlength="140" placeholder="Örn. Pres rulo mili imalatı" required></div>
+      <div class="field"><label>Parça Adı *</label><input id="workshopPartName" maxlength="120" required></div>
+      <div class="field"><label>Parça Kodu</label><input id="workshopPartCode" maxlength="50" placeholder="Otomatik oluşturulabilir"></div>
+      <div class="field"><label>Parça Tipi *</label><select id="workshopPartType">${WORKSHOP_PART_TYPES.map(item=>`<option>${esc(item)}</option>`).join("")}</select></div>
+      <div class="field"><label>Adet *</label><input id="workshopQuantity" type="number" min="1" step="1" value="1" required></div>
+      <div class="field"><label>Malzeme / Hammadde</label><input id="workshopMaterialSpec" maxlength="100" placeholder="Örn. C45 çelik, bronz"></div>
+      <div class="field"><label>Öncelik *</label><select id="workshopPriority"><option>Normal</option><option>Orta</option><option>Yüksek</option><option>Acil</option></select></div>
+      <div class="field wide"><label>Ölçüler ve İş Açıklaması *</label><textarea id="workshopDescription" rows="4" maxlength="1800" required></textarea></div>
+      <div class="field wide"><label>Teknik Resim / Dosya</label><input id="workshopDrawing" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.dxf"><small class="field-help">PDF veya görsel dosyalar en fazla 1,5 MB olabilir.</small></div>
+      ${direct?`<div class="field"><label>İş Durumu *</label><select id="workshopDirectStatus"><option>Üretimde</option><option>Tamamlandı</option></select></div><div class="field"><label>Çalışma Süresi (saat) *</label><input id="workshopDirectHours" type="number" min=".5" step=".5" value="1" required></div><div class="field wide"><label>Yapılan İş / Üretim Notu *</label><textarea id="workshopDirectNotes" rows="3" required></textarea></div>`:""}
+      <div class="modal-actions wide"><button type="reset" class="secondary">Temizle</button><button type="submit" class="primary">${direct?"Yapılan İşi Kaydet":"Atölye Talebi Oluştur"}</button></div>
+    </form>
+  </details>`;
+}
+function workshopPage(){
+  let jobs=workshopVisibleJobs();
+  const active=jobs.filter(job=>!["Tamamlandı","Reddedildi"].includes(job.status));
+  const archive=jobs.filter(job=>["Tamamlandı","Reddedildi"].includes(job.status));
+  jobs=s.workshopTab==="archive"?archive:active;
+  jobs=jobs.filter(job=>workshopMatches(job,s.workshopSearch||"")).sort((a,b)=>{
+    const av=workshopSortValue(a,s.workshopSortKey),bv=workshopSortValue(b,s.workshopSortKey);
+    const result=typeof av==="number"&&typeof bv==="number"?av-bv:String(av).localeCompare(String(bv),"tr",{numeric:true});
+    return (s.workshopSortDir==="desc"?-result:result)||workshopDateValue(b)-workshopDateValue(a);
+  });
+  return `${clockBlock()}
+    <section class="desktop-page-title workshop-page-title"><div><span>MEKANİK PARÇA ÜRETİMİ</span><h1>Mekanik Atölye</h1><p>Parça imalat taleplerini, teknik resimleri, üretim sürelerini ve tamamlanan işleri yönetin.</p></div><div class="record-count"><small>GÖSTERİLEN KAYIT</small><b>${jobs.length}</b></div></section>
+    ${workshopCreatePanel()}
+    <section class="workshop-kpis"><article><small>AKTİF TALEP</small><b>${active.length}</b></article><article><small>ÜRETİMDE</small><b>${active.filter(job=>job.status==="Üretimde").length}</b></article><article><small>KONTROL BEKLEYEN</small><b>${active.filter(job=>job.status==="Kontrol Bekliyor").length}</b></article><article><small>ARŞİVLENEN</small><b>${archive.length}</b></article></section>
+    <section class="workshop-toolbar"><div class="workshop-tabs"><button data-workshop-tab="active" class="${s.workshopTab==="active"?"active":""}">Aktif İşler <span>${active.length}</span></button><button data-workshop-tab="archive" class="${s.workshopTab==="archive"?"active":""}">İş Arşivi <span>${archive.length}</span></button></div><label class="record-search"><span>⌕</span><input id="workshopSearch" value="${esc(s.workshopSearch||"")}" placeholder="Parça, kod, makine, talep açan veya durum ara"></label></section>
+    <div class="card table-wrap workshop-table-wrap"><table class="workshop-table"><thead><tr>${workshopSortHead("date","Tarih")}${workshopSortHead("partCode","Kod")}${workshopSortHead("partName","Parça")}${workshopSortHead("partType","Tip")}${workshopSortHead("machine","Kullanılacağı Makine")}${workshopSortHead("requestedBy","Talep Açan")}${workshopSortHead("estimatedHours","Tahmini Süre")}${workshopSortHead("status","Durum")}</tr></thead><tbody>${jobs.map(job=>`<tr class="workshop-detail-row" tabindex="0" data-workshop-detail="${esc(job.id)}"><td data-label="Tarih">${fmtDate(job.requestedAt)}</td><td data-label="Kod"><code>${esc(job.partCode||"-")}</code></td><td data-label="Parça"><b>${esc(job.partName)}</b><small>${job.quantity} adet · ${esc(job.materialSpec||"Malzeme belirtilmedi")}</small></td><td data-label="Tip">${esc(job.partType)}</td><td data-label="Kullanılacağı Makine"><b>${esc(job.machine)}</b><small>${esc(job.factory)} · ${esc(job.department)}</small></td><td data-label="Talep Açan">${esc(job.requestedBy)}</td><td data-label="Tahmini Süre">${job.estimatedHours?`${job.estimatedHours} saat`:"Bekleniyor"}</td><td data-label="Durum"><span class="workshop-status ${workshopStatusClass(job.status)}">${esc(job.status)}</span></td></tr>`).join("")||'<tr><td colspan="8"><div class="compact-empty"><p>Seçilen kriterlere uygun atölye işi bulunmuyor.</p></div></td></tr>'}</tbody></table></div>
+    ${workshopDetailModal()}`;
+}
+function workshopDetailModal(){
+  if(!s.workshopDetailId)return "";
+  const job=(s.workshopJobs||[]).find(item=>String(item.id)===String(s.workshopDetailId));
+  if(!job)return "";
+  const linked=materialById(job.linkedMaterialId);
+  const drawing=job.technicalDrawingData?`<a class="secondary workshop-drawing-link" href="${esc(job.technicalDrawingData)}" download="${esc(job.technicalDrawingName||"teknik-resim")}">Teknik Resmi Aç / İndir</a>`:job.technicalDrawingName?`<span class="workshop-file-name">${esc(job.technicalDrawingName)}</span>`:'<span class="workshop-file-name empty">Teknik resim eklenmedi</span>';
+  return `<div class="modal-backdrop" id="workshopDetailBackdrop"><div class="modal workshop-detail-modal">
+    <div class="modal-head"><div><span>ATÖLYE İŞİ ${esc(job.id)}</span><h2>${esc(job.partName)}</h2><p>${esc(job.factory)} · ${esc(job.department)} · ${esc(job.machine)}</p></div><button id="closeWorkshopDetail">×</button></div>
+    <div class="workshop-detail-hero"><div><small>PARÇA KODU</small><b>${esc(job.partCode||"-")}</b></div><div><small>PARÇA TİPİ</small><b>${esc(job.partType)}</b></div><div><small>ADET</small><b>${job.quantity}</b></div><div><small>DURUM</small><b class="workshop-status ${workshopStatusClass(job.status)}">${esc(job.status)}</b></div></div>
+    <div class="workshop-detail-grid"><section><span>TALEP VE KULLANIM</span><p><b>Talep başlığı:</b> ${esc(job.title)}</p><p><b>Kullanılacağı makine:</b> ${esc(job.machine)}</p><p><b>Konum:</b> ${esc(job.factory)} · ${esc(job.line)} · ${esc(job.department)}</p><p><b>Talep açan:</b> ${esc(job.requestedBy)} · ${fmtDate(job.requestedAt)}</p></section><section><span>TEKNİK BİLGİ</span><p><b>Hammadde:</b> ${esc(job.materialSpec||"-")}</p><p><b>Açıklama / Ölçüler:</b> ${esc(job.description)}</p>${drawing}</section></div>
+    ${canManageWorkshopJobs()?`<form id="workshopManageForm" class="workshop-manage-form" data-workshop-id="${esc(job.id)}"><div class="field"><label>Durum</label><select id="workshopStatus">${WORKSHOP_STATUSES.map(status=>`<option ${status===job.status?"selected":""}>${status}</option>`).join("")}</select></div><div class="field"><label>Tahmini Süre (saat)</label><input id="workshopEstimate" type="number" min=".5" step=".5" value="${job.estimatedHours||""}" required></div><div class="field wide"><label>Atölye Çalışma Notu</label><textarea id="workshopNotes" rows="4">${esc(job.workNotes||"")}</textarea></div><button class="primary wide" type="submit">Atölye Bilgilerini Kaydet</button></form>`:""}
+    <section class="workshop-material-link"><div><span>MALZEME KATALOĞU BAĞLANTISI</span><b>${linked?`${esc(linked.code)} · ${esc(linked.name)}`:"Henüz malzeme kartıyla ilişkilendirilmedi"}</b><p>Tamamlanan parçayı stok ve kullanım takibine dahil edin.</p></div>${canManageWorkshopJobs()&&job.status==="Tamamlandı"&&!linked?`<button type="button" class="primary" data-workshop-create-material="${esc(job.id)}">Malzeme Kartı Oluştur</button>`:""}</section>
+  </div></div>`;
+}
+function readWorkshopDrawing(file){
+  return new Promise((resolve,reject)=>{
+    if(!file)return resolve({name:"",data:""});
+    if(file.size>1.5*1024*1024)return reject(new Error("Teknik resim dosyası 1,5 MB sınırını aşıyor."));
+    const reader=new FileReader();
+    reader.onload=()=>resolve({name:file.name,data:String(reader.result||"")});
+    reader.onerror=()=>reject(new Error("Teknik resim okunamadı."));
+    reader.readAsDataURL(file);
+  });
+}
+function nextWorkshopId(){
+  const values=(s.workshopJobs||[]).map(job=>Number(String(job.id).replace(/\D/g,""))||0);
+  return `AT-${Math.max(1000,...values)+1}`;
+}
+function bindWorkshopPage(){
+  document.querySelectorAll("[data-workshop-tab]").forEach(button=>button.onclick=()=>{s.workshopTab=button.dataset.workshopTab==="archive"?"archive":"active";s.workshopDetailId=null;render()});
+  const search=document.getElementById("workshopSearch");
+  if(search)search.oninput=()=>{const pos=search.selectionStart;s.workshopSearch=search.value;render();const next=document.getElementById("workshopSearch");if(next){next.focus();next.setSelectionRange(pos,pos)}};
+  document.querySelectorAll("[data-workshop-sort]").forEach(button=>button.onclick=()=>{const key=button.dataset.workshopSort;if(s.workshopSortKey===key)s.workshopSortDir=s.workshopSortDir==="asc"?"desc":"asc";else{s.workshopSortKey=key;s.workshopSortDir=["date","estimatedHours","quantity"].includes(key)?"desc":"asc"}render()});
+  document.querySelectorAll(".workshop-detail-row").forEach(row=>{const open=()=>{s.workshopDetailId=row.dataset.workshopDetail;render()};row.onclick=open;row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}}});
+  const close=()=>{s.workshopDetailId=null;render()};
+  const closeButton=document.getElementById("closeWorkshopDetail");if(closeButton)closeButton.onclick=close;
+  const backdrop=document.getElementById("workshopDetailBackdrop");if(backdrop)backdrop.onclick=e=>{if(e.target===backdrop)close()};
+  const factory=document.getElementById("workshopFactory"),line=document.getElementById("workshopLine"),department=document.getElementById("workshopDepartment"),machine=document.getElementById("workshopMachine");
+  const refreshMachines=()=>{if(machine)machine.innerHTML=catalogMachines(factory.value,line.value,department.value).map(item=>`<option>${esc(item)}</option>`).join("")};
+  const refreshDepartments=()=>{const values=roleIsDepartmentLimited()&&s.user?.department?[s.user.department]:catalogDepartments(factory.value,line.value);department.innerHTML=values.map(item=>`<option>${esc(item)}</option>`).join("");refreshMachines()};
+  if(factory)factory.onchange=()=>{line.innerHTML=(FACTORIES[factory.value]||[]).map(item=>`<option>${esc(item)}</option>`).join("");refreshDepartments()};
+  if(line)line.onchange=refreshDepartments;if(department)department.onchange=refreshMachines;
+  const create=document.getElementById("workshopCreateForm");
+  if(create)create.onsubmit=async e=>{
+    e.preventDefault();if(!canCreateWorkshopRequest()&&!canCreateWorkshopDirect())return;
+    try{
+      const drawing=await readWorkshopDrawing(document.getElementById("workshopDrawing")?.files?.[0]);
+      const values={factory:factory.value,line:line.value,department:department.value,machine:machine.value};
+      if(!userCanSeeFactory(values.factory)||!catalogMachines(values.factory,values.line,values.department).includes(values.machine)){alert("Geçersiz fabrika, bölüm veya makine seçimi.");return}
+      if(roleIsDepartmentLimited()&&values.department!==s.user.department){alert("Yalnızca kendi bölümünüz için talep açabilirsiniz.");return}
+      const partName=document.getElementById("workshopPartName").value.trim();
+      const id=nextWorkshopId();
+      const direct=canCreateWorkshopDirect()&&!canCreateWorkshopRequest();
+      const directStatus=direct?document.getElementById("workshopDirectStatus").value:"Talep Açıldı";
+      const now=new Date().toISOString();
+      const directHours=direct?Number(document.getElementById("workshopDirectHours").value):null;
+      const directNotes=direct?document.getElementById("workshopDirectNotes").value.trim():"";
+      s.workshopJobs.push({...values,id,title:document.getElementById("workshopTitle").value.trim(),partName,partCode:document.getElementById("workshopPartCode").value.trim().toLocaleUpperCase("tr-TR")||`ATM-${id.replace(/\D/g,"")}`,partType:document.getElementById("workshopPartType").value,quantity:Number(document.getElementById("workshopQuantity").value),materialSpec:document.getElementById("workshopMaterialSpec").value.trim(),priority:document.getElementById("workshopPriority").value,description:document.getElementById("workshopDescription").value.trim(),technicalDrawingName:drawing.name,technicalDrawingData:drawing.data,status:directStatus,requestedBy:s.user?.name||"",requestedAt:now,approvedBy:direct?s.user.name:"",approvedAt:direct?now:null,startedAt:direct?now:null,completedAt:direct&&directStatus==="Tamamlandı"?now:null,completedBy:direct&&directStatus==="Tamamlandı"?s.user.name:"",estimatedHours:directHours,workNotes:directNotes,linkedMaterialId:""});
+      saveWorkshopJobs();s.workshopCreateOpen=false;render();
+    }catch(error){alert(error.message)}
+  };
+  const manage=document.getElementById("workshopManageForm");
+  if(manage)manage.onsubmit=e=>{
+    e.preventDefault();if(!canManageWorkshopJobs())return;
+    const job=s.workshopJobs.find(item=>String(item.id)===String(manage.dataset.workshopId));if(!job)return;
+    const previous=job.status;job.status=document.getElementById("workshopStatus").value;job.estimatedHours=Number(document.getElementById("workshopEstimate").value);job.workNotes=document.getElementById("workshopNotes").value.trim();job.updatedBy=s.user.name;job.updatedAt=new Date().toISOString();
+    if(["Onaylandı","Üretimde","Kontrol Bekliyor","Tamamlandı"].includes(job.status)&&!job.approvedAt){job.approvedAt=new Date().toISOString();job.approvedBy=s.user.name}
+    if(job.status==="Üretimde"&&!job.startedAt)job.startedAt=new Date().toISOString();
+    if(job.status==="Tamamlandı"&&previous!=="Tamamlandı"){job.completedAt=new Date().toISOString();job.completedBy=s.user.name}
+    saveWorkshopJobs();render();
+  };
+  document.querySelectorAll("[data-workshop-create-material]").forEach(button=>button.onclick=()=>{
+    if(!canManageWorkshopJobs())return;
+    const job=s.workshopJobs.find(item=>String(item.id)===String(button.dataset.workshopCreateMaterial));if(!job||job.linkedMaterialId)return;
+    const duplicate=MATERIALS.find(item=>String(item.code).toLocaleUpperCase("tr-TR")===String(job.partCode).toLocaleUpperCase("tr-TR"));
+    if(duplicate)job.linkedMaterialId=duplicate.id;
+    else{
+      const material={id:`MAT-AT-${Date.now()}`,code:job.partCode,name:job.partName,category:"Mekanik",unit:"Adet",stock:Number(job.quantity)||1,minStock:0,warehouseLocation:"Mekanik Atölye · Teslim Bekliyor",description:`${job.machine} için atölyede üretildi. Atölye işi: ${job.id}`,custom:true,workshopJobId:job.id,createdBy:s.user.name,createdAt:new Date().toISOString()};
+      MATERIALS.push(material);saveMaterials();job.linkedMaterialId=material.id;
+    }
+    saveWorkshopJobs();render();
+  });
+}
+function workshopPartsForMachine(factory,line,department,machine){
+  return (s.workshopJobs||[]).filter(job=>job.factory===factory&&job.line===line&&job.department===department&&job.machine===machine&&job.status==="Tamamlandı").sort((a,b)=>new Date(b.completedAt||b.requestedAt)-new Date(a.completedAt||a.requestedAt));
 }
 
 </script>
@@ -5917,8 +6157,8 @@ function faultDetailModal(){
   const solutionText=String(f.solutionText||"");
   const hasSolution=solutionText.trim().length>0;
   const solutionMeta=f.solutionBy||f.solutionAt?`<div class="fault-solution-meta"><span>Yazan: <b>${esc(f.solutionBy||"Bilinmiyor")}</b></span><span>${f.solutionAt?fmtDate(f.solutionAt):""}</span></div>`:"";
-  const solutionStateText=isDone?(hasSolution?"Tamamlandı":"Arıza açıklaması yazılmadı"):(hasSolution?"Çözüm kaydedildi":"Çözüm bekleniyor");
-  const solutionSection=`<section class="fault-detail-card wide fault-solution-card ${isDone?"completed":""} ${isDone&&!hasSolution?"missing-solution":""}"><div class="fault-solution-head"><div><span>ÇÖZÜM VE YAPILAN İŞLEM</span><p>Arıza tamamlandığında yapılan işlemi yazabilirsiniz. Çözüm yazısı zorunlu değildir.</p></div><strong>${solutionStateText}</strong></div>${canEditSolution?`<textarea id="faultSolutionText" maxlength="1500" placeholder="Yapılan işlem ve sonucu yazın.">${esc(solutionText)}</textarea><div class="fault-solution-actions"><small><span id="faultSolutionCount">${solutionText.length}</span>/1500 karakter</small><button type="button" class="secondary" id="faultSolutionSave">Çözüm Yazısını Kaydet</button></div>${isDone&&!hasSolution?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':""}${solutionMeta}`:`${solutionText?`<p class="fault-solution-text">${esc(solutionText)}</p>${solutionMeta}`:(isDone?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':'<div class="compact-empty"><span>✎</span><p>Henüz çözüm yazısı girilmedi.</p></div>')}`}</section>`;
+  const solutionStateText=isDone?(hasSolution?"Tamamlandı":"Arıza çözümü yazılmadı"):(hasSolution?"Çözüm kaydedildi":"Çözüm bekleniyor");
+  const solutionSection=`<section class="fault-detail-card wide fault-solution-card ${isDone?"completed":""} ${isDone&&!hasSolution?"missing-solution":""}"><div class="fault-solution-head"><div><span>ÇÖZÜM VE YAPILAN İŞLEM</span><p>Arıza tamamlandığında yapılan işlemi yazabilirsiniz. Çözüm yazısı zorunlu değildir.</p></div><strong>${solutionStateText}</strong></div>${canEditSolution?`<textarea id="faultSolutionText" maxlength="1500" placeholder="Yapılan işlem ve sonucu yazın.">${esc(solutionText)}</textarea><div class="fault-solution-actions"><small><span id="faultSolutionCount">${solutionText.length}</span>/1500 karakter</small><button type="button" class="secondary" id="faultSolutionSave">Çözüm Yazısını Kaydet</button></div>${isDone&&!hasSolution?'<div class="solution-missing-message">Tamamlandı · Arıza çözümü yazılmadı.</div>':""}${solutionMeta}`:`${solutionText?`<p class="fault-solution-text">${esc(solutionText)}</p>${solutionMeta}`:(isDone?'<div class="solution-missing-message">Tamamlandı · Arıza çözümü yazılmadı.</div>':'<div class="compact-empty"><span>✎</span><p>Henüz çözüm yazısı girilmedi.</p></div>')}`}</section>`;
   const usedMaterials=faultUsedMaterials(f);
   const canEditMaterials=canManageFaultMaterials();
   const materialOptions=MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.code)} · ${esc(m.name)}"></option>`).join("");
@@ -5967,12 +6207,16 @@ function machineModal(){
     <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Arıza Tipi Dağılımı</h3><p>Makinenin arıza türleri</p></div>${chartRangeControlsFor("machineType")}</div>${barChartSVG(typeData.length?typeData:[{label:"Yok",value:0}],"")}</article>
     <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Duruş Nedenleri</h3><p>Üretimi durduran arıza konuları</p></div>${chartRangeControlsFor("machineDowntime")}</div>${barChartSVG(machineDowntime.length?machineDowntime:[{label:"Yok",value:0}],"")}</article>
   </div>`;
+  else if(s.machineTab==="workshop"){
+    const parts=workshopPartsForMachine(factory,line,department,machine);
+    body=`<section class="machine-workshop-parts"><div class="section-modern-head"><div><h3>Atölyede Üretilen Parçalar</h3><p>${esc(machine)} için tamamlanan mekanik atölye işleri</p></div><span class="list-count blue">${parts.length}</span></div><div class="machine-workshop-list">${parts.map(job=>`<article><div><small>${esc(job.partCode||job.id)} · ${esc(job.partType)}</small><b>${esc(job.partName)}</b><span>${job.quantity} adet · ${esc(job.materialSpec||"Malzeme belirtilmedi")}</span></div><div><small>Tamamlanma</small><b>${job.completedAt?fmtDate(job.completedAt):"-"}</b><span>${job.linkedMaterialId?"Malzeme kataloğuna bağlı":"Katalog bağlantısı yok"}</span></div></article>`).join("")||'<div class="compact-empty"><p>Bu makine için tamamlanmış atölye parçası bulunmuyor.</p></div>'}</div></section>`;
+  }
   else if(s.machineTab==="documents")body=`<div class="empty-panel"><h3>Makine Dokümanları</h3><p>Bu alana elektrik şeması, mekanik çizim, kullanım kılavuzu ve PLC yedekleri eklenecek.</p><button class="secondary">+ Doküman Ekle</button></div>`;
   else body=`<div class="machine-kpis"><div class="metric"><span>Toplam Arıza</span><b>${total}</b></div><div class="metric"><span>Aktif Arıza</span><b>${active}</b></div><div class="metric"><span>Toplam Duruş</span><b>${totalMin} dk</b></div><div class="metric"><span>MTTR</span><b>${mttr} dk</b></div><div class="metric"><span>MTBF</span><b>${mtbf} sa</b></div><div class="metric wide"><span>En Sık Arıza</span><b>${esc(topSubject)}</b></div></div><div class="machine-info-grid"><div class="info-card"><h4>Makine Bilgileri</h4><p><b>Fabrika:</b> ${esc(factory)}</p><p><b>Hat:</b> ${esc(line)}</p><p><b>Bölüm:</b> ${esc(department||"-")}</p><p><b>Makine:</b> ${esc(machine)}</p><p><b>Son Kaydı Açan:</b> ${esc(hist[0]?.openedBy||"-")}</p><p><b>Durum:</b> ${machineState(factory,line,machine).text}</p></div><div class="info-card"><h4>Son Kayıt</h4>${hist[0]?`<p><b>${esc(hist[0].subject)}</b></p><p>${fmtDate(hist[0].createdAt)}</p><p>${durationText(hist[0])}</p>`:"<p>Kayıt yok.</p>"}</div></div>`;
 
   return `<div class="modal-backdrop" id="modalCloseBg"><div class="modal machine-modal">
-    <div class="modal-head"><div><h2>${esc(machine)}</h2><p>${esc(factory)} · ${esc(line)} · ${esc(department||"-")}</p></div><div class="modal-head-actions"><button type="button" class="machine-qr-button" data-qr-machine="${esc(machine)}" data-qr-factory="${esc(factory)}" data-qr-line="${esc(line)}">QR</button>${canManageMachines()?`<button type="button" class="danger machine-detail-delete" data-delete-machine="${esc(machine)}" data-delete-factory="${esc(factory)}" data-delete-line="${esc(line)}" data-delete-department="${esc(department)}">Makineyi Sil</button>`:""}<button id="modalClose">×</button></div></div>
-    <div class="tabs"><button data-tab="overview" class="${s.machineTab==="overview"?"active":""}">Genel Bakış</button><button data-tab="history" class="${s.machineTab==="history"?"active":""}">Arıza Geçmişi</button><button data-tab="maintenance" class="${s.machineTab==="maintenance"?"active":""}">Planlı Bakım Geçmişi</button>${roleHasCharts()?`<button data-tab="charts" class="${s.machineTab==="charts"?"active":""}">Grafikler</button>`:""}<button data-tab="documents" class="${s.machineTab==="documents"?"active":""}">Dokümanlar</button></div>
+    <div class="modal-head"><div><h2>${esc(machine)}</h2><p>${esc(factory)} · ${esc(line)} · ${esc(department||"-")}</p></div><div class="modal-head-actions"><button type="button" class="machine-qr-button" data-qr-machine="${esc(machine)}" data-qr-factory="${esc(factory)}" data-qr-line="${esc(line)}">QR</button><button id="modalClose">×</button></div></div>
+    <div class="tabs"><button data-tab="overview" class="${s.machineTab==="overview"?"active":""}">Genel Bakış</button><button data-tab="history" class="${s.machineTab==="history"?"active":""}">Arıza Geçmişi</button><button data-tab="maintenance" class="${s.machineTab==="maintenance"?"active":""}">Planlı Bakım Geçmişi</button><button data-tab="workshop" class="${s.machineTab==="workshop"?"active":""}">Atölye Parçaları</button>${roleHasCharts()?`<button data-tab="charts" class="${s.machineTab==="charts"?"active":""}">Grafikler</button>`:""}<button data-tab="documents" class="${s.machineTab==="documents"?"active":""}">Dokümanlar</button></div>
     ${body}
   </div></div>`;
 }
@@ -6062,6 +6306,13 @@ let s={
   faults:storageJsonRecordArray(localStorage,K,generateHistory()),
   plannedMaintenances:storageJsonRecordArray(localStorage,PM_KEY,generatePlannedMaintenances()),
   workItems:storageJsonRecordArray(localStorage,WORK_KEY,generateWorkItems()),
+  workshopJobs:loadWorkshopJobs(),
+  workshopTab:"active",
+  workshopSearch:"",
+  workshopSortKey:"date",
+  workshopSortDir:"desc",
+  workshopDetailId:null,
+  workshopCreateOpen:false,
   workDetailId:null,
   maintenanceLogs:storageJsonRecordArray(localStorage,MAINTENANCE_LOG_KEY,[]),
   maintenanceLogModal:false,
@@ -6101,6 +6352,8 @@ let s={
   layoutLine:"1. Hat",
   layoutDepartment:"",
   shiftWeekOffset:0,
+  shiftViewMode:"weekly",
+  shiftMonthDate:new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString(),
   shiftFactory:"1. Fabrika",
   shiftLine:"",
   shiftDepartment:"",
@@ -6248,15 +6501,15 @@ function faultSortHeader(label,key,sortable){
 function table(items,editable=false,options={}){
   const sortable=!!options.sortable;
   if(!items.length)return `<div class="card empty-panel"><h3>Kayıt bulunamadı</h3><p>Seçilen kriterlere uygun arıza kaydı yok.</p></div>`;
-  return `<div class="card table-wrap"><table>
+  return `<div class="card table-wrap fault-record-table-wrap"><table class="fault-record-table"><colgroup><col class="fault-col-date"><col class="fault-col-factory"><col class="fault-col-machine"><col class="fault-col-subject"><col class="fault-col-opener"><col class="fault-col-assignee"><col class="fault-col-status"><col class="fault-col-duration">${editable?'<col class="fault-col-action">':""}</colgroup>
     <thead><tr>
       <th>${faultSortHeader("Tarih","createdAt",sortable)}</th>
       <th>Fabrika / Hat</th>
       <th>${faultSortHeader("Bölüm / Makine","department",sortable)}</th>
       <th>Arıza</th>
       <th>${faultSortHeader("Kaydı Açan","openedBy",sortable)}</th>
-      <th>${faultSortHeader("Sorumlu Bakımcı","assignedTo",sortable)}</th>
-      <th>Durum</th>
+      <th class="fault-assignee-column">${faultSortHeader("Sorumlu Bakımcı","assignedTo",sortable)}</th>
+      <th class="fault-status-column">Durum</th>
       <th>${faultSortHeader("Süre","duration",sortable)}</th>
       ${editable?"<th>İşlem</th>":""}
     </tr></thead>
@@ -6266,10 +6519,10 @@ function table(items,editable=false,options={}){
       <td data-label="Bölüm / Makine"><b>${esc(f.department)}</b><br><small>${esc(f.machine)}</small></td>
       <td data-label="Arıza"><b>${esc(f.subject)}</b>${f.description?`<br><small>${esc(f.description)}</small>`:""}${f.stopped?'<br><span class="stop-tag">Üretim durdu</span>':""}</td>
       <td data-label="Kaydı Açan"><span class="person-cell"><i>${esc((f.openedBy||"?").charAt(0))}</i><b>${esc(f.openedBy||"Bilinmiyor")}</b></span></td>
-      <td data-label="Sorumlu Bakımcı">${canRedirectFault(f)
+      <td class="fault-assignee-column" data-label="Sorumlu Bakımcı">${canRedirectFault(f)
         ?`<select class="sel personnel-sel" data-personnel-id="${esc(f.id)}">${personnelSelectOptions(f)}</select>`
         :`<span class="assigned-person">${esc(f.assignedTo||"Otomatik atanıyor")}</span>`}</td>
-      <td data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza açıklaması yazılmadı</span>':""}</td>
+      <td class="fault-status-column" data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza çözümü yazılmadı</span>':""}</td>
       <td data-label="Süre"><span class="duration" data-id="${esc(f.id)}">${durationText(f)}</span></td>
       ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${esc(f.id)}">
         <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
@@ -6440,6 +6693,7 @@ function canAccess(page){
   if(page==="personnel")return !!(p.personnel||p.viewPerformance||p.manageOwnTeam||p.manageAllPersonnel);
   if(page==="materials")return !!p.materials;
   if(page==="work")return !!p.workRequests;
+  if(page==="workshop")return !!p.workshop;
   if(page==="dailyChecks")return !!p.dailyChecks;
   return false;
 }
@@ -6728,6 +6982,7 @@ function page(){
   if(s.page==="materials")return materialsManagementPage();
   if(s.page==="dailyChecks")return dailyChecksPage();
   if(s.page==="work")return workManagementPage();
+  if(s.page==="workshop")return workshopPage();
   if(s.page==="report")return reportPage();
   return dashboard();
 }
@@ -6743,6 +6998,7 @@ function allowedNavItems(){
     ["materials","□","Malzeme Yönetimi"],
     ["dailyChecks","✓","Günlük Kontroller"],
     ["work","◇","Talepler ve İş Emirleri"],
+    ["workshop","⚙","Mekanik Atölye"],
     ["layout","⌘","Fabrika Şeması"]
   ];
   return items.filter(([page])=>canAccess(page));
@@ -6921,6 +7177,27 @@ function buildTeamWeekSchedule(factory,team,weekOffset=0){
   }
   return rows;
 }
+function buildTeamMonthSchedule(factory,team,monthDate){
+  const selected=new Date(monthDate);
+  const first=new Date(selected.getFullYear(),selected.getMonth(),1);
+  const dayCount=new Date(selected.getFullYear(),selected.getMonth()+1,0).getDate();
+  const dates=Array.from({length:dayCount},(_,index)=>new Date(selected.getFullYear(),selected.getMonth(),index+1));
+  const rows=personnelForFactory(factory,team).map(person=>({...person,days:[]}));
+  const weekCache=new Map();
+  dates.forEach(date=>{
+    const offset=weekOffsetForDate(date);
+    if(!weekCache.has(offset))weekCache.set(offset,buildTeamWeekSchedule(factory,team,offset));
+    const dayIndex=(date.getDay()+6)%7;
+    rows.forEach(row=>{
+      const weekly=weekCache.get(offset).find(person=>person.id===row.id);
+      row.days.push({date,shift:weekly?.days[dayIndex]?.shift||"",weekOffset:offset,dayIndex});
+    });
+  });
+  return {dates,rows};
+}
+function shiftMonthText(monthDate){
+  return new Date(monthDate).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});
+}
 function activeTeamMembers(factory,team,date=new Date()){
   const dayIndex=(date.getDay()+6)%7;
   const shift=currentShiftLabel(date);
@@ -6954,6 +7231,9 @@ function shiftSchedulePage(){
 
   const rows=buildTeamWeekSchedule(s.shiftFactory,s.shiftTeam,s.shiftWeekOffset)
     .filter(r=>!s.shiftSearch||r.name.toLocaleLowerCase("tr-TR").includes(s.shiftSearch.toLocaleLowerCase("tr-TR")));
+  const monthly=s.shiftViewMode==="monthly";
+  const monthSchedule=buildTeamMonthSchedule(s.shiftFactory,s.shiftTeam,s.shiftMonthDate);
+  const monthRows=monthSchedule.rows.filter(r=>!s.shiftSearch||r.name.toLocaleLowerCase("tr-TR").includes(s.shiftSearch.toLocaleLowerCase("tr-TR")));
 
   const monday=weekMonday(s.shiftWeekOffset);
   const dates=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(d.getDate()+i);return d});
@@ -6964,22 +7244,34 @@ function shiftSchedulePage(){
     return counts;
   });
   const minimumCoverage=Math.min(...coverage.flatMap(c=>SHIFT_LABELS.map(sh=>c[sh])));
+  const shiftTable=monthly?`<section class="shift-table-wrap monthly-shift-wrap">
+    <table class="shift-table monthly-shift-table">
+      <thead><tr><th>Personel</th>${monthSchedule.dates.map(date=>`<th class="${dateKeyLocal(date)===dateKeyLocal(new Date())?"today":""}"><span>${date.getDate()}</span><small>${SHIFT_DAY_NAMES[(date.getDay()+6)%7]}</small></th>`).join("")}</tr></thead>
+      <tbody>${monthRows.map(row=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(row.id)}"><i>${esc(row.name.charAt(0))}</i><span><b>${esc(row.name)}</b><small>ID: ${esc(row.id)}</small></span></button></td>${row.days.map(day=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select monthly ${shiftClass(day.shift)} ${dateKeyLocal(day.date)===dateKeyLocal(new Date())?"today":""}" data-shift-person-id="${esc(row.id)}" data-shift-day="${day.dayIndex}" data-shift-week-offset="${day.weekOffset}">${SHIFT_LABELS.map(label=>`<option value="${label}" ${day.shift===label?"selected":""}>${label}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(day.shift)}">${esc(day.shift)}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="${monthSchedule.dates.length+1}"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
+    </table>
+  </section>`:`<section class="shift-table-wrap">
+    <table class="shift-table">
+      <thead><tr><th>Personel</th>${dates.map((d,i)=>`<th><span>${SHIFT_DAY_NAMES[i]}</span><small>${d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</small></th>`).join("")}</tr></thead>
+      <tbody>${rows.map(r=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(r.id)}"><i>${esc(r.name.charAt(0))}</i><span><b>${esc(r.name)}</b><small>ID: ${esc(r.id)}</small></span></button></td>${r.days.map((d,i)=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}" data-shift-person-id="${esc(r.id)}" data-shift-day="${i}" data-shift-week-offset="${s.shiftWeekOffset}">${SHIFT_LABELS.map(sh=>`<option value="${sh}" ${d.shift===sh?"selected":""}>${sh}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(d.shift)}">${esc(d.shift)}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="8"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
+    </table>
+  </section>`;
 
   return `${clockBlock()}
   <section class="desktop-page-title shift-page-title">
     <div>
-      <span>HAFTALIK BAKIM ORGANİZASYONU</span>
+      <span>${monthly?"AYLIK":"HAFTALIK"} BAKIM ORGANİZASYONU</span>
       <h1>${esc(s.shiftFactory)} ${esc(s.shiftTeam)} Vardiya Çizelgesi</h1>
       <p>Bu çizelgede yalnızca seçilen fabrikanın ${esc(s.shiftTeam.toLocaleLowerCase("tr-TR"))} personelleri yer alır.${s.shiftFactory==="2. Fabrika"?" A ve B Blok ortak bakım ekibi olarak değerlendirilir.":""} ${canManageShiftTeam(s.shiftTeam)?"Vardiya hücrelerini değiştirebilirsiniz.":"Çizelge salt okunur görüntüleniyor."}</p>
     </div>
     <div class="week-nav">
       <button id="prevShiftWeek">‹</button>
-      <div><small>SEÇİLİ HAFTA</small><b>${weekRangeText(s.shiftWeekOffset)}</b></div>
+      <div><small>SEÇİLİ ${monthly?"AY":"HAFTA"}</small><b>${monthly?shiftMonthText(s.shiftMonthDate):weekRangeText(s.shiftWeekOffset)}</b></div>
       <button id="nextShiftWeek">›</button>
     </div>
   </section>
 
   <section class="shift-filter-card team-only">
+    <div class="shift-view-switch"><button type="button" data-shift-view="weekly" class="${!monthly?"active":""}">Haftalık</button><button type="button" data-shift-view="monthly" class="${monthly?"active":""}">Aylık</button></div>
     <label>Fabrika
       <select id="shiftFactory">${opts(factories,"Fabrika",s.shiftFactory)}</select>
     </label>
@@ -6995,38 +7287,14 @@ function shiftSchedulePage(){
   </section>
 
   <section class="shift-summary">
-    <div><small>TOPLAM PERSONEL</small><b>${rows.length}</b></div>
-    <div><small>ÇİZELGE TÜRÜ</small><b>${esc(s.shiftTeam)}</b></div>
-    <div><small>HER VARDİYADA EN AZ</small><b>${minimumCoverage} kişi</b></div>
+    <div><small>TOPLAM PERSONEL</small><b>${monthly?monthRows.length:rows.length}</b></div>
+    <div><small>ÇİZELGE GÖRÜNÜMÜ</small><b>${monthly?"Aylık":"Haftalık"}</b></div>
+    <div><small>${monthly?"GÖSTERİLEN GÜN":"HER VARDİYADA EN AZ"}</small><b>${monthly?monthSchedule.dates.length+" gün":minimumCoverage+" kişi"}</b></div>
   </section>
 
-  <section class="shift-table-wrap">
-    <table class="shift-table">
-      <thead>
-        <tr>
-          <th>Personel</th>
-          ${dates.map((d,i)=>`<th><span>${SHIFT_DAY_NAMES[i]}</span><small>${d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</small></th>`).join("")}
-        </tr>
-      </thead>
-      <tbody>
-        ${rows.map(r=>`<tr>
-          <td>
-            <button class="shift-person-button" data-shift-person="${esc(r.id)}">
-              <i>${esc(r.name.charAt(0))}</i>
-              <span><b>${esc(r.name)}</b><small>ID: ${esc(r.id)}</small></span>
-            </button>
-          </td>
-          ${r.days.map((d,i)=>`<td>${canManageShiftTeam(s.shiftTeam)
-            ?`<select class="shift-assignment-select ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}" data-shift-person-id="${esc(r.id)}" data-shift-day="${i}">
-                ${SHIFT_LABELS.map(sh=>`<option value="${sh}" ${d.shift===sh?"selected":""}>${sh}</option>`).join("")}
-              </select>`
-            :`<span class="shift-cell ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}">${esc(d.shift)}</span>`}</td>`).join("")}
-        </tr>`).join("")||`<tr><td colspan="8"><div class="compact-empty"><span>!</span><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}
-      </tbody>
-    </table>
-  </section>
+  ${shiftTable}
 
-  <section class="shift-coverage-panel">
+  ${monthly?"":`<section class="shift-coverage-panel">
     <div class="coverage-head"><div><span>VARDİYA DOLULUK KONTROLÜ</span><h3>Her vardiyada en az bir personel</h3></div><b class="${minimumCoverage>=1?"ok":"warn"}">${minimumCoverage>=1?"Uygun":"Eksik"}</b></div>
     <div class="coverage-grid">
       ${dates.map((d,dayIndex)=>`<div>
@@ -7034,7 +7302,7 @@ function shiftSchedulePage(){
         ${SHIFT_LABELS.map(sh=>`<span><i class="${shiftClass(sh)}"></i>${sh}<b>${coverage[dayIndex][sh]} kişi</b></span>`).join("")}
       </div>`).join("")}
     </div>
-  </section>
+  </section>`}
 
   <div class="shift-legend">
     <span><i class="night"></i>00-08</span>
@@ -9011,6 +9279,7 @@ function render(){
   updateClockAndDurations();
 }
 function bind(){
+  bindWorkshopPage();
   const appRoot=document.getElementById("app");
   if(appRoot)appRoot.addEventListener("click",event=>{
     const detailTarget=event.target.closest("[data-work-detail-id]");
@@ -9468,11 +9737,11 @@ function bind(){
     const photo=form.querySelector(".contractor-photo")?.files?.[0];
 
     if(!company||!reportNo||!result){
-      alert("Taşeron firma, rapor numarası ve kontrol sonucunu giriniz.");
+      alert("Kontrol firması veya sorumlu, rapor numarası ve kontrol sonucunu giriniz.");
       return;
     }
     if(!photo&&!existing?.photoStored){
-      alert("Taşeron kontrol fotoğrafı veya rapor fotoğrafı zorunludur.");
+      alert("Periyodik kontrol fotoğrafı veya rapor fotoğrafı zorunludur.");
       return;
     }
 
@@ -9496,7 +9765,7 @@ function bind(){
       render();
     }catch(error){
       console.error(error);
-      alert("Taşeron kontrol kaydı kaydedilemedi.");
+      alert("Periyodik kontrol kaydı kaydedilemedi.");
       if(submit){submit.disabled=false;submit.textContent=existing?"Kaydı Güncelle":"Aylık Kontrolü Kaydet"}
     }
   });
@@ -9912,17 +10181,18 @@ function bind(){
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{
     const item=findWorkItemById(btn.dataset.workId);if(!item)return;
     const action=btn.dataset.workRequestAction;
-    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","cancelled"].includes(action))return;
+    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","purchase","cancelled"].includes(action))return;
     const actor=s.user?.name||"Bilinmeyen Kullanıcı";
     const at=new Date().toISOString();
     if(action==="cancelled"&&permissions().createRequest&&item.createdBy===s.user?.name){item.status="cancelled";item.cancelledBy=actor;item.cancelledAt=at;saveWorkItems();render();return}
     if(!canManageWorkRequest(item))return;
-    if(action==="convert"){
+    if(action==="convert"||action==="purchase"){
       const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
       if(linked){item.status="converted";saveWorkItems();s.workTab="orders";render();return}
       const team=item.assignedTeam||workTeamForCategory(item.category);const people=workMaintenanceOptions(item.factory,team);const assignedTo=people[0]||"";
-      s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:assignedTo?"assigned":"open",createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,workDescription:"",completedAt:null,usedMaterials:[]});
-      item.status="converted";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
+      const procurementRequired=action==="purchase";
+      s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:procurementRequired?`SATIN ALINACAK\n\n${item.description}`:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:procurementRequired?"material":(assignedTo?"assigned":"open"),createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,procurementRequired,workDescription:procurementRequired?"SATIN ALINACAK — Satın alma tamamlandıktan sonra iş emri yürütülecek.":"",completedAt:null,usedMaterials:[]});
+      item.status="converted";item.conversionType=procurementRequired?"purchase":"workorder";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
     }else{
       item.status=action;
       if(action==="reviewing"){item.reviewedBy=actor;item.reviewedAt=at}
@@ -10194,8 +10464,8 @@ function bind(){
 
   const prevShiftWeek=document.getElementById("prevShiftWeek");
   const nextShiftWeek=document.getElementById("nextShiftWeek");
-  if(prevShiftWeek)prevShiftWeek.onclick=()=>{s.shiftWeekOffset--;render()};
-  if(nextShiftWeek)nextShiftWeek.onclick=()=>{s.shiftWeekOffset++;render()};
+  if(prevShiftWeek)prevShiftWeek.onclick=()=>{if(s.shiftViewMode==="monthly"){const d=new Date(s.shiftMonthDate);d.setMonth(d.getMonth()-1);s.shiftMonthDate=new Date(d.getFullYear(),d.getMonth(),1).toISOString()}else s.shiftWeekOffset--;render()};
+  if(nextShiftWeek)nextShiftWeek.onclick=()=>{if(s.shiftViewMode==="monthly"){const d=new Date(s.shiftMonthDate);d.setMonth(d.getMonth()+1);s.shiftMonthDate=new Date(d.getFullYear(),d.getMonth(),1).toISOString()}else s.shiftWeekOffset++;render()};
 
   const shiftFactory=document.getElementById("shiftFactory");
   const shiftTeam=document.getElementById("shiftTeam");
@@ -10354,6 +10624,7 @@ function bind(){
 
   if(shiftFactory)shiftFactory.onchange=()=>{s.shiftFactory=shiftFactory.value;render()};
   if(shiftTeam)shiftTeam.onchange=()=>{s.shiftTeam=shiftTeam.value;render()};
+  document.querySelectorAll("[data-shift-view]").forEach(button=>button.onclick=()=>{s.shiftViewMode=button.dataset.shiftView==="monthly"?"monthly":"weekly";render()});
   if(shiftSearch)shiftSearch.oninput=()=>{
     s.shiftSearch=shiftSearch.value;
     render();
@@ -10364,7 +10635,8 @@ function bind(){
     if(!canManageShiftTeam(s.shiftTeam)){render();return}
     const personId=el.dataset.shiftPersonId;
     const dayIndex=Number(el.dataset.shiftDay);
-    setShiftOverride(s.shiftFactory,s.shiftTeam,s.shiftWeekOffset,personId,dayIndex,el.value);
+    const weekOffset=Number.isFinite(Number(el.dataset.shiftWeekOffset))?Number(el.dataset.shiftWeekOffset):s.shiftWeekOffset;
+    setShiftOverride(s.shiftFactory,s.shiftTeam,weekOffset,personId,dayIndex,el.value);
     render();
   });
 

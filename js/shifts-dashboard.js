@@ -118,6 +118,27 @@ function buildTeamWeekSchedule(factory,team,weekOffset=0){
   }
   return rows;
 }
+function buildTeamMonthSchedule(factory,team,monthDate){
+  const selected=new Date(monthDate);
+  const first=new Date(selected.getFullYear(),selected.getMonth(),1);
+  const dayCount=new Date(selected.getFullYear(),selected.getMonth()+1,0).getDate();
+  const dates=Array.from({length:dayCount},(_,index)=>new Date(selected.getFullYear(),selected.getMonth(),index+1));
+  const rows=personnelForFactory(factory,team).map(person=>({...person,days:[]}));
+  const weekCache=new Map();
+  dates.forEach(date=>{
+    const offset=weekOffsetForDate(date);
+    if(!weekCache.has(offset))weekCache.set(offset,buildTeamWeekSchedule(factory,team,offset));
+    const dayIndex=(date.getDay()+6)%7;
+    rows.forEach(row=>{
+      const weekly=weekCache.get(offset).find(person=>person.id===row.id);
+      row.days.push({date,shift:weekly?.days[dayIndex]?.shift||"",weekOffset:offset,dayIndex});
+    });
+  });
+  return {dates,rows};
+}
+function shiftMonthText(monthDate){
+  return new Date(monthDate).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});
+}
 function activeTeamMembers(factory,team,date=new Date()){
   const dayIndex=(date.getDay()+6)%7;
   const shift=currentShiftLabel(date);
@@ -151,6 +172,9 @@ function shiftSchedulePage(){
 
   const rows=buildTeamWeekSchedule(s.shiftFactory,s.shiftTeam,s.shiftWeekOffset)
     .filter(r=>!s.shiftSearch||r.name.toLocaleLowerCase("tr-TR").includes(s.shiftSearch.toLocaleLowerCase("tr-TR")));
+  const monthly=s.shiftViewMode==="monthly";
+  const monthSchedule=buildTeamMonthSchedule(s.shiftFactory,s.shiftTeam,s.shiftMonthDate);
+  const monthRows=monthSchedule.rows.filter(r=>!s.shiftSearch||r.name.toLocaleLowerCase("tr-TR").includes(s.shiftSearch.toLocaleLowerCase("tr-TR")));
 
   const monday=weekMonday(s.shiftWeekOffset);
   const dates=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(d.getDate()+i);return d});
@@ -161,22 +185,34 @@ function shiftSchedulePage(){
     return counts;
   });
   const minimumCoverage=Math.min(...coverage.flatMap(c=>SHIFT_LABELS.map(sh=>c[sh])));
+  const shiftTable=monthly?`<section class="shift-table-wrap monthly-shift-wrap">
+    <table class="shift-table monthly-shift-table">
+      <thead><tr><th>Personel</th>${monthSchedule.dates.map(date=>`<th class="${dateKeyLocal(date)===dateKeyLocal(new Date())?"today":""}"><span>${date.getDate()}</span><small>${SHIFT_DAY_NAMES[(date.getDay()+6)%7]}</small></th>`).join("")}</tr></thead>
+      <tbody>${monthRows.map(row=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(row.id)}"><i>${esc(row.name.charAt(0))}</i><span><b>${esc(row.name)}</b><small>ID: ${esc(row.id)}</small></span></button></td>${row.days.map(day=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select monthly ${shiftClass(day.shift)} ${dateKeyLocal(day.date)===dateKeyLocal(new Date())?"today":""}" data-shift-person-id="${esc(row.id)}" data-shift-day="${day.dayIndex}" data-shift-week-offset="${day.weekOffset}">${SHIFT_LABELS.map(label=>`<option value="${label}" ${day.shift===label?"selected":""}>${label}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(day.shift)}">${esc(day.shift)}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="${monthSchedule.dates.length+1}"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
+    </table>
+  </section>`:`<section class="shift-table-wrap">
+    <table class="shift-table">
+      <thead><tr><th>Personel</th>${dates.map((d,i)=>`<th><span>${SHIFT_DAY_NAMES[i]}</span><small>${d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</small></th>`).join("")}</tr></thead>
+      <tbody>${rows.map(r=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(r.id)}"><i>${esc(r.name.charAt(0))}</i><span><b>${esc(r.name)}</b><small>ID: ${esc(r.id)}</small></span></button></td>${r.days.map((d,i)=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}" data-shift-person-id="${esc(r.id)}" data-shift-day="${i}" data-shift-week-offset="${s.shiftWeekOffset}">${SHIFT_LABELS.map(sh=>`<option value="${sh}" ${d.shift===sh?"selected":""}>${sh}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(d.shift)}">${esc(d.shift)}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="8"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
+    </table>
+  </section>`;
 
   return `${clockBlock()}
   <section class="desktop-page-title shift-page-title">
     <div>
-      <span>HAFTALIK BAKIM ORGANİZASYONU</span>
+      <span>${monthly?"AYLIK":"HAFTALIK"} BAKIM ORGANİZASYONU</span>
       <h1>${esc(s.shiftFactory)} ${esc(s.shiftTeam)} Vardiya Çizelgesi</h1>
       <p>Bu çizelgede yalnızca seçilen fabrikanın ${esc(s.shiftTeam.toLocaleLowerCase("tr-TR"))} personelleri yer alır.${s.shiftFactory==="2. Fabrika"?" A ve B Blok ortak bakım ekibi olarak değerlendirilir.":""} ${canManageShiftTeam(s.shiftTeam)?"Vardiya hücrelerini değiştirebilirsiniz.":"Çizelge salt okunur görüntüleniyor."}</p>
     </div>
     <div class="week-nav">
       <button id="prevShiftWeek">‹</button>
-      <div><small>SEÇİLİ HAFTA</small><b>${weekRangeText(s.shiftWeekOffset)}</b></div>
+      <div><small>SEÇİLİ ${monthly?"AY":"HAFTA"}</small><b>${monthly?shiftMonthText(s.shiftMonthDate):weekRangeText(s.shiftWeekOffset)}</b></div>
       <button id="nextShiftWeek">›</button>
     </div>
   </section>
 
   <section class="shift-filter-card team-only">
+    <div class="shift-view-switch"><button type="button" data-shift-view="weekly" class="${!monthly?"active":""}">Haftalık</button><button type="button" data-shift-view="monthly" class="${monthly?"active":""}">Aylık</button></div>
     <label>Fabrika
       <select id="shiftFactory">${opts(factories,"Fabrika",s.shiftFactory)}</select>
     </label>
@@ -192,38 +228,14 @@ function shiftSchedulePage(){
   </section>
 
   <section class="shift-summary">
-    <div><small>TOPLAM PERSONEL</small><b>${rows.length}</b></div>
-    <div><small>ÇİZELGE TÜRÜ</small><b>${esc(s.shiftTeam)}</b></div>
-    <div><small>HER VARDİYADA EN AZ</small><b>${minimumCoverage} kişi</b></div>
+    <div><small>TOPLAM PERSONEL</small><b>${monthly?monthRows.length:rows.length}</b></div>
+    <div><small>ÇİZELGE GÖRÜNÜMÜ</small><b>${monthly?"Aylık":"Haftalık"}</b></div>
+    <div><small>${monthly?"GÖSTERİLEN GÜN":"HER VARDİYADA EN AZ"}</small><b>${monthly?monthSchedule.dates.length+" gün":minimumCoverage+" kişi"}</b></div>
   </section>
 
-  <section class="shift-table-wrap">
-    <table class="shift-table">
-      <thead>
-        <tr>
-          <th>Personel</th>
-          ${dates.map((d,i)=>`<th><span>${SHIFT_DAY_NAMES[i]}</span><small>${d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</small></th>`).join("")}
-        </tr>
-      </thead>
-      <tbody>
-        ${rows.map(r=>`<tr>
-          <td>
-            <button class="shift-person-button" data-shift-person="${esc(r.id)}">
-              <i>${esc(r.name.charAt(0))}</i>
-              <span><b>${esc(r.name)}</b><small>ID: ${esc(r.id)}</small></span>
-            </button>
-          </td>
-          ${r.days.map((d,i)=>`<td>${canManageShiftTeam(s.shiftTeam)
-            ?`<select class="shift-assignment-select ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}" data-shift-person-id="${esc(r.id)}" data-shift-day="${i}">
-                ${SHIFT_LABELS.map(sh=>`<option value="${sh}" ${d.shift===sh?"selected":""}>${sh}</option>`).join("")}
-              </select>`
-            :`<span class="shift-cell ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}">${esc(d.shift)}</span>`}</td>`).join("")}
-        </tr>`).join("")||`<tr><td colspan="8"><div class="compact-empty"><span>!</span><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}
-      </tbody>
-    </table>
-  </section>
+  ${shiftTable}
 
-  <section class="shift-coverage-panel">
+  ${monthly?"":`<section class="shift-coverage-panel">
     <div class="coverage-head"><div><span>VARDİYA DOLULUK KONTROLÜ</span><h3>Her vardiyada en az bir personel</h3></div><b class="${minimumCoverage>=1?"ok":"warn"}">${minimumCoverage>=1?"Uygun":"Eksik"}</b></div>
     <div class="coverage-grid">
       ${dates.map((d,dayIndex)=>`<div>
@@ -231,7 +243,7 @@ function shiftSchedulePage(){
         ${SHIFT_LABELS.map(sh=>`<span><i class="${shiftClass(sh)}"></i>${sh}<b>${coverage[dayIndex][sh]} kişi</b></span>`).join("")}
       </div>`).join("")}
     </div>
-  </section>
+  </section>`}
 
   <div class="shift-legend">
     <span><i class="night"></i>00-08</span>

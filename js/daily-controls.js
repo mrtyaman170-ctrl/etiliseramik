@@ -11,10 +11,12 @@ function dailyAsset(id,factory,type,index,team){
     compensation:"Kompanzasyon Panosu",
     breakerRoom:"Kesici Odası",
     breakerPanel:"Kesici Panosu",
-    gas:"Gaz İstasyonu",
+    gas:"Gaz Sayacı",
+    gasStation:"Gaz İstasyonu",
+    fireSystem:"Yangın Sistemi",
     water:"Su Deposu"
   };
-  const contractorMonthly=["transformer","breakerRoom","breakerPanel"].includes(type);
+  const contractorMonthly=["transformer","breakerRoom","breakerPanel","gasStation","fireSystem"].includes(type);
   return {
     id,
     factory,
@@ -33,11 +35,15 @@ const DAILY_CONTROL_ASSETS=[
   ...Array.from({length:2},(_,i)=>dailyAsset(`F1-UPS-${i+1}`,"1. Fabrika","ups",i+1,"Elektrik Bakım")),
   ...Array.from({length:3},(_,i)=>dailyAsset(`F1-KOMPZ-${i+1}`,"1. Fabrika","compensation",i+1,"Elektrik Bakım")),
   ...Array.from({length:3},(_,i)=>dailyAsset(`F1-KES-${i+1}`,"1. Fabrika","breakerRoom",i+1,"Taşeron")),
+  dailyAsset("F1-GAZ-IST","1. Fabrika","gasStation",0,"Periyodik Kontrol"),
+  dailyAsset("F1-YANGIN","1. Fabrika","fireSystem",0,"Periyodik Kontrol"),
   dailyAsset("F1-GAZ-1","1. Fabrika","gas",1,"Mekanik Bakım"),
   dailyAsset("F1-SU-1","1. Fabrika","water",1,"Mekanik Bakım"),
 
   ...Array.from({length:5},(_,i)=>dailyAsset(`F2-TR-${i+1}`,"2. Fabrika","transformer",i+1,"Taşeron")),
   ...Array.from({length:5},(_,i)=>dailyAsset(`F2-KES-${i+1}`,"2. Fabrika","breakerPanel",i+1,"Taşeron")),
+  dailyAsset("F2-GAZ-IST","2. Fabrika","gasStation",0,"Periyodik Kontrol"),
+  dailyAsset("F2-YANGIN","2. Fabrika","fireSystem",0,"Periyodik Kontrol"),
   ...Array.from({length:2},(_,i)=>dailyAsset(`F2-KOMP-${i+1}`,"2. Fabrika","compressor",i+1,"Mekanik Bakım")),
   ...Array.from({length:2},(_,i)=>dailyAsset(`F2-JEN-${i+1}`,"2. Fabrika","generator",i+1,"Elektrik Bakım")),
   ...Array.from({length:4},(_,i)=>dailyAsset(`F2-UPS-${i+1}`,"2. Fabrika","ups",i+1,"Elektrik Bakım")),
@@ -219,7 +225,7 @@ function canCompleteUtilityAsset(asset,dateValue){
 function canRecordContractorCheck(asset){
   if(!asset?.contractorMonthly)return false;
   if(!dailyControlFactories().includes(asset.factory))return false;
-  return isDeveloper()||["Bakım Müdürü","Elektrik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
+  return isDeveloper()||["Bakım Müdürü","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(s.user?.role);
 }
 function dailyAssetTypeLabel(type){
   return ({
@@ -231,6 +237,8 @@ function dailyAssetTypeLabel(type){
     breakerRoom:"Kesici Odası",
     breakerPanel:"Kesici Panosu",
     gas:"Gaz İstasyonu",
+    gasStation:"Gaz İstasyonu",
+    fireSystem:"Yangın Sistemi",
     water:"Su Deposu",
     other:"Diğer Ekipman"
   })[type]||type;
@@ -753,15 +761,15 @@ function dailyChecksPage(){
     return `<article class="contractor-check-card ${done?"done":"pending"}" data-daily-detail-kind="contractor" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="contractor-check-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
-        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>Aylık periyodik kontrol · Taşeron firma</p></div>
+        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>Aylık periyodik tesis kontrolü</p></div>
         <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
       </div>
       <form class="contractor-check-form" data-asset-id="${esc(asset.id)}">
-        <div class="field"><label>Taşeron firma *</label><input class="contractor-company" value="${esc(record?.company||"")}" placeholder="Firma adı" ${canEdit?"":"disabled"} required></div>
+        <div class="field"><label>Kontrol firması / sorumlu *</label><input class="contractor-company" value="${esc(record?.company||"")}" placeholder="Firma veya sorumlu kişi" ${canEdit?"":"disabled"} required></div>
         <div class="field"><label>Rapor / form numarası *</label><input class="contractor-report-no" value="${esc(record?.reportNo||"")}" placeholder="Rapor no" ${canEdit?"":"disabled"} required></div>
         <div class="field"><label>Kontrol sonucu *</label><select class="contractor-result" ${canEdit?"":"disabled"}>${resultOptions(record)}</select></div>
         <div class="field"><label>Rapor / kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="contractor-photo" type="file" accept="image/*" capture="environment" ${canEdit&&!record?.photoStored?"required":""} ${canEdit?"":"disabled"}></div>
-        <div class="field contractor-note"><label>Taşeron kontrol açıklaması</label><input class="contractor-note-input" value="${esc(record?.note||"")}" placeholder="Yapılan kontroller ve tespitler" ${canEdit?"":"disabled"}></div>
+        <div class="field contractor-note"><label>Periyodik kontrol açıklaması</label><input class="contractor-note-input" value="${esc(record?.note||"")}" placeholder="Yapılan kontroller ve tespitler" ${canEdit?"":"disabled"}></div>
         <div class="contractor-actions">
           ${canEdit?`<button type="submit" class="primary">${done?"Kaydı Güncelle":"Aylık Kontrolü Kaydet"}</button>${done?`<button type="button" class="secondary undo-contractor-check" data-asset-id="${esc(asset.id)}">Kaydı Geri Al</button>`:""}`:""}
         </div>
@@ -871,7 +879,7 @@ function dailyChecksPage(){
     <div>
       <span>TESİS KONTROL VE SAYAÇ TAKİBİ</span>
       <h1>Günlük Kontroller</h1>
-      <p>Bakım ekibi günlük ekipman kontrollerini fotoğrafla tamamlar. Trafo ve kesiciler yalnızca aylık taşeron periyodik kontrolünde takip edilir.</p>
+      <p>Bakım ekibi günlük ekipman kontrollerini tamamlar; tesisin aylık kontrolleri Periyodik Kontroller bölümünde takip edilir.</p>
     </div>
     <div class="daily-control-toolbar">
       <select id="dailyControlFactory">${factories.map(item=>`<option ${item===factory?"selected":""}>${esc(item)}</option>`).join("")}</select>
@@ -883,7 +891,7 @@ function dailyChecksPage(){
 
   <div class="daily-control-tabs">
     <button type="button" class="${activeTab==="daily"?"active":""}" data-daily-control-tab="daily">Günlük Bakım Kontrolleri</button>
-    <button type="button" class="${activeTab==="contractor"?"active":""}" data-daily-control-tab="contractor">Aylık Taşeron Kontrolleri</button>
+    <button type="button" class="${activeTab==="contractor"?"active":""}" data-daily-control-tab="contractor">Periyodik Kontroller</button>
   </div>
 
   ${activeTab==="daily"&&canManageDailyControlCatalog()?`<details class="daily-control-management-panel">
@@ -964,19 +972,19 @@ function dailyChecksPage(){
     </details>
   `:`
     <section class="contractor-info-banner">
-      <div><span>⚠</span><div><b>Trafo ve kesiciler günlük bakım ekibi kontrolüne dahil değildir.</b><p>Bu ekipmanların kontrolleri ayda bir defa yetkili taşeron tarafından yapılır; rapor numarası, sonuç ve fotoğraf sisteme kaydedilir.</p></div></div>
+      <div><span>✓</span><div><b>Periyodik tesis kontrolleri tek ekranda takip edilir.</b><p>Trafolar, kesiciler, gaz istasyonu ve yangın sistemi için firma/sorumlu, rapor numarası, sonuç ve kontrol fotoğrafı kaydedilir.</p></div></div>
     </section>
 
     <section class="daily-control-kpis contractor-kpis">
-      <article><small>AYLIK EKİPMAN</small><b>${contractorStats.total}</b><span>trafo ve kesici</span></article>
-      <article><small>YAPILDI</small><b>${contractorStats.done}</b><span>taşeron kaydı</span></article>
+      <article><small>PERİYODİK EKİPMAN</small><b>${contractorStats.total}</b><span>tesis kontrol noktası</span></article>
+      <article><small>YAPILDI</small><b>${contractorStats.done}</b><span>kontrol kaydı</span></article>
       <article><small>YAPILMADI</small><b>${contractorStats.pending}</b><span>bekleyen periyodik kontrol</span></article>
       <article><small>TAMAMLANMA</small><b>%${contractorStats.percent}</b><span>${esc(s.contractorControlMonth)}</span></article>
     </section>
 
     <section class="daily-section-card">
       <div class="section-modern-head">
-        <div><h2>Aylık Taşeron Periyodik Kontrol Listesi</h2><p>Kontrol kaydını bakım müdürü, elektrik bakım formeni veya bakım formeni sisteme işler.</p></div>
+        <div><h2>Periyodik Kontrol Listesi</h2><p>Kontrol kayıtlarını bakım müdürü ile elektrik, mekanik ve genel bakım formenleri düzenleyebilir.</p></div>
       </div>
       <div class="contractor-check-list">${contractorAssets.map(contractorCard).join("")}</div>
     </section>
