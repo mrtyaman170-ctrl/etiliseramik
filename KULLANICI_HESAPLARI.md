@@ -1,6 +1,12 @@
 # ETİLİSMART Kullanıcı Hesapları
 
-Bu liste demo sürümündeki yerel kullanıcı hesaplarını gösterir. Veritabanı ve
+## Depo hesabı
+
+| Kullanıcı | Rol | ID | Şifre |
+| --- | --- | --- | --- |
+| Depo Sorumlusu | Depo Sorumlusu | 8001 | 8001 |
+
+Bu liste yerel kullanıcı hesaplarını gösterir. Veritabanı ve
 sunucu tarafı kimlik doğrulama eklenene kadar şifreler tarayıcı tarafında
 tutulur; gerçek kullanıma geçmeden önce güvenli kimlik doğrulama kurulmalıdır.
 

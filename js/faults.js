@@ -88,6 +88,44 @@ function newf(){
   <div class="field check"><label><input type="checkbox" id="stopped"> Üretim durdu mu?</label></div>
   </div><div class="actions"><button type="button" class="secondary" data-p="dashboard">İptal</button><button class="primary">Kaydı Oluştur</button></div></form></div>`;
 }
+function recentShiftWindows(reference=new Date()){
+  const hour=reference.getHours();
+  const startHour=hour<8?0:hour<16?8:16;
+  const currentStart=new Date(reference);
+  currentStart.setHours(startHour,0,0,0);
+  return Array.from({length:3},(_,index)=>{
+    const start=new Date(currentStart.getTime()-index*8*60*60*1000);
+    const end=new Date(start.getTime()+8*60*60*1000);
+    return {start,end,label:`${String(start.getHours()).padStart(2,"0")}:00–${String(end.getHours()).padStart(2,"0")}:00`,date:start.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric"})};
+  });
+}
+function lastThreeShiftReport(){
+  const windows=recentShiftWindows();
+  const allowedFactory=factory=>s.reportFactory==="Tümü"?userCanSeeFactory(factory):factory===s.reportFactory;
+  const inWindow=(date,window)=>{const value=new Date(date);return Number.isFinite(value.getTime())&&value>=window.start&&value<window.end};
+  const entries=windows.map(window=>{
+    const faults=visibleFaults().filter(item=>allowedFactory(item.factory)&&inWindow(item.closedAt||item.createdAt,window));
+    const logs=(s.maintenanceLogs||[]).filter(item=>allowedFactory(item.factory)&&inWindow(item.performedAt||item.createdAt,window));
+    const work=(s.workItems||[]).filter(item=>item.kind==="workorder"&&allowedFactory(item.factory)&&inWindow(item.completedAt||item.createdAt,window));
+    const planned=(s.plannedMaintenances||[]).filter(item=>allowedFactory(item.factory)&&item.status==="done"&&inWindow(item.updatedAt||`${item.date}T${item.time||"00:00"}`,window));
+    const rows=[
+      ...faults.map(item=>({type:"Arıza",title:item.subject,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assignedTo||"Atama bekliyor",status:item.status==="done"?"Tamamlandı":"Açık"})),
+      ...logs.map(item=>({type:item.workType||"Yapılan İş",title:item.title,location:`${item.factory} · ${item.location||"Konum belirtilmedi"}`,person:(item.participants||[]).join(", ")||item.createdBy,status:"Kaydedildi"})),
+      ...work.map(item=>({type:"İş Emri",title:item.title,location:`${item.factory} · ${item.department}`,person:item.completedBy||item.assignedTo||"-",status:workStatusLabel(item.status,"workorder")})),
+      ...planned.map(item=>({type:"Planlı Bakım",title:item.title,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assigned||item.updatedBy||"-",status:"Tamamlandı"}))
+    ];
+    return {...window,rows,counts:{faults:faults.length,logs:logs.length,work:work.length,planned:planned.length}};
+  });
+  const total=entries.reduce((sum,item)=>sum+item.rows.length,0);
+  return `<section class="shift-report-section">
+    <div class="section-modern-head"><div><span>SON 24 SAAT</span><h2>Son 3 Vardiya Faaliyet Raporu</h2><p>Arızalar, yapılan bakım çalışmaları, iş emirleri ve tamamlanan planlı bakımlar vardiya bazında bir arada.</p></div><b class="shift-report-total">${total} faaliyet</b></div>
+    <div class="shift-report-grid">${entries.map(entry=>`<article class="shift-report-card">
+      <header><div><small>${entry.date}</small><h3>${entry.label} Vardiyası</h3></div><b>${entry.rows.length}</b></header>
+      <div class="shift-report-counts"><span>${entry.counts.faults} arıza</span><span>${entry.counts.logs} yapılan iş</span><span>${entry.counts.work} iş emri</span><span>${entry.counts.planned} planlı bakım</span></div>
+      <div class="shift-report-list">${entry.rows.map(row=>`<div><span class="shift-report-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.location)}</small><em>${esc(row.person)} · ${esc(row.status)}</em></div>`).join("")||'<div class="shift-report-empty">Bu vardiyada kayıtlı faaliyet bulunmuyor.</div>'}</div>
+    </article>`).join("")}</div>
+  </section>`;
+}
 function reportPage(){
   let base=visibleFaults();
   if(s.reportFactory!=="Tümü")base=base.filter(x=>x.factory===s.reportFactory);
@@ -142,6 +180,7 @@ function reportPage(){
     <article><small>MTTR</small><b>${mttr} dk</b><span>ortalama onarım süresi</span></article>
     <article><small>TOPLAM DURUŞ</small><b>${Math.floor(totalDowntimeMinutes/60)} sa ${totalDowntimeMinutes%60} dk</b><span>${stoppedFaults.length} duruş kaydı</span></article>
   </section>
+  ${lastThreeShiftReport()}
   <section class="charts-dashboard-grid">
     <article class="analytics-chart-card wide">
       <div class="chart-panel-head"><div><h3>Arıza Trendi</h3><p>Zamana göre açılan arıza sayısı</p></div>${chartRangeControlsFor("trend")}</div>
@@ -322,9 +361,8 @@ function faultDetailModal(){
   const solutionSection=`<section class="fault-detail-card wide fault-solution-card ${isDone?"completed":""} ${isDone&&!hasSolution?"missing-solution":""}"><div class="fault-solution-head"><div><span>ÇÖZÜM VE YAPILAN İŞLEM</span><p>Arıza tamamlandığında yapılan işlemi yazabilirsiniz. Çözüm yazısı zorunlu değildir.</p></div><strong>${solutionStateText}</strong></div>${canEditSolution?`<textarea id="faultSolutionText" maxlength="1500" placeholder="Yapılan işlem ve sonucu yazın.">${esc(solutionText)}</textarea><div class="fault-solution-actions"><small><span id="faultSolutionCount">${solutionText.length}</span>/1500 karakter</small><button type="button" class="secondary" id="faultSolutionSave">Çözüm Yazısını Kaydet</button></div>${isDone&&!hasSolution?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':""}${solutionMeta}`:`${solutionText?`<p class="fault-solution-text">${esc(solutionText)}</p>${solutionMeta}`:(isDone?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':'<div class="compact-empty"><span>✎</span><p>Henüz çözüm yazısı girilmedi.</p></div>')}`}</section>`;
   const usedMaterials=faultUsedMaterials(f);
   const canEditMaterials=canManageFaultMaterials();
-  const materialCategories=[...new Set(MATERIALS.map(m=>m.category))].sort((a,b)=>a.localeCompare(b,"tr"));
-  const materialOptions=materialCategories.map(category=>`<optgroup label="${esc(category)}">${MATERIALS.filter(m=>m.category===category).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.id)}">${esc(m.code)} · ${esc(m.name)} (${esc(m.unit)})</option>`).join("")}</optgroup>`).join("");
-  const materialSection=`<section class="fault-detail-card wide fault-material-card"><div class="fault-material-head"><div><span>KULLANILAN MALZEMELER</span><p>Bu arızada değiştirilen veya tüketilen yedek parçalar.</p></div><b>${usedMaterials.length} kayıt</b></div><div class="fault-material-list">${usedMaterials.map((item,index)=>{const m=materialById(item.materialId);return `<article><div><small>${esc(m?.code||item.code||"-")}</small><b>${esc(m?.name||item.name||"Malzeme")}</b><span>${esc(item.note||"Açıklama girilmedi.")}</span></div><strong>${Number(item.quantity)||0} ${esc(item.unit||m?.unit||"Adet")}</strong>${canEditMaterials?`<button type="button" class="fault-material-remove danger" data-material-index="${index}">Sil</button>`:""}</article>`}).join("")||'<div class="compact-empty"><span>□</span><p>Bu arızaya henüz malzeme eklenmedi.</p></div>'}</div>${canEditMaterials?`<form id="faultMaterialForm" class="fault-material-form"><div class="field"><label>Malzeme</label><select id="faultMaterialId" required><option value="">Malzeme seçiniz</option>${materialOptions}</select></div><div class="field"><label>Miktar</label><input id="faultMaterialQuantity" type="number" min="0.01" step="0.01" value="1" required></div><div class="field material-note-field"><label>Açıklama</label><input id="faultMaterialNote" placeholder="Örn. Motor rulmanı değiştirildi"></div><button class="primary" type="submit">+ Malzeme Ekle</button></form>`:""}</section>`;
+  const materialOptions=MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.code)} · ${esc(m.name)}"></option>`).join("");
+  const materialSection=`<section class="fault-detail-card wide fault-material-card"><div class="fault-material-head"><div><span>KULLANILAN MALZEMELER</span><p>Bu arızada değiştirilen veya tüketilen yedek parçalar.</p></div><b>${usedMaterials.length} kayıt</b></div><div class="fault-material-list">${usedMaterials.map((item,index)=>{const m=materialById(item.materialId);return `<article><div><small>${esc(m?.code||item.code||"-")}</small><b>${esc(m?.name||item.name||"Malzeme")}</b><span>${esc(item.note||"Açıklama girilmedi.")}</span></div><strong>${Number(item.quantity)||0} ${esc(item.unit||m?.unit||"Adet")}</strong>${canEditMaterials?`<button type="button" class="fault-material-remove danger" data-material-index="${index}">Sil</button>`:""}</article>`}).join("")||'<div class="compact-empty"><span>□</span><p>Bu arızaya henüz malzeme eklenmedi.</p></div>'}</div>${canEditMaterials?`<form id="faultMaterialForm" class="fault-material-form"><div class="field"><label>Malzeme</label><input id="faultMaterialSearch" list="faultMaterialOptions" autocomplete="off" placeholder="Kod veya malzeme adıyla ara..." required><datalist id="faultMaterialOptions">${materialOptions}</datalist></div><div class="field"><label>Miktar</label><input id="faultMaterialQuantity" type="number" min="0.01" step="0.01" value="1" required></div><div class="field material-note-field"><label>Açıklama</label><input id="faultMaterialNote" placeholder="Örn. Motor rulmanı değiştirildi"></div><button class="primary" type="submit">+ Malzeme Ekle</button></form>`:""}</section>`;
 
   return `<div class="modal-backdrop fault-detail-backdrop" id="faultModalCloseBg"><div class="modal fault-detail-modal"><div class="modal-head"><div><span class="fault-detail-id">ARIZA KAYDI #${esc(f.id)}</span><h2>${esc(f.subject)}</h2><p>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</p></div><button type="button" id="faultModalClose">×</button></div><div class="fault-detail-statusbar"><div><small>DURUM</small>${statusControl}</div><div><small>SÜRE</small><b class="duration" data-id="${esc(f.id)}">${durationText(f)}</b></div><div><small>ÜRETİM DURDU MU?</small><b class="${f.stopped?"fault-stop-yes":""}">${productionText}</b></div></div><div class="fault-detail-grid">
     <section class="fault-detail-card wide"><span>ARIZA AÇIKLAMASI</span><h3>${esc(f.subject)}</h3><p>${esc(f.description||"Açıklama girilmemiş.")}</p>${photo}</section>

@@ -52,7 +52,18 @@ function canManageFaultMaterials(){
   return !!permissions().manageFaultMaterials;
 }
 function canManageMaterialCatalog(){
-  return !!permissions().materials;
+  return !!permissions().manageMaterials;
+}
+const MATERIAL_SORT_LABELS={code:"Kod",name:"Malzeme",category:"Kategori",unit:"Birim",stock:"Stok",minStock:"Minimum Stok",warehouseLocation:"Depo Konumu",faultCount:"Arıza Sayısı",usage:"Kullanım"};
+function materialSortValue(material,key,usage){
+  if(key==="faultCount")return Number(usage?.faultCount)||0;
+  if(key==="usage")return Number(usage?.quantity)||0;
+  if(["stock","minStock"].includes(key))return Number(material[key])||0;
+  return String(material[key]||"").toLocaleLowerCase("tr-TR");
+}
+function materialSortableHead(key,label){
+  const active=s.materialSortKey===key;
+  return `<th><button type="button" class="material-sort-button ${active?"active":""}" data-material-sort="${esc(key)}">${esc(label)}<span>${active?(s.materialSortDir==="asc"?"▲":"▼"):"↕"}</span></button></th>`;
 }
 function materialUsageRows(){
   const map={};
@@ -88,7 +99,12 @@ function materialsManagementPage(){
   const maxFault=Math.max(1,...mostFaulty.map(x=>x.faultCount));
   const maxUsage=Math.max(1,...mostUsed.map(x=>x.quantity));
   const categories=[...new Set(MATERIALS.map(m=>m.category))].sort((a,b)=>a.localeCompare(b,"tr"));
-  const sortedMaterials=[...MATERIALS].sort((a,b)=>a.category.localeCompare(b.category,"tr")||a.name.localeCompare(b.name,"tr"));
+  const sortedMaterials=[...MATERIALS].sort((a,b)=>{
+    const ua=usage.find(x=>x.materialId===a.id),ub=usage.find(x=>x.materialId===b.id);
+    const av=materialSortValue(a,s.materialSortKey,ua),bv=materialSortValue(b,s.materialSortKey,ub);
+    const result=typeof av==="number"&&typeof bv==="number"?av-bv:String(av).localeCompare(String(bv),"tr",{numeric:true});
+    return (s.materialSortDir==="desc"?-result:result)||a.name.localeCompare(b.name,"tr");
+  });
   return `${clockBlock()}
   <section class="desktop-page-title material-page-title">
     <div><span>YEDEK PARÇA VE TÜKETİM</span><h1>Malzeme Yönetimi</h1><p>Arızalarda kullanılan malzemeleri, en sık değiştirilen parçaları ve geçici stok bilgilerini görüntüleyin.</p></div>
@@ -144,6 +160,10 @@ function materialsManagementPage(){
         <label>Açıklama</label>
         <input id="newMaterialDescription" maxlength="250" autocomplete="off" placeholder="Marka, model, ölçü veya kullanım yeri gibi kısa bilgi">
       </div>
+      <div class="field material-description-field">
+        <label>Depodaki Konumu *</label>
+        <input id="newMaterialLocation" maxlength="160" autocomplete="off" placeholder="Örn. Ana Depo · A Rafı · 3. Göz" required>
+      </div>
       <div class="material-add-actions">
         <button type="reset" class="secondary">Temizle</button>
         <button type="submit" class="primary">Malzemeyi Kaydet</button>
@@ -152,7 +172,7 @@ function materialsManagementPage(){
   </details>`:""}
 
   <section class="material-kpi-grid">
-    <article><small>TANIMLI MALZEME</small><b>${MATERIALS.length}</b><span>geniş demo katalog</span></article>
+    <article><small>TANIMLI MALZEME</small><b>${MATERIALS.length}</b><span>aktif malzeme kataloğu</span></article>
     <article><small>KATEGORİ</small><b>${categories.length}</b><span>malzeme grubu</span></article>
     <article><small>TOPLAM KULLANIM</small><b>${Number(totalUsage.toFixed(2))}</b><span>tüm arıza kayıtları</span></article>
     <article><small>EN ÇOK KULLANILAN</small><b>${esc(mostUsed[0]?.name||"-")}</b><span>${mostUsed[0]?Number(mostUsed[0].quantity.toFixed(2))+" birim":"kayıt yok"}</span></article>
@@ -191,20 +211,20 @@ function materialsManagementPage(){
       <div class="material-visible-count"><b id="materialVisibleCount">${MATERIALS.length}</b><span> / ${MATERIALS.length} malzeme</span></div>
     </div>
     <div class="table-wrap"><table class="material-table">
-      <thead><tr><th>Kod</th><th>Malzeme</th><th>Kategori</th><th>Birim</th><th>Kaba Stok</th><th>Min. Stok</th><th>Arıza Sayısı</th><th>Kullanım</th><th>İşlem</th></tr></thead>
+      <thead><tr>${materialSortableHead("code","Kod")}${materialSortableHead("name","Malzeme")}${materialSortableHead("category","Kategori")}${materialSortableHead("unit","Birim")}${materialSortableHead("stock","Kaba Stok")}${materialSortableHead("minStock","Min. Stok")}${materialSortableHead("warehouseLocation","Depo Konumu")}${materialSortableHead("faultCount","Arıza Sayısı")}${materialSortableHead("usage","Kullanım")}</tr></thead>
       <tbody>${sortedMaterials.map(m=>{
         const u=usage.find(x=>x.materialId===m.id);
-        const searchText=`${m.code} ${m.name} ${m.category}`.toLocaleLowerCase("tr-TR");
-        return `<tr data-material-search="${esc(searchText)}" data-material-category="${esc(m.category)}">
+        const searchText=`${m.code} ${m.name} ${m.category} ${m.warehouseLocation||""}`.toLocaleLowerCase("tr-TR");
+        return `<tr class="material-detail-row" tabindex="0" data-material-edit="${esc(m.id)}" data-material-search="${esc(searchText)}" data-material-category="${esc(m.category)}" title="Malzeme detayını aç">
           <td><code>${esc(m.code)}</code></td>
-          <td><b>${esc(m.name)}</b>${m.custom?'<span class="custom-material-badge">Kullanıcı ekledi</span>':""}${m.description?`<small class="material-description">${esc(m.description)}</small>`:""}</td>
+          <td><b>${esc(m.name)}</b>${m.custom?'<span class="custom-material-badge">Kullanıcı ekledi</span>':""}</td>
           <td><span class="material-category ${materialCategoryClass(m.category)}">${esc(m.category)}</span></td>
           <td>${esc(m.unit)}</td>
           <td><strong class="${Number(m.stock)<=Number(m.minStock)?"stock-critical":""}">${m.stock}</strong></td>
           <td>${m.minStock}</td>
+          <td><span class="material-location-cell">${esc(m.warehouseLocation||"Belirtilmedi")}</span></td>
           <td>${u?.faultCount||0}</td>
           <td>${u?Number(u.quantity.toFixed(2)):0} ${esc(m.unit)}</td>
-          <td>${canManageMaterialCatalog()?`<div class="material-row-actions"><button type="button" class="secondary material-edit-button" data-material-edit="${esc(m.id)}">Düzenle</button><button type="button" class="danger material-delete-button" data-material-delete="${esc(m.id)}">Sil</button></div>`:"-"}</td>
         </tr>`;
       }).join("")}</tbody>
     </table></div>

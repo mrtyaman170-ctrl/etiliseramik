@@ -1,9 +1,18 @@
-# ETİLİSMART Modüler Proje — v9
+# ETİLİSMART Modüler Proje — v1.1.0
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
 
-## v9 yenilikleri
+## v1.1.0 yenilikleri
+
+- Malzeme kataloğuna sıralama, satırdan detay açma ve depo konumu alanı eklendi.
+- Depo sorumlusu hesabı ile malzeme ekleme, düzenleme ve silme yetkileri tanımlandı.
+- Arıza ve iş emri malzeme girişleri aranabilir hale getirildi.
+- Giriş ekranına “Beni hatırla” seçeneği ve görünür sürüm bilgisi eklendi.
+- Personel aramasında ilk harften sonra odağın kaybolması düzeltildi.
+- Talep, iş emri ve taşeron işi düğmeleri eşitlendi.
+
+## Önceki sürümden gelen özellikler
 
 - Ana panelde canlı saat ve aktif vardiyadaki bakım ekipleri için ayrı bloklar
 - Daha profesyonel QR tarama simgesi

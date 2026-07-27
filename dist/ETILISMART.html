@@ -2711,6 +2711,40 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .machine-maintenance-list>article>.maintenance-detail-status{grid-column:auto}
 }
 
+/* v1.1.0 — oturum, malzeme detayları ve tutarlı işlem düğmeleri */
+.remember-login{display:flex;align-items:center;gap:9px;margin:4px 0 14px;color:#53606c;font-size:12px;font-weight:700;cursor:pointer}
+.remember-login input{width:17px;height:17px;accent-color:#e9aa13}
+.material-sort-button{display:flex;align-items:center;gap:6px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;white-space:nowrap;cursor:pointer}
+.material-sort-button span{font-size:9px;color:#97a2ac}
+.material-sort-button.active{color:#9a6a00}
+.material-detail-row{cursor:pointer;transition:background .16s ease}
+.material-detail-row:hover,.material-detail-row:focus{background:#fff8e7;outline:none}
+.material-location-cell{display:block;min-width:130px;color:#586672;font-size:9px;line-height:1.35}
+.work-page-title .desktop-page-actions>button{display:inline-flex;align-items:center;justify-content:center;width:172px;min-height:44px;padding:0 16px!important;border-radius:11px;font-size:10px;font-weight:850}
+@media(max-width:700px){
+  .work-page-title .desktop-page-actions>button{width:100%}
+  .material-editor-form{grid-template-columns:1fr}
+}
+.fault-date-range{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.fault-date-range label{display:grid;gap:5px;color:#65727e;font-size:8px;font-weight:850}
+.fault-date-range input{min-height:38px;padding:0 10px;border:1px solid #d7e0e6;border-radius:10px;background:#fff;color:#31404c}
+.fault-date-range button{min-height:38px}
+.shift-report-section{margin:16px 0;padding:18px;border:1px solid #dbe3e9;border-radius:18px;background:#fff}
+.shift-report-section .section-modern-head>div>span{color:#a47200;font-size:8px;font-weight:900;letter-spacing:.9px}
+.shift-report-total{padding:8px 11px;border-radius:999px;background:#fff3d4;color:#8d6400;font-size:10px}
+.shift-report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.shift-report-card{min-width:0;border:1px solid #e0e6eb;border-radius:15px;overflow:hidden;background:#fafbfc}
+.shift-report-card header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:linear-gradient(135deg,#303b46,#1d252d);color:#fff}
+.shift-report-card header small,.shift-report-card header h3{display:block;margin:0}.shift-report-card header small{color:#cbd3da;font-size:8px}.shift-report-card header h3{margin-top:3px;font-size:12px}.shift-report-card header>b{font-size:22px;color:#f2b817}
+.shift-report-counts{display:flex;flex-wrap:wrap;gap:5px;padding:10px;border-bottom:1px solid #e4e9ed}
+.shift-report-counts span{padding:4px 6px;border-radius:999px;background:#eef2f5;color:#64727d;font-size:7px;font-weight:800}
+.shift-report-list{display:grid;gap:1px;max-height:320px;overflow:auto}
+.shift-report-list>div{display:grid;gap:3px;padding:11px 12px;border-bottom:1px solid #e7ebee;background:#fff}
+.shift-report-list b{font-size:9px;color:#2d3944}.shift-report-list small{font-size:7.5px;color:#75818b}.shift-report-list em{font-size:7px;color:#947000;font-style:normal}.shift-report-type{width:max-content;padding:3px 5px;border-radius:5px;background:#eaf2f8;color:#276b9a;font-size:6.5px;font-weight:900}
+.shift-report-empty{color:#7d8993!important;font-size:9px;text-align:center}
+@media(max-width:1000px){.shift-report-grid{grid-template-columns:1fr}.shift-report-list{max-height:240px}}
+@media(max-width:700px){.fault-record-toolbar{align-items:stretch}.fault-date-range{display:grid;grid-template-columns:1fr 1fr}.fault-date-range button{grid-column:1/-1}.fault-date-range input{width:100%}.shift-report-section{padding:13px}}
+
 </style></head><body><div id="app"><div style="padding:40px;text-align:center;font-family:Arial,sans-serif">ETİLİSMART yükleniyor…</div></div>
 <script>
 (function () {
@@ -2936,10 +2970,12 @@ function findMachineDepartment(factory,line,machine){
 </script>
 <script>
 /* Kullanıcılar, roller ve personel yetkileri */
-const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Genel Müdür","Yazılımcı"];
+const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Depo Sorumlusu","Genel Müdür","Yazılımcı"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 
-const AUTH_VERSION="pc-v4";
+const APP_VERSION="1.1.0";
+const APP_RELEASE_DATE="27.07.2026";
+const AUTH_VERSION="pc-v5";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
 const USER_STORE_KEY="etilismart_users_v2";
 const DELETED_PERSONNEL_KEY="etilismart_deleted_personnel_ids_v1";
@@ -2964,6 +3000,9 @@ const PRODUCTION_MANAGER_USERS={
 const DEVELOPER_USERS={
   "9001":{"password":"9001","name":"Mert Yaman","role":"Yazılımcı","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"}
 };
+const WAREHOUSE_USERS={
+  "8001":{"password":"8001","name":"Depo Sorumlusu","role":"Depo Sorumlusu","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Depo"}
+};
 const VALID_ACCOUNT_ROLES=new Set([...ROLES,"Elektrik Bakım Formeni","Mekanik Bakım Formeni","Fabrika Müdürü"]);
 let DELETED_PERSONNEL_IDS=new Set(storageJsonArray(localStorage,DELETED_PERSONNEL_KEY,[]).map(String));
 const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
@@ -2971,7 +3010,7 @@ function removeLegacyUsers(users){
   REMOVED_LEGACY_USER_IDS.forEach(id=>delete users[id]);
   return users;
 }
-const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS});
+const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS,...WAREHOUSE_USERS});
 const PROTECTED_USERS=Object.fromEntries(
   Object.entries(DEFAULT_USERS)
     .filter(([,account])=>account.role!=="Bakım Personeli")
@@ -3398,15 +3437,16 @@ function deleteMaintenancePersonnelAccount(id){
 
 const ROLE_PERMISSIONS={
   "Genel Müdür":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:false,personnel:true,materials:true,workRequests:true,editPlanned:false,editStatus:false,viewPerformance:true,allFactories:true,dailyChecks:true},
-  "Bakım Müdürü":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,viewPerformance:true,allFactories:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Elektrik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Mekanik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
-  "Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Bakım Müdürü":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,viewPerformance:true,allFactories:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Elektrik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Mekanik Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
+  "Bakım Formeni":{dashboard:true,newFault:false,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageOwnTeam:true,viewPerformance:true,manageFaultMaterials:true,manageRequests:true,createDirectWorkOrder:true,dailyChecks:true,manageDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true},
   "Bölüm Formeni":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,createRequest:true,editPlanned:true,editStatus:false,departmentOnly:true},
   "Üretim Müdürü":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,createRequest:true,editPlanned:true,editStatus:false,allDepartments:true,allDepartmentForemanRights:true},
-  "Bakım Personeli":{dashboard:true,newFault:false,faults:true,report:false,layout:true,planned:true,shiftSchedule:true,materials:true,workRequests:true,editPlanned:false,editStatus:true,manageFaultMaterials:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,dailyChecks:true,completeDailyChecks:true},
+  "Bakım Personeli":{dashboard:true,newFault:false,faults:true,report:false,layout:true,planned:true,shiftSchedule:true,materials:true,manageMaterials:true,workRequests:true,editPlanned:false,editStatus:true,manageFaultMaterials:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,dailyChecks:true,completeDailyChecks:true},
+  "Depo Sorumlusu":{dashboard:true,newFault:false,faults:false,report:false,layout:false,planned:false,shiftSchedule:false,personnel:false,materials:true,manageMaterials:true,workRequests:false,dailyChecks:false,allFactories:true},
   "Operatör":{dashboard:true,newFault:true,faults:true,report:false,layout:false,planned:true,shiftSchedule:true,workRequests:false,editPlanned:false,editStatus:false,departmentOnly:true,ownFaultsOnly:true,viewCurrentShiftMaintenance:true},
-  "Yazılımcı":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,workRequests:true,dailyChecks:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,manageAllUserAccounts:true,manageOwnTeam:true,viewPerformance:true,allFactories:true,allDepartments:true,allDepartmentForemanRights:true,manageFaultMaterials:true,manageRequests:true,createRequest:true,createDirectWorkOrder:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,manageDailyChecks:true,completeDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true}
+  "Yazılımcı":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,dailyChecks:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,manageAllUserAccounts:true,manageOwnTeam:true,viewPerformance:true,allFactories:true,allDepartments:true,allDepartmentForemanRights:true,manageFaultMaterials:true,manageRequests:true,createRequest:true,createDirectWorkOrder:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,manageDailyChecks:true,completeDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true}
 };
 
 /* Personel ekranları */
@@ -5094,10 +5134,8 @@ function workDetailModal(){
       ${!isRequest?`<section class="work-detail-materials">
         <div class="section-modern-head"><div><h2>Kullanılan Malzemeler</h2><p>İş emrine kaydedilen malzemeler.</p></div></div>
         ${canProgressEdit?`<form class="work-material-form work-detail-material-form" data-work-id="${esc(item.id)}">
-          <select class="work-material-id" required>
-            <option value="">Kullanılan malzeme</option>
-            ${MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(material=>`<option value="${esc(material.id)}">${esc(material.code)} · ${esc(material.name)}</option>`).join("")}
-          </select>
+          <input class="work-material-search" list="workMaterialList-${esc(item.id)}" placeholder="Kod veya malzeme adıyla ara..." autocomplete="off" required>
+          <datalist id="workMaterialList-${esc(item.id)}">${MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(material=>`<option value="${esc(material.code)} · ${esc(material.name)}"></option>`).join("")}</datalist>
           <input class="work-material-qty" type="number" min="0.01" step="0.01" value="1" required>
           <button class="secondary" type="submit">Malzeme Ekle</button>
         </form>`:""}
@@ -5178,7 +5216,18 @@ function canManageFaultMaterials(){
   return !!permissions().manageFaultMaterials;
 }
 function canManageMaterialCatalog(){
-  return !!permissions().materials;
+  return !!permissions().manageMaterials;
+}
+const MATERIAL_SORT_LABELS={code:"Kod",name:"Malzeme",category:"Kategori",unit:"Birim",stock:"Stok",minStock:"Minimum Stok",warehouseLocation:"Depo Konumu",faultCount:"Arıza Sayısı",usage:"Kullanım"};
+function materialSortValue(material,key,usage){
+  if(key==="faultCount")return Number(usage?.faultCount)||0;
+  if(key==="usage")return Number(usage?.quantity)||0;
+  if(["stock","minStock"].includes(key))return Number(material[key])||0;
+  return String(material[key]||"").toLocaleLowerCase("tr-TR");
+}
+function materialSortableHead(key,label){
+  const active=s.materialSortKey===key;
+  return `<th><button type="button" class="material-sort-button ${active?"active":""}" data-material-sort="${esc(key)}">${esc(label)}<span>${active?(s.materialSortDir==="asc"?"▲":"▼"):"↕"}</span></button></th>`;
 }
 function materialUsageRows(){
   const map={};
@@ -5214,7 +5263,12 @@ function materialsManagementPage(){
   const maxFault=Math.max(1,...mostFaulty.map(x=>x.faultCount));
   const maxUsage=Math.max(1,...mostUsed.map(x=>x.quantity));
   const categories=[...new Set(MATERIALS.map(m=>m.category))].sort((a,b)=>a.localeCompare(b,"tr"));
-  const sortedMaterials=[...MATERIALS].sort((a,b)=>a.category.localeCompare(b.category,"tr")||a.name.localeCompare(b.name,"tr"));
+  const sortedMaterials=[...MATERIALS].sort((a,b)=>{
+    const ua=usage.find(x=>x.materialId===a.id),ub=usage.find(x=>x.materialId===b.id);
+    const av=materialSortValue(a,s.materialSortKey,ua),bv=materialSortValue(b,s.materialSortKey,ub);
+    const result=typeof av==="number"&&typeof bv==="number"?av-bv:String(av).localeCompare(String(bv),"tr",{numeric:true});
+    return (s.materialSortDir==="desc"?-result:result)||a.name.localeCompare(b.name,"tr");
+  });
   return `${clockBlock()}
   <section class="desktop-page-title material-page-title">
     <div><span>YEDEK PARÇA VE TÜKETİM</span><h1>Malzeme Yönetimi</h1><p>Arızalarda kullanılan malzemeleri, en sık değiştirilen parçaları ve geçici stok bilgilerini görüntüleyin.</p></div>
@@ -5270,6 +5324,10 @@ function materialsManagementPage(){
         <label>Açıklama</label>
         <input id="newMaterialDescription" maxlength="250" autocomplete="off" placeholder="Marka, model, ölçü veya kullanım yeri gibi kısa bilgi">
       </div>
+      <div class="field material-description-field">
+        <label>Depodaki Konumu *</label>
+        <input id="newMaterialLocation" maxlength="160" autocomplete="off" placeholder="Örn. Ana Depo · A Rafı · 3. Göz" required>
+      </div>
       <div class="material-add-actions">
         <button type="reset" class="secondary">Temizle</button>
         <button type="submit" class="primary">Malzemeyi Kaydet</button>
@@ -5278,7 +5336,7 @@ function materialsManagementPage(){
   </details>`:""}
 
   <section class="material-kpi-grid">
-    <article><small>TANIMLI MALZEME</small><b>${MATERIALS.length}</b><span>geniş demo katalog</span></article>
+    <article><small>TANIMLI MALZEME</small><b>${MATERIALS.length}</b><span>aktif malzeme kataloğu</span></article>
     <article><small>KATEGORİ</small><b>${categories.length}</b><span>malzeme grubu</span></article>
     <article><small>TOPLAM KULLANIM</small><b>${Number(totalUsage.toFixed(2))}</b><span>tüm arıza kayıtları</span></article>
     <article><small>EN ÇOK KULLANILAN</small><b>${esc(mostUsed[0]?.name||"-")}</b><span>${mostUsed[0]?Number(mostUsed[0].quantity.toFixed(2))+" birim":"kayıt yok"}</span></article>
@@ -5317,20 +5375,20 @@ function materialsManagementPage(){
       <div class="material-visible-count"><b id="materialVisibleCount">${MATERIALS.length}</b><span> / ${MATERIALS.length} malzeme</span></div>
     </div>
     <div class="table-wrap"><table class="material-table">
-      <thead><tr><th>Kod</th><th>Malzeme</th><th>Kategori</th><th>Birim</th><th>Kaba Stok</th><th>Min. Stok</th><th>Arıza Sayısı</th><th>Kullanım</th><th>İşlem</th></tr></thead>
+      <thead><tr>${materialSortableHead("code","Kod")}${materialSortableHead("name","Malzeme")}${materialSortableHead("category","Kategori")}${materialSortableHead("unit","Birim")}${materialSortableHead("stock","Kaba Stok")}${materialSortableHead("minStock","Min. Stok")}${materialSortableHead("warehouseLocation","Depo Konumu")}${materialSortableHead("faultCount","Arıza Sayısı")}${materialSortableHead("usage","Kullanım")}</tr></thead>
       <tbody>${sortedMaterials.map(m=>{
         const u=usage.find(x=>x.materialId===m.id);
-        const searchText=`${m.code} ${m.name} ${m.category}`.toLocaleLowerCase("tr-TR");
-        return `<tr data-material-search="${esc(searchText)}" data-material-category="${esc(m.category)}">
+        const searchText=`${m.code} ${m.name} ${m.category} ${m.warehouseLocation||""}`.toLocaleLowerCase("tr-TR");
+        return `<tr class="material-detail-row" tabindex="0" data-material-edit="${esc(m.id)}" data-material-search="${esc(searchText)}" data-material-category="${esc(m.category)}" title="Malzeme detayını aç">
           <td><code>${esc(m.code)}</code></td>
-          <td><b>${esc(m.name)}</b>${m.custom?'<span class="custom-material-badge">Kullanıcı ekledi</span>':""}${m.description?`<small class="material-description">${esc(m.description)}</small>`:""}</td>
+          <td><b>${esc(m.name)}</b>${m.custom?'<span class="custom-material-badge">Kullanıcı ekledi</span>':""}</td>
           <td><span class="material-category ${materialCategoryClass(m.category)}">${esc(m.category)}</span></td>
           <td>${esc(m.unit)}</td>
           <td><strong class="${Number(m.stock)<=Number(m.minStock)?"stock-critical":""}">${m.stock}</strong></td>
           <td>${m.minStock}</td>
+          <td><span class="material-location-cell">${esc(m.warehouseLocation||"Belirtilmedi")}</span></td>
           <td>${u?.faultCount||0}</td>
           <td>${u?Number(u.quantity.toFixed(2)):0} ${esc(m.unit)}</td>
-          <td>${canManageMaterialCatalog()?`<div class="material-row-actions"><button type="button" class="secondary material-edit-button" data-material-edit="${esc(m.id)}">Düzenle</button><button type="button" class="danger material-delete-button" data-material-delete="${esc(m.id)}">Sil</button></div>`:"-"}</td>
         </tr>`;
       }).join("")}</tbody>
     </table></div>
@@ -5590,6 +5648,44 @@ function newf(){
   <div class="field check"><label><input type="checkbox" id="stopped"> Üretim durdu mu?</label></div>
   </div><div class="actions"><button type="button" class="secondary" data-p="dashboard">İptal</button><button class="primary">Kaydı Oluştur</button></div></form></div>`;
 }
+function recentShiftWindows(reference=new Date()){
+  const hour=reference.getHours();
+  const startHour=hour<8?0:hour<16?8:16;
+  const currentStart=new Date(reference);
+  currentStart.setHours(startHour,0,0,0);
+  return Array.from({length:3},(_,index)=>{
+    const start=new Date(currentStart.getTime()-index*8*60*60*1000);
+    const end=new Date(start.getTime()+8*60*60*1000);
+    return {start,end,label:`${String(start.getHours()).padStart(2,"0")}:00–${String(end.getHours()).padStart(2,"0")}:00`,date:start.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric"})};
+  });
+}
+function lastThreeShiftReport(){
+  const windows=recentShiftWindows();
+  const allowedFactory=factory=>s.reportFactory==="Tümü"?userCanSeeFactory(factory):factory===s.reportFactory;
+  const inWindow=(date,window)=>{const value=new Date(date);return Number.isFinite(value.getTime())&&value>=window.start&&value<window.end};
+  const entries=windows.map(window=>{
+    const faults=visibleFaults().filter(item=>allowedFactory(item.factory)&&inWindow(item.closedAt||item.createdAt,window));
+    const logs=(s.maintenanceLogs||[]).filter(item=>allowedFactory(item.factory)&&inWindow(item.performedAt||item.createdAt,window));
+    const work=(s.workItems||[]).filter(item=>item.kind==="workorder"&&allowedFactory(item.factory)&&inWindow(item.completedAt||item.createdAt,window));
+    const planned=(s.plannedMaintenances||[]).filter(item=>allowedFactory(item.factory)&&item.status==="done"&&inWindow(item.updatedAt||`${item.date}T${item.time||"00:00"}`,window));
+    const rows=[
+      ...faults.map(item=>({type:"Arıza",title:item.subject,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assignedTo||"Atama bekliyor",status:item.status==="done"?"Tamamlandı":"Açık"})),
+      ...logs.map(item=>({type:item.workType||"Yapılan İş",title:item.title,location:`${item.factory} · ${item.location||"Konum belirtilmedi"}`,person:(item.participants||[]).join(", ")||item.createdBy,status:"Kaydedildi"})),
+      ...work.map(item=>({type:"İş Emri",title:item.title,location:`${item.factory} · ${item.department}`,person:item.completedBy||item.assignedTo||"-",status:workStatusLabel(item.status,"workorder")})),
+      ...planned.map(item=>({type:"Planlı Bakım",title:item.title,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assigned||item.updatedBy||"-",status:"Tamamlandı"}))
+    ];
+    return {...window,rows,counts:{faults:faults.length,logs:logs.length,work:work.length,planned:planned.length}};
+  });
+  const total=entries.reduce((sum,item)=>sum+item.rows.length,0);
+  return `<section class="shift-report-section">
+    <div class="section-modern-head"><div><span>SON 24 SAAT</span><h2>Son 3 Vardiya Faaliyet Raporu</h2><p>Arızalar, yapılan bakım çalışmaları, iş emirleri ve tamamlanan planlı bakımlar vardiya bazında bir arada.</p></div><b class="shift-report-total">${total} faaliyet</b></div>
+    <div class="shift-report-grid">${entries.map(entry=>`<article class="shift-report-card">
+      <header><div><small>${entry.date}</small><h3>${entry.label} Vardiyası</h3></div><b>${entry.rows.length}</b></header>
+      <div class="shift-report-counts"><span>${entry.counts.faults} arıza</span><span>${entry.counts.logs} yapılan iş</span><span>${entry.counts.work} iş emri</span><span>${entry.counts.planned} planlı bakım</span></div>
+      <div class="shift-report-list">${entry.rows.map(row=>`<div><span class="shift-report-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.location)}</small><em>${esc(row.person)} · ${esc(row.status)}</em></div>`).join("")||'<div class="shift-report-empty">Bu vardiyada kayıtlı faaliyet bulunmuyor.</div>'}</div>
+    </article>`).join("")}</div>
+  </section>`;
+}
 function reportPage(){
   let base=visibleFaults();
   if(s.reportFactory!=="Tümü")base=base.filter(x=>x.factory===s.reportFactory);
@@ -5644,6 +5740,7 @@ function reportPage(){
     <article><small>MTTR</small><b>${mttr} dk</b><span>ortalama onarım süresi</span></article>
     <article><small>TOPLAM DURUŞ</small><b>${Math.floor(totalDowntimeMinutes/60)} sa ${totalDowntimeMinutes%60} dk</b><span>${stoppedFaults.length} duruş kaydı</span></article>
   </section>
+  ${lastThreeShiftReport()}
   <section class="charts-dashboard-grid">
     <article class="analytics-chart-card wide">
       <div class="chart-panel-head"><div><h3>Arıza Trendi</h3><p>Zamana göre açılan arıza sayısı</p></div>${chartRangeControlsFor("trend")}</div>
@@ -5824,9 +5921,8 @@ function faultDetailModal(){
   const solutionSection=`<section class="fault-detail-card wide fault-solution-card ${isDone?"completed":""} ${isDone&&!hasSolution?"missing-solution":""}"><div class="fault-solution-head"><div><span>ÇÖZÜM VE YAPILAN İŞLEM</span><p>Arıza tamamlandığında yapılan işlemi yazabilirsiniz. Çözüm yazısı zorunlu değildir.</p></div><strong>${solutionStateText}</strong></div>${canEditSolution?`<textarea id="faultSolutionText" maxlength="1500" placeholder="Yapılan işlem ve sonucu yazın.">${esc(solutionText)}</textarea><div class="fault-solution-actions"><small><span id="faultSolutionCount">${solutionText.length}</span>/1500 karakter</small><button type="button" class="secondary" id="faultSolutionSave">Çözüm Yazısını Kaydet</button></div>${isDone&&!hasSolution?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':""}${solutionMeta}`:`${solutionText?`<p class="fault-solution-text">${esc(solutionText)}</p>${solutionMeta}`:(isDone?'<div class="solution-missing-message">Tamamlandı · Arıza açıklaması yazılmadı.</div>':'<div class="compact-empty"><span>✎</span><p>Henüz çözüm yazısı girilmedi.</p></div>')}`}</section>`;
   const usedMaterials=faultUsedMaterials(f);
   const canEditMaterials=canManageFaultMaterials();
-  const materialCategories=[...new Set(MATERIALS.map(m=>m.category))].sort((a,b)=>a.localeCompare(b,"tr"));
-  const materialOptions=materialCategories.map(category=>`<optgroup label="${esc(category)}">${MATERIALS.filter(m=>m.category===category).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.id)}">${esc(m.code)} · ${esc(m.name)} (${esc(m.unit)})</option>`).join("")}</optgroup>`).join("");
-  const materialSection=`<section class="fault-detail-card wide fault-material-card"><div class="fault-material-head"><div><span>KULLANILAN MALZEMELER</span><p>Bu arızada değiştirilen veya tüketilen yedek parçalar.</p></div><b>${usedMaterials.length} kayıt</b></div><div class="fault-material-list">${usedMaterials.map((item,index)=>{const m=materialById(item.materialId);return `<article><div><small>${esc(m?.code||item.code||"-")}</small><b>${esc(m?.name||item.name||"Malzeme")}</b><span>${esc(item.note||"Açıklama girilmedi.")}</span></div><strong>${Number(item.quantity)||0} ${esc(item.unit||m?.unit||"Adet")}</strong>${canEditMaterials?`<button type="button" class="fault-material-remove danger" data-material-index="${index}">Sil</button>`:""}</article>`}).join("")||'<div class="compact-empty"><span>□</span><p>Bu arızaya henüz malzeme eklenmedi.</p></div>'}</div>${canEditMaterials?`<form id="faultMaterialForm" class="fault-material-form"><div class="field"><label>Malzeme</label><select id="faultMaterialId" required><option value="">Malzeme seçiniz</option>${materialOptions}</select></div><div class="field"><label>Miktar</label><input id="faultMaterialQuantity" type="number" min="0.01" step="0.01" value="1" required></div><div class="field material-note-field"><label>Açıklama</label><input id="faultMaterialNote" placeholder="Örn. Motor rulmanı değiştirildi"></div><button class="primary" type="submit">+ Malzeme Ekle</button></form>`:""}</section>`;
+  const materialOptions=MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=>`<option value="${esc(m.code)} · ${esc(m.name)}"></option>`).join("");
+  const materialSection=`<section class="fault-detail-card wide fault-material-card"><div class="fault-material-head"><div><span>KULLANILAN MALZEMELER</span><p>Bu arızada değiştirilen veya tüketilen yedek parçalar.</p></div><b>${usedMaterials.length} kayıt</b></div><div class="fault-material-list">${usedMaterials.map((item,index)=>{const m=materialById(item.materialId);return `<article><div><small>${esc(m?.code||item.code||"-")}</small><b>${esc(m?.name||item.name||"Malzeme")}</b><span>${esc(item.note||"Açıklama girilmedi.")}</span></div><strong>${Number(item.quantity)||0} ${esc(item.unit||m?.unit||"Adet")}</strong>${canEditMaterials?`<button type="button" class="fault-material-remove danger" data-material-index="${index}">Sil</button>`:""}</article>`}).join("")||'<div class="compact-empty"><span>□</span><p>Bu arızaya henüz malzeme eklenmedi.</p></div>'}</div>${canEditMaterials?`<form id="faultMaterialForm" class="fault-material-form"><div class="field"><label>Malzeme</label><input id="faultMaterialSearch" list="faultMaterialOptions" autocomplete="off" placeholder="Kod veya malzeme adıyla ara..." required><datalist id="faultMaterialOptions">${materialOptions}</datalist></div><div class="field"><label>Miktar</label><input id="faultMaterialQuantity" type="number" min="0.01" step="0.01" value="1" required></div><div class="field material-note-field"><label>Açıklama</label><input id="faultMaterialNote" placeholder="Örn. Motor rulmanı değiştirildi"></div><button class="primary" type="submit">+ Malzeme Ekle</button></form>`:""}</section>`;
 
   return `<div class="modal-backdrop fault-detail-backdrop" id="faultModalCloseBg"><div class="modal fault-detail-modal"><div class="modal-head"><div><span class="fault-detail-id">ARIZA KAYDI #${esc(f.id)}</span><h2>${esc(f.subject)}</h2><p>${esc(f.factory)} · ${esc(f.line)} · ${esc(f.department)}</p></div><button type="button" id="faultModalClose">×</button></div><div class="fault-detail-statusbar"><div><small>DURUM</small>${statusControl}</div><div><small>SÜRE</small><b class="duration" data-id="${esc(f.id)}">${durationText(f)}</b></div><div><small>ÜRETİM DURDU MU?</small><b class="${f.stopped?"fault-stop-yes":""}">${productionText}</b></div></div><div class="fault-detail-grid">
     <section class="fault-detail-card wide"><span>ARIZA AÇIKLAMASI</span><h3>${esc(f.subject)}</h3><p>${esc(f.description||"Açıklama girilmemiş.")}</p>${photo}</section>
@@ -5945,7 +6041,9 @@ function notificationBadge(pageName){
   return count?`<span class="nav-notification" title="${count} yeni kayıt"><b>!</b><small>${count}</small></span>`:"";
 }
 
-const storedSessionUser=storageJsonRecord(sessionStorage,"esuser",null);
+const REMEMBER_LOGIN_KEY="etilismart_remembered_login_v1";
+const rememberedLogin=storageJsonRecord(localStorage,REMEMBER_LOGIN_KEY,null);
+const storedSessionUser=storageJsonRecord(sessionStorage,"esuser",null)||rememberedLogin?.user||null;
 const storedSessionAccount=storedSessionUser?.id?APP_USERS[String(storedSessionUser.id)]:null;
 const storedUser=storedSessionAccount?{
   id:String(storedSessionUser.id),
@@ -5955,9 +6053,10 @@ const storedUser=storedSessionAccount?{
   department:storedSessionAccount.department||"",
   team:storedSessionAccount.team||""
 }:null;
-const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION;
+const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION
+  ||rememberedLogin?.authVersion===AUTH_VERSION;
 let s={
-  login:sessionIsCurrent&&storageGet(sessionStorage,"eslogin","0")==="1"&&!!storedUser,
+  login:sessionIsCurrent&&(storageGet(sessionStorage,"eslogin","0")==="1"||!!rememberedLogin)&&!!storedUser,
   user:sessionIsCurrent?storedUser:null,
   page:"dashboard",
   faults:storageJsonRecordArray(localStorage,K,generateHistory()),
@@ -5989,8 +6088,12 @@ let s={
   faultTab:"active",
   faultHistoryFactory:"Tümü",
   faultSearch:"",
+  faultDateStart:"",
+  faultDateEnd:"",
   faultSortKey:"createdAt",
   faultSortDir:"desc",
+  materialSortKey:"category",
+  materialSortDir:"asc",
   reportFactory:"Tümü",
   reportStart:"",
   reportEnd:"",
@@ -6211,7 +6314,9 @@ function sortFaultRecords(items){
   });
 }
 function faultRecordsPage(){
-  const all=visibleFaults();
+  let all=visibleFaults();
+  if(s.faultDateStart)all=all.filter(fault=>new Date(fault.createdAt)>=new Date(`${s.faultDateStart}T00:00:00`));
+  if(s.faultDateEnd)all=all.filter(fault=>new Date(fault.createdAt)<=new Date(`${s.faultDateEnd}T23:59:59`));
   const active=all.filter(fault=>fault.status!=="done");
   const history=all.filter(fault=>fault.status==="done");
   const factoryTabs=["Tümü",...Object.keys(FACTORIES).filter(factory=>userCanSeeFactory(factory))];
@@ -6244,6 +6349,11 @@ function faultRecordsPage(){
       <span>⌕</span>
       <input id="faultRecordSearch" value="${esc(s.faultSearch)}" autocomplete="off" placeholder="Arıza, makine, bölüm, kişi veya bakımcı ara">
     </label>
+    <div class="fault-date-range">
+      <label>Başlangıç<input id="faultDateStart" type="date" value="${esc(s.faultDateStart)}"></label>
+      <label>Bitiş<input id="faultDateEnd" type="date" value="${esc(s.faultDateEnd)}"></label>
+      <button type="button" class="secondary" id="clearFaultDates">Tarihleri Temizle</button>
+    </div>
   </section>
 
   ${s.faultTab==="history"?`<section class="fault-factory-tabs" aria-label="Arıza geçmişi fabrika seçimi">
@@ -6584,10 +6694,11 @@ function maintenanceLogModal(){
   const defaultFactory=factories[0]||"1. Fabrika";
   const people=[...new Map(factories.flatMap(factory=>maintenanceWorkPeople(factory)).map(p=>[p.id,p])).values()];
   return `<div class="modal-backdrop" id="maintenanceLogBackdrop"><div class="modal maintenance-log-modal">
-    <div class="modal-head"><div><span>BAKIM ÇALIŞMA KAYDI</span><h2>Yapılan İş Ekle</h2><p>Arıza veya iş emri dışında tamamlanan atölye ve saha çalışmalarını kaydedin.</p></div><button type="button" id="closeMaintenanceLog">×</button></div>
+    <div class="modal-head"><div><span>BAKIM ÇALIŞMA KAYDI</span><h2>Yapılan İş Ekle</h2><p>Tamamlanan arıza, bakım, iyileştirme, kontrol ve saha çalışmalarını türüne göre kaydedin.</p></div><button type="button" id="closeMaintenanceLog">×</button></div>
     <form id="maintenanceLogForm" class="maintenance-log-form">
       <div class="field"><label>Fabrika *</label><select id="maintenanceLogFactory" required>${factories.map(f=>`<option>${esc(f)}</option>`).join("")}</select></div>
       <div class="field"><label>İşin Yapıldığı Tarih *</label><input id="maintenanceLogDate" type="date" value="${dateOnly(new Date())}" required></div>
+      <div class="field wide"><label>Yapılan İşin Türü *</label><select id="maintenanceLogType" required><option value="Arıza">Arıza</option><option value="Planlı Bakım">Planlı Bakım</option><option value="İyileştirme">İyileştirme</option><option value="Kontrol">Kontrol</option><option value="Revizyon">Revizyon</option><option value="Diğer">Diğer</option></select><small class="field-help">Arıza seçilen kayıtlar tamamlanmış kayıt olarak Arıza Geçmişi'ne de aktarılır.</small></div>
       <div class="field wide"><label>İş Başlığı *</label><input id="maintenanceLogTitle" maxlength="140" placeholder="Örn. Atölyeye getirilen Masterjet pompası tamir edildi" required></div>
       <div class="field wide"><label>Makine / Konum</label><input id="maintenanceLogLocation" maxlength="140" placeholder="Örn. Bakım atölyesi · 2. Masterjet pompası"></div>
       <div class="field wide"><label>Yapılan İş Açıklaması *</label><textarea id="maintenanceLogDescription" rows="5" maxlength="1800" placeholder="Arıza tespiti, değiştirilen parçalar, yapılan test ve sonuç bilgilerini yazın." required></textarea></div>
@@ -6602,7 +6713,9 @@ function materialEditorModal(){
   if(!m)return "";
   const categories=["Elektrik","Mekanik","Pnömatik","Hidrolik","Enstrümantasyon","Sarf","Diğer"];
   const units=["Adet","Metre","Kilogram","Litre","Paket","Kutu","Rulo","Takım","Set","Çift"];
-  return `<div class="modal-backdrop" id="materialEditorBackdrop"><div class="modal material-editor-modal"><div class="modal-head"><div><span>MALZEME KARTI</span><h2>${esc(m.name)}</h2><p>${esc(m.code)}</p></div><button type="button" id="closeMaterialEditor">×</button></div><form id="materialEditorForm" class="material-editor-form"><input type="hidden" id="materialEditorId" value="${esc(m.id)}"><div class="field"><label>Malzeme Kodu *</label><input id="materialEditCode" value="${esc(m.code)}" required></div><div class="field wide"><label>Malzeme Adı *</label><input id="materialEditName" value="${esc(m.name)}" required></div><div class="field"><label>Kategori *</label><select id="materialEditCategory">${categories.map(x=>`<option ${x===m.category?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Birim *</label><select id="materialEditUnit">${units.map(x=>`<option ${x===m.unit?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Mevcut Stok</label><input id="materialEditStock" type="number" min="0" step="0.01" value="${Number(m.stock)||0}"></div><div class="field"><label>Minimum Stok</label><input id="materialEditMinStock" type="number" min="0" step="0.01" value="${Number(m.minStock)||0}"></div><div class="field wide"><label>Açıklama</label><textarea id="materialEditDescription" rows="3">${esc(m.description||"")}</textarea></div><div class="modal-actions wide"><button type="button" class="danger" id="deleteMaterialFromEditor" data-material-id="${esc(m.id)}">Malzemeyi Sil</button><button type="button" class="secondary" id="cancelMaterialEditor">Vazgeç</button><button type="submit" class="primary">Değişiklikleri Kaydet</button></div></form></div></div>`;
+  const editable=canManageMaterialCatalog();
+  const disabled=editable?"":"disabled";
+  return `<div class="modal-backdrop" id="materialEditorBackdrop"><div class="modal material-editor-modal"><div class="modal-head"><div><span>MALZEME DETAYI</span><h2>${esc(m.name)}</h2><p>${esc(m.code)}</p></div><button type="button" id="closeMaterialEditor">×</button></div><form id="materialEditorForm" class="material-editor-form"><input type="hidden" id="materialEditorId" value="${esc(m.id)}"><div class="field"><label>Malzeme Kodu *</label><input id="materialEditCode" value="${esc(m.code)}" ${disabled} required></div><div class="field wide"><label>Malzeme Adı *</label><input id="materialEditName" value="${esc(m.name)}" ${disabled} required></div><div class="field"><label>Kategori *</label><select id="materialEditCategory" ${disabled}>${categories.map(x=>`<option ${x===m.category?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Birim *</label><select id="materialEditUnit" ${disabled}>${units.map(x=>`<option ${x===m.unit?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Mevcut Stok</label><input id="materialEditStock" type="number" min="0" step="0.01" value="${Number(m.stock)||0}" ${disabled}></div><div class="field"><label>Minimum Stok</label><input id="materialEditMinStock" type="number" min="0" step="0.01" value="${Number(m.minStock)||0}" ${disabled}></div><div class="field wide"><label>Depodaki Konumu</label><input id="materialEditLocation" value="${esc(m.warehouseLocation||"")}" placeholder="Örn. Ana Depo · A Rafı · 3. Göz" ${disabled}></div><div class="field wide"><label>Açıklama</label><textarea id="materialEditDescription" rows="3" ${disabled}>${esc(m.description||"")}</textarea></div><div class="modal-actions wide">${editable?`<button type="button" class="danger" id="deleteMaterialFromEditor" data-material-id="${esc(m.id)}">Malzemeyi Sil</button><button type="button" class="secondary" id="cancelMaterialEditor">Vazgeç</button><button type="submit" class="primary">Değişiklikleri Kaydet</button>`:`<button type="button" class="primary" id="cancelMaterialEditor">Kapat</button>`}</div></form></div></div>`;
 }
 function page(){
   if(!canAccess(s.page))s.page=allowedNavItems()[0]?.[0]||"dashboard";
@@ -6645,7 +6758,7 @@ function app(){
   ensureNotificationBaseline();
   return `<div class="top">
     <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menüyü aç" aria-expanded="false">☰</button>
-    <div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
+    <div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi · v${APP_VERSION}</small></div>
     <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
   </div>
   <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
@@ -6653,7 +6766,7 @@ function app(){
     <div class="mobile-drawer-head"><b>ETİLİSMART Menü</b><button type="button" id="mobileMenuClose" aria-label="Menüyü kapat">×</button></div>
     <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
     ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
-    <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>
+    <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}<span>Sürüm ${APP_VERSION} · ${APP_RELEASE_DATE}</span></div>
   </aside><main>${page()}</main></div>${personnelDetailModal()}${faultDetailModal()}${machineModal()}${workDetailModal()}${dailyControlDetailModal()}${maintenanceLogModal()}${materialEditorModal()}${qrModal()}${shiftPersonModal()}`;
 }
 function login(){
@@ -6671,16 +6784,16 @@ function login(){
         </div>
       </section>
       <section class="login-form-panel">
-        <div class="login-title"><span>ETİLİ<span>SMART</span></span><small>Dijital Bakım Yönetim Sistemi</small></div>
+        <div class="login-title"><span>ETİLİ<span>SMART</span></span><small>Dijital Bakım Yönetim Sistemi · v${APP_VERSION}</small></div>
         <h2>Hesabınıza giriş yapın</h2>
         <p>Size tanımlanan kullanıcı ID ve parolayı girin.</p>
         <form id="login">
           <div class="field"><label>Kullanıcı ID</label><input id="userId" inputmode="numeric" autocomplete="username" placeholder="Örn. 1111" required></div>
           <div class="field"><label>Parola</label><input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••" required></div>
+          <label class="remember-login"><input id="rememberMe" type="checkbox" ${rememberedLogin?"checked":""}><span>Beni hatırla</span></label>
           <div id="loginError" class="login-error"></div>
           <button class="primary login-submit">Giriş Yap <span>→</span></button>
         </form>
-        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span><small>Personeller kendilerine tanımlanan 4 haneli ID ve parola ile giriş yapabilir.</small></div>
       </section>
     </div>
   </div>`;
@@ -8991,6 +9104,12 @@ function bind(){
       next.setSelectionRange(cursor,cursor);
     }
   };
+  const faultDateStart=document.getElementById("faultDateStart");
+  const faultDateEnd=document.getElementById("faultDateEnd");
+  if(faultDateStart)faultDateStart.onchange=()=>{s.faultDateStart=faultDateStart.value;if(s.faultDateEnd&&s.faultDateStart>s.faultDateEnd)s.faultDateEnd=s.faultDateStart;render()};
+  if(faultDateEnd)faultDateEnd.onchange=()=>{s.faultDateEnd=faultDateEnd.value;if(s.faultDateStart&&s.faultDateEnd<s.faultDateStart)s.faultDateStart=s.faultDateEnd;render()};
+  const clearFaultDates=document.getElementById("clearFaultDates");
+  if(clearFaultDates)clearFaultDates.onclick=()=>{s.faultDateStart="";s.faultDateEnd="";render()};
 
   const faultModalClose=document.getElementById("faultModalClose");
   const faultModalCloseBg=document.getElementById("faultModalCloseBg");
@@ -9080,6 +9199,7 @@ function bind(){
     if(!canAddMaintenanceLog())return;
     const factory=document.getElementById("maintenanceLogFactory")?.value||"";
     const title=(document.getElementById("maintenanceLogTitle")?.value||"").trim();
+    const workType=(document.getElementById("maintenanceLogType")?.value||"").trim();
     const location=(document.getElementById("maintenanceLogLocation")?.value||"").trim();
     const description=(document.getElementById("maintenanceLogDescription")?.value||"").trim();
     const performedDate=document.getElementById("maintenanceLogDate")?.value||"";
@@ -9091,8 +9211,29 @@ function bind(){
       return;
     }
     if(!participants.length){alert("İşe dahil olan en az bir personel seçiniz.");return}
+    if(!["Arıza","Planlı Bakım","İyileştirme","Kontrol","Revizyon","Diğer"].includes(workType)){alert("Geçerli bir iş türü seçiniz.");return}
     if(!title||!description){alert("İş başlığı ve yapılan iş açıklamasını giriniz.");return}
-    s.maintenanceLogs.push({id:`MW-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,factory,title,location,description,participants,performedAt:`${performedDate}T12:00:00`,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
+    const logId=`MW-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+    const performedAt=`${performedDate}T12:00:00`;
+    s.maintenanceLogs.push({id:logId,factory,workType,title,location,description,participants,performedAt,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
+    if(workType==="Arıza"){
+      const actualFactory=factory==="2. Fabrika"?"2. Fabrika A Blok":factory;
+      const line=(FACTORIES[actualFactory]||["Genel Alan"])[0];
+      const department=findMachineDepartment(actualFactory,line,location)||"Diğer";
+      const numericIds=s.faults.map(item=>Number(item.id)).filter(Number.isFinite);
+      s.faults.push({
+        id:(numericIds.length?Math.max(...numericIds):2000)+1,
+        factory:actualFactory,line,department,machine:location||"Bakım Çalışması",
+        type:"Diğer",subject:title,description,stopped:false,photoName:"",
+        status:"done",openedBy:s.user?.name||"Bilinmeyen Kullanıcı",
+        assignedTo:participants[0]||"",participants,assignmentState:"accepted",
+        claimedBy:participants[0]||"",claimedAt:performedAt,assignmentHistory:[],
+        solutionText:description,solutionBy:participants.join(", "),solutionAt:performedAt,
+        createdAt:performedAt,closedAt:new Date(new Date(performedAt).getTime()+60000).toISOString(),
+        maintenanceLogId:logId,usedMaterials:[]
+      });
+      save();
+    }
     saveMaintenanceLogs();s.maintenanceLogModal=false;render();
   };
 
@@ -9794,7 +9935,7 @@ function bind(){
   document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canManageWorkRequest(item)&&(!sel.value||workMaintenanceOptions(item.factory,item.assignedTeam).includes(sel.value))){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
   document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canUpdateWorkOrder(item)&&["open","assigned","progress","material","approval","done","cancelled"].includes(sel.value)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;item.completedBy=sel.value==="done"?(s.user?.name||""):"";const source=findWorkItemById(item.sourceRequestId);if(source){if(sel.value==="done"){source.status="done";source.completedAt=item.completedAt}else if(source.status==="done"){source.status="converted";source.completedAt=null}}saveWorkItems();render()}});
   document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=[...document.querySelectorAll(".work-result-text")].find(el=>String(el.dataset.workId)===String(item.id));item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
-  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||!Number.isFinite(qty)||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
+  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const query=(form.querySelector(".work-material-search")?.value||"").trim().toLocaleLowerCase("tr-TR");const qty=Number(form.querySelector(".work-material-qty").value);const material=MATERIALS.find(m=>[m.id,m.code,m.name,`${m.code} · ${m.name}`].some(value=>String(value||"").toLocaleLowerCase("tr-TR")===query));if(!material){alert("Listeden geçerli bir malzeme seçin.");return}if(!Number.isFinite(qty)||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId:material.id,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
   document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.removeWorkMaterial);const index=Number(btn.dataset.index);if(!item||!canUpdateWorkOrder(item)||!Array.isArray(item.usedMaterials)||!Number.isInteger(index)||index<0||index>=item.usedMaterials.length)return;item.usedMaterials.splice(index,1);saveWorkItems();render()});
 
   const materialCatalogAddForm=document.getElementById("materialCatalogAddForm");
@@ -9812,9 +9953,10 @@ function bind(){
     const stock=Number(document.getElementById("newMaterialStock")?.value||0);
     const minStock=Number(document.getElementById("newMaterialMinStock")?.value||0);
     const description=(document.getElementById("newMaterialDescription")?.value||"").trim();
+    const warehouseLocation=(document.getElementById("newMaterialLocation")?.value||"").trim();
 
-    if(!code||!name||!category||!unit){
-      alert("Malzeme kodu, malzeme adı, kategori ve birim alanlarını doldurun.");
+    if(!code||!name||!category||!unit||!warehouseLocation){
+      alert("Malzeme kodu, adı, kategori, birim ve depo konumu alanlarını doldurun.");
       return;
     }
     if(!Number.isFinite(stock)||stock<0||!Number.isFinite(minStock)||minStock<0){
@@ -9844,6 +9986,7 @@ function bind(){
       stock:Number(stock.toFixed(2)),
       minStock:Number(minStock.toFixed(2)),
       description,
+      warehouseLocation,
       custom:true,
       createdBy:s.user?.name||"Bilinmeyen Kullanıcı",
       createdAt:new Date().toISOString()
@@ -9853,7 +9996,18 @@ function bind(){
     render();
   };
 
-  document.querySelectorAll("[data-material-edit]").forEach(btn=>btn.onclick=()=>{s.materialEditId=btn.dataset.materialEdit;render()});
+  document.querySelectorAll(".material-detail-row[data-material-edit]").forEach(row=>{
+    const open=()=>{s.materialEditId=row.dataset.materialEdit;render()};
+    row.onclick=open;
+    row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}};
+  });
+  document.querySelectorAll("[data-material-sort]").forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.materialSort;
+    if(!Object.prototype.hasOwnProperty.call(MATERIAL_SORT_LABELS,key))return;
+    if(s.materialSortKey===key)s.materialSortDir=s.materialSortDir==="asc"?"desc":"asc";
+    else{s.materialSortKey=key;s.materialSortDir=["stock","minStock","faultCount","usage"].includes(key)?"desc":"asc"}
+    render();
+  });
   const closeMaterialEditor=()=>{s.materialEditId=null;render()};
   ["closeMaterialEditor","cancelMaterialEditor"].forEach(id=>{const btn=document.getElementById(id);if(btn)btn.onclick=closeMaterialEditor});
   const materialEditorBackdrop=document.getElementById("materialEditorBackdrop");
@@ -9879,7 +10033,7 @@ function bind(){
     }
     const duplicate=MATERIALS.find(x=>String(x.id)!==String(id)&&String(x.code||"").trim().toLocaleUpperCase("tr-TR")===code);
     if(duplicate){alert(`Bu malzeme kodu zaten kullanılıyor: ${duplicate.name}`);return}
-    Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
+    Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),warehouseLocation:document.getElementById("materialEditLocation").value.trim(),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
     saveMaterials();s.materialEditId=null;render();
   };
   function deleteMaterialByButton(btn){
@@ -9893,7 +10047,6 @@ function bind(){
     DELETED_MATERIAL_IDS.add(id);saveDeletedMaterialIds();
     MATERIALS=MATERIALS.filter(x=>x.id!==id);saveMaterials();s.materialEditId=null;render();
   }
-  document.querySelectorAll("[data-material-delete]").forEach(btn=>btn.onclick=()=>deleteMaterialByButton(btn));
   const deleteMaterialFromEditor=document.getElementById("deleteMaterialFromEditor");if(deleteMaterialFromEditor)deleteMaterialFromEditor.onclick=()=>deleteMaterialByButton(deleteMaterialFromEditor);
 
   const materialCatalogSearch=document.getElementById("materialCatalogSearch");
@@ -9944,10 +10097,10 @@ function bind(){
       alert("Bu arızaya malzeme ekleme yetkiniz bulunmuyor.");
       return;
     }
-    const materialId=document.getElementById("faultMaterialId").value;
+    const materialQuery=(document.getElementById("faultMaterialSearch")?.value||"").trim().toLocaleLowerCase("tr-TR");
     const quantity=Number(document.getElementById("faultMaterialQuantity").value);
     const note=document.getElementById("faultMaterialNote").value.trim();
-    const material=materialById(materialId);
+    const material=MATERIALS.find(m=>[m.id,m.code,m.name,`${m.code} · ${m.name}`].some(value=>String(value||"").toLocaleLowerCase("tr-TR")===materialQuery));
     if(!material||!quantity||quantity<=0){
       alert("Malzeme ve geçerli miktar seçiniz.");
       return;
@@ -10024,10 +10177,15 @@ function bind(){
     storageSet(sessionStorage,"esauthversion",AUTH_VERSION);
     storageSet(sessionStorage,"eslogin","1");
     storageSet(sessionStorage,"esuser",JSON.stringify(s.user));
+    if(document.getElementById("rememberMe")?.checked){
+      storageSet(localStorage,REMEMBER_LOGIN_KEY,JSON.stringify({authVersion:AUTH_VERSION,user:s.user}));
+    }else{
+      storageRemove(localStorage,REMEMBER_LOGIN_KEY);
+    }
     ensureNotificationBaseline();
     render();
   };
-  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);s.login=false;s.user=null;s.page="dashboard";render()};
+  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);storageRemove(localStorage,REMEMBER_LOGIN_KEY);s.login=false;s.user=null;s.page="dashboard";render()};
   const df=document.getElementById("dashboardFactory");if(df)df.onchange=()=>{s.dashboardFactory=df.value;render()};
   document.querySelectorAll("[data-dashboard-fault-tab]").forEach(button=>button.onclick=()=>{
     s.dashboardFaultTab=button.dataset.dashboardFaultTab;
@@ -10196,7 +10354,12 @@ function bind(){
 
   if(shiftFactory)shiftFactory.onchange=()=>{s.shiftFactory=shiftFactory.value;render()};
   if(shiftTeam)shiftTeam.onchange=()=>{s.shiftTeam=shiftTeam.value;render()};
-  if(shiftSearch)shiftSearch.oninput=()=>{s.shiftSearch=shiftSearch.value;render()};
+  if(shiftSearch)shiftSearch.oninput=()=>{
+    s.shiftSearch=shiftSearch.value;
+    render();
+    const next=document.getElementById("shiftSearch");
+    if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length)}
+  };
   document.querySelectorAll(".shift-assignment-select").forEach(el=>el.onchange=()=>{
     if(!canManageShiftTeam(s.shiftTeam)){render();return}
     const personId=el.dataset.shiftPersonId;

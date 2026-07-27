@@ -104,6 +104,12 @@ function bind(){
       next.setSelectionRange(cursor,cursor);
     }
   };
+  const faultDateStart=document.getElementById("faultDateStart");
+  const faultDateEnd=document.getElementById("faultDateEnd");
+  if(faultDateStart)faultDateStart.onchange=()=>{s.faultDateStart=faultDateStart.value;if(s.faultDateEnd&&s.faultDateStart>s.faultDateEnd)s.faultDateEnd=s.faultDateStart;render()};
+  if(faultDateEnd)faultDateEnd.onchange=()=>{s.faultDateEnd=faultDateEnd.value;if(s.faultDateStart&&s.faultDateEnd<s.faultDateStart)s.faultDateStart=s.faultDateEnd;render()};
+  const clearFaultDates=document.getElementById("clearFaultDates");
+  if(clearFaultDates)clearFaultDates.onclick=()=>{s.faultDateStart="";s.faultDateEnd="";render()};
 
   const faultModalClose=document.getElementById("faultModalClose");
   const faultModalCloseBg=document.getElementById("faultModalCloseBg");
@@ -193,6 +199,7 @@ function bind(){
     if(!canAddMaintenanceLog())return;
     const factory=document.getElementById("maintenanceLogFactory")?.value||"";
     const title=(document.getElementById("maintenanceLogTitle")?.value||"").trim();
+    const workType=(document.getElementById("maintenanceLogType")?.value||"").trim();
     const location=(document.getElementById("maintenanceLogLocation")?.value||"").trim();
     const description=(document.getElementById("maintenanceLogDescription")?.value||"").trim();
     const performedDate=document.getElementById("maintenanceLogDate")?.value||"";
@@ -204,8 +211,29 @@ function bind(){
       return;
     }
     if(!participants.length){alert("İşe dahil olan en az bir personel seçiniz.");return}
+    if(!["Arıza","Planlı Bakım","İyileştirme","Kontrol","Revizyon","Diğer"].includes(workType)){alert("Geçerli bir iş türü seçiniz.");return}
     if(!title||!description){alert("İş başlığı ve yapılan iş açıklamasını giriniz.");return}
-    s.maintenanceLogs.push({id:`MW-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,factory,title,location,description,participants,performedAt:`${performedDate}T12:00:00`,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
+    const logId=`MW-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+    const performedAt=`${performedDate}T12:00:00`;
+    s.maintenanceLogs.push({id:logId,factory,workType,title,location,description,participants,performedAt,createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString()});
+    if(workType==="Arıza"){
+      const actualFactory=factory==="2. Fabrika"?"2. Fabrika A Blok":factory;
+      const line=(FACTORIES[actualFactory]||["Genel Alan"])[0];
+      const department=findMachineDepartment(actualFactory,line,location)||"Diğer";
+      const numericIds=s.faults.map(item=>Number(item.id)).filter(Number.isFinite);
+      s.faults.push({
+        id:(numericIds.length?Math.max(...numericIds):2000)+1,
+        factory:actualFactory,line,department,machine:location||"Bakım Çalışması",
+        type:"Diğer",subject:title,description,stopped:false,photoName:"",
+        status:"done",openedBy:s.user?.name||"Bilinmeyen Kullanıcı",
+        assignedTo:participants[0]||"",participants,assignmentState:"accepted",
+        claimedBy:participants[0]||"",claimedAt:performedAt,assignmentHistory:[],
+        solutionText:description,solutionBy:participants.join(", "),solutionAt:performedAt,
+        createdAt:performedAt,closedAt:new Date(new Date(performedAt).getTime()+60000).toISOString(),
+        maintenanceLogId:logId,usedMaterials:[]
+      });
+      save();
+    }
     saveMaintenanceLogs();s.maintenanceLogModal=false;render();
   };
 
@@ -907,7 +935,7 @@ function bind(){
   document.querySelectorAll(".work-assignee").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canManageWorkRequest(item)&&(!sel.value||workMaintenanceOptions(item.factory,item.assignedTeam).includes(sel.value))){item.assignedTo=sel.value;if(sel.value&&item.status==="open")item.status="assigned";saveWorkItems();render()}});
   document.querySelectorAll(".work-order-status").forEach(sel=>sel.onchange=()=>{const item=findWorkItemById(sel.dataset.workId);if(item&&canUpdateWorkOrder(item)&&["open","assigned","progress","material","approval","done","cancelled"].includes(sel.value)){item.status=sel.value;item.completedAt=sel.value==="done"?new Date().toISOString():null;item.completedBy=sel.value==="done"?(s.user?.name||""):"";const source=findWorkItemById(item.sourceRequestId);if(source){if(sel.value==="done"){source.status="done";source.completedAt=item.completedAt}else if(source.status==="done"){source.status="converted";source.completedAt=null}}saveWorkItems();render()}});
   document.querySelectorAll(".save-work-result").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const ta=[...document.querySelectorAll(".work-result-text")].find(el=>String(el.dataset.workId)===String(item.id));item.workDescription=(ta?.value||"").trim();saveWorkItems();render()});
-  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const materialId=form.querySelector(".work-material-id").value;const qty=Number(form.querySelector(".work-material-qty").value);const material=materialById(materialId);if(!material||!Number.isFinite(qty)||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
+  document.querySelectorAll(".work-material-form").forEach(form=>form.onsubmit=e=>{e.preventDefault();const item=findWorkItemById(form.dataset.workId);if(!item||!canUpdateWorkOrder(item))return;const query=(form.querySelector(".work-material-search")?.value||"").trim().toLocaleLowerCase("tr-TR");const qty=Number(form.querySelector(".work-material-qty").value);const material=MATERIALS.find(m=>[m.id,m.code,m.name,`${m.code} · ${m.name}`].some(value=>String(value||"").toLocaleLowerCase("tr-TR")===query));if(!material){alert("Listeden geçerli bir malzeme seçin.");return}if(!Number.isFinite(qty)||qty<=0)return;if(!Array.isArray(item.usedMaterials))item.usedMaterials=[];item.usedMaterials.push({materialId:material.id,quantity:qty,unit:material.unit,name:material.name,addedBy:s.user?.name||"",addedAt:new Date().toISOString()});saveWorkItems();render()});
   document.querySelectorAll("[data-remove-work-material]").forEach(btn=>btn.onclick=()=>{const item=findWorkItemById(btn.dataset.removeWorkMaterial);const index=Number(btn.dataset.index);if(!item||!canUpdateWorkOrder(item)||!Array.isArray(item.usedMaterials)||!Number.isInteger(index)||index<0||index>=item.usedMaterials.length)return;item.usedMaterials.splice(index,1);saveWorkItems();render()});
 
   const materialCatalogAddForm=document.getElementById("materialCatalogAddForm");
@@ -925,9 +953,10 @@ function bind(){
     const stock=Number(document.getElementById("newMaterialStock")?.value||0);
     const minStock=Number(document.getElementById("newMaterialMinStock")?.value||0);
     const description=(document.getElementById("newMaterialDescription")?.value||"").trim();
+    const warehouseLocation=(document.getElementById("newMaterialLocation")?.value||"").trim();
 
-    if(!code||!name||!category||!unit){
-      alert("Malzeme kodu, malzeme adı, kategori ve birim alanlarını doldurun.");
+    if(!code||!name||!category||!unit||!warehouseLocation){
+      alert("Malzeme kodu, adı, kategori, birim ve depo konumu alanlarını doldurun.");
       return;
     }
     if(!Number.isFinite(stock)||stock<0||!Number.isFinite(minStock)||minStock<0){
@@ -957,6 +986,7 @@ function bind(){
       stock:Number(stock.toFixed(2)),
       minStock:Number(minStock.toFixed(2)),
       description,
+      warehouseLocation,
       custom:true,
       createdBy:s.user?.name||"Bilinmeyen Kullanıcı",
       createdAt:new Date().toISOString()
@@ -966,7 +996,18 @@ function bind(){
     render();
   };
 
-  document.querySelectorAll("[data-material-edit]").forEach(btn=>btn.onclick=()=>{s.materialEditId=btn.dataset.materialEdit;render()});
+  document.querySelectorAll(".material-detail-row[data-material-edit]").forEach(row=>{
+    const open=()=>{s.materialEditId=row.dataset.materialEdit;render()};
+    row.onclick=open;
+    row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}};
+  });
+  document.querySelectorAll("[data-material-sort]").forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.materialSort;
+    if(!Object.prototype.hasOwnProperty.call(MATERIAL_SORT_LABELS,key))return;
+    if(s.materialSortKey===key)s.materialSortDir=s.materialSortDir==="asc"?"desc":"asc";
+    else{s.materialSortKey=key;s.materialSortDir=["stock","minStock","faultCount","usage"].includes(key)?"desc":"asc"}
+    render();
+  });
   const closeMaterialEditor=()=>{s.materialEditId=null;render()};
   ["closeMaterialEditor","cancelMaterialEditor"].forEach(id=>{const btn=document.getElementById(id);if(btn)btn.onclick=closeMaterialEditor});
   const materialEditorBackdrop=document.getElementById("materialEditorBackdrop");
@@ -992,7 +1033,7 @@ function bind(){
     }
     const duplicate=MATERIALS.find(x=>String(x.id)!==String(id)&&String(x.code||"").trim().toLocaleUpperCase("tr-TR")===code);
     if(duplicate){alert(`Bu malzeme kodu zaten kullanılıyor: ${duplicate.name}`);return}
-    Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
+    Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),warehouseLocation:document.getElementById("materialEditLocation").value.trim(),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
     saveMaterials();s.materialEditId=null;render();
   };
   function deleteMaterialByButton(btn){
@@ -1006,7 +1047,6 @@ function bind(){
     DELETED_MATERIAL_IDS.add(id);saveDeletedMaterialIds();
     MATERIALS=MATERIALS.filter(x=>x.id!==id);saveMaterials();s.materialEditId=null;render();
   }
-  document.querySelectorAll("[data-material-delete]").forEach(btn=>btn.onclick=()=>deleteMaterialByButton(btn));
   const deleteMaterialFromEditor=document.getElementById("deleteMaterialFromEditor");if(deleteMaterialFromEditor)deleteMaterialFromEditor.onclick=()=>deleteMaterialByButton(deleteMaterialFromEditor);
 
   const materialCatalogSearch=document.getElementById("materialCatalogSearch");
@@ -1057,10 +1097,10 @@ function bind(){
       alert("Bu arızaya malzeme ekleme yetkiniz bulunmuyor.");
       return;
     }
-    const materialId=document.getElementById("faultMaterialId").value;
+    const materialQuery=(document.getElementById("faultMaterialSearch")?.value||"").trim().toLocaleLowerCase("tr-TR");
     const quantity=Number(document.getElementById("faultMaterialQuantity").value);
     const note=document.getElementById("faultMaterialNote").value.trim();
-    const material=materialById(materialId);
+    const material=MATERIALS.find(m=>[m.id,m.code,m.name,`${m.code} · ${m.name}`].some(value=>String(value||"").toLocaleLowerCase("tr-TR")===materialQuery));
     if(!material||!quantity||quantity<=0){
       alert("Malzeme ve geçerli miktar seçiniz.");
       return;
@@ -1137,10 +1177,15 @@ function bind(){
     storageSet(sessionStorage,"esauthversion",AUTH_VERSION);
     storageSet(sessionStorage,"eslogin","1");
     storageSet(sessionStorage,"esuser",JSON.stringify(s.user));
+    if(document.getElementById("rememberMe")?.checked){
+      storageSet(localStorage,REMEMBER_LOGIN_KEY,JSON.stringify({authVersion:AUTH_VERSION,user:s.user}));
+    }else{
+      storageRemove(localStorage,REMEMBER_LOGIN_KEY);
+    }
     ensureNotificationBaseline();
     render();
   };
-  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);s.login=false;s.user=null;s.page="dashboard";render()};
+  const out=document.getElementById("out");if(out)out.onclick=()=>{storageClear(sessionStorage);storageRemove(localStorage,REMEMBER_LOGIN_KEY);s.login=false;s.user=null;s.page="dashboard";render()};
   const df=document.getElementById("dashboardFactory");if(df)df.onchange=()=>{s.dashboardFactory=df.value;render()};
   document.querySelectorAll("[data-dashboard-fault-tab]").forEach(button=>button.onclick=()=>{
     s.dashboardFaultTab=button.dataset.dashboardFaultTab;
@@ -1309,7 +1354,12 @@ function bind(){
 
   if(shiftFactory)shiftFactory.onchange=()=>{s.shiftFactory=shiftFactory.value;render()};
   if(shiftTeam)shiftTeam.onchange=()=>{s.shiftTeam=shiftTeam.value;render()};
-  if(shiftSearch)shiftSearch.oninput=()=>{s.shiftSearch=shiftSearch.value;render()};
+  if(shiftSearch)shiftSearch.oninput=()=>{
+    s.shiftSearch=shiftSearch.value;
+    render();
+    const next=document.getElementById("shiftSearch");
+    if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length)}
+  };
   document.querySelectorAll(".shift-assignment-select").forEach(el=>el.onchange=()=>{
     if(!canManageShiftTeam(s.shiftTeam)){render();return}
     const personId=el.dataset.shiftPersonId;

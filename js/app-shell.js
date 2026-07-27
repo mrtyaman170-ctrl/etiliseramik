@@ -60,7 +60,9 @@ function notificationBadge(pageName){
   return count?`<span class="nav-notification" title="${count} yeni kayıt"><b>!</b><small>${count}</small></span>`:"";
 }
 
-const storedSessionUser=storageJsonRecord(sessionStorage,"esuser",null);
+const REMEMBER_LOGIN_KEY="etilismart_remembered_login_v1";
+const rememberedLogin=storageJsonRecord(localStorage,REMEMBER_LOGIN_KEY,null);
+const storedSessionUser=storageJsonRecord(sessionStorage,"esuser",null)||rememberedLogin?.user||null;
 const storedSessionAccount=storedSessionUser?.id?APP_USERS[String(storedSessionUser.id)]:null;
 const storedUser=storedSessionAccount?{
   id:String(storedSessionUser.id),
@@ -70,9 +72,10 @@ const storedUser=storedSessionAccount?{
   department:storedSessionAccount.department||"",
   team:storedSessionAccount.team||""
 }:null;
-const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION;
+const sessionIsCurrent=storageGet(sessionStorage,"esauthversion","")===AUTH_VERSION
+  ||rememberedLogin?.authVersion===AUTH_VERSION;
 let s={
-  login:sessionIsCurrent&&storageGet(sessionStorage,"eslogin","0")==="1"&&!!storedUser,
+  login:sessionIsCurrent&&(storageGet(sessionStorage,"eslogin","0")==="1"||!!rememberedLogin)&&!!storedUser,
   user:sessionIsCurrent?storedUser:null,
   page:"dashboard",
   faults:storageJsonRecordArray(localStorage,K,generateHistory()),
@@ -104,8 +107,12 @@ let s={
   faultTab:"active",
   faultHistoryFactory:"Tümü",
   faultSearch:"",
+  faultDateStart:"",
+  faultDateEnd:"",
   faultSortKey:"createdAt",
   faultSortDir:"desc",
+  materialSortKey:"category",
+  materialSortDir:"asc",
   reportFactory:"Tümü",
   reportStart:"",
   reportEnd:"",
@@ -326,7 +333,9 @@ function sortFaultRecords(items){
   });
 }
 function faultRecordsPage(){
-  const all=visibleFaults();
+  let all=visibleFaults();
+  if(s.faultDateStart)all=all.filter(fault=>new Date(fault.createdAt)>=new Date(`${s.faultDateStart}T00:00:00`));
+  if(s.faultDateEnd)all=all.filter(fault=>new Date(fault.createdAt)<=new Date(`${s.faultDateEnd}T23:59:59`));
   const active=all.filter(fault=>fault.status!=="done");
   const history=all.filter(fault=>fault.status==="done");
   const factoryTabs=["Tümü",...Object.keys(FACTORIES).filter(factory=>userCanSeeFactory(factory))];
@@ -359,6 +368,11 @@ function faultRecordsPage(){
       <span>⌕</span>
       <input id="faultRecordSearch" value="${esc(s.faultSearch)}" autocomplete="off" placeholder="Arıza, makine, bölüm, kişi veya bakımcı ara">
     </label>
+    <div class="fault-date-range">
+      <label>Başlangıç<input id="faultDateStart" type="date" value="${esc(s.faultDateStart)}"></label>
+      <label>Bitiş<input id="faultDateEnd" type="date" value="${esc(s.faultDateEnd)}"></label>
+      <button type="button" class="secondary" id="clearFaultDates">Tarihleri Temizle</button>
+    </div>
   </section>
 
   ${s.faultTab==="history"?`<section class="fault-factory-tabs" aria-label="Arıza geçmişi fabrika seçimi">
@@ -699,10 +713,11 @@ function maintenanceLogModal(){
   const defaultFactory=factories[0]||"1. Fabrika";
   const people=[...new Map(factories.flatMap(factory=>maintenanceWorkPeople(factory)).map(p=>[p.id,p])).values()];
   return `<div class="modal-backdrop" id="maintenanceLogBackdrop"><div class="modal maintenance-log-modal">
-    <div class="modal-head"><div><span>BAKIM ÇALIŞMA KAYDI</span><h2>Yapılan İş Ekle</h2><p>Arıza veya iş emri dışında tamamlanan atölye ve saha çalışmalarını kaydedin.</p></div><button type="button" id="closeMaintenanceLog">×</button></div>
+    <div class="modal-head"><div><span>BAKIM ÇALIŞMA KAYDI</span><h2>Yapılan İş Ekle</h2><p>Tamamlanan arıza, bakım, iyileştirme, kontrol ve saha çalışmalarını türüne göre kaydedin.</p></div><button type="button" id="closeMaintenanceLog">×</button></div>
     <form id="maintenanceLogForm" class="maintenance-log-form">
       <div class="field"><label>Fabrika *</label><select id="maintenanceLogFactory" required>${factories.map(f=>`<option>${esc(f)}</option>`).join("")}</select></div>
       <div class="field"><label>İşin Yapıldığı Tarih *</label><input id="maintenanceLogDate" type="date" value="${dateOnly(new Date())}" required></div>
+      <div class="field wide"><label>Yapılan İşin Türü *</label><select id="maintenanceLogType" required><option value="Arıza">Arıza</option><option value="Planlı Bakım">Planlı Bakım</option><option value="İyileştirme">İyileştirme</option><option value="Kontrol">Kontrol</option><option value="Revizyon">Revizyon</option><option value="Diğer">Diğer</option></select><small class="field-help">Arıza seçilen kayıtlar tamamlanmış kayıt olarak Arıza Geçmişi'ne de aktarılır.</small></div>
       <div class="field wide"><label>İş Başlığı *</label><input id="maintenanceLogTitle" maxlength="140" placeholder="Örn. Atölyeye getirilen Masterjet pompası tamir edildi" required></div>
       <div class="field wide"><label>Makine / Konum</label><input id="maintenanceLogLocation" maxlength="140" placeholder="Örn. Bakım atölyesi · 2. Masterjet pompası"></div>
       <div class="field wide"><label>Yapılan İş Açıklaması *</label><textarea id="maintenanceLogDescription" rows="5" maxlength="1800" placeholder="Arıza tespiti, değiştirilen parçalar, yapılan test ve sonuç bilgilerini yazın." required></textarea></div>
@@ -717,7 +732,9 @@ function materialEditorModal(){
   if(!m)return "";
   const categories=["Elektrik","Mekanik","Pnömatik","Hidrolik","Enstrümantasyon","Sarf","Diğer"];
   const units=["Adet","Metre","Kilogram","Litre","Paket","Kutu","Rulo","Takım","Set","Çift"];
-  return `<div class="modal-backdrop" id="materialEditorBackdrop"><div class="modal material-editor-modal"><div class="modal-head"><div><span>MALZEME KARTI</span><h2>${esc(m.name)}</h2><p>${esc(m.code)}</p></div><button type="button" id="closeMaterialEditor">×</button></div><form id="materialEditorForm" class="material-editor-form"><input type="hidden" id="materialEditorId" value="${esc(m.id)}"><div class="field"><label>Malzeme Kodu *</label><input id="materialEditCode" value="${esc(m.code)}" required></div><div class="field wide"><label>Malzeme Adı *</label><input id="materialEditName" value="${esc(m.name)}" required></div><div class="field"><label>Kategori *</label><select id="materialEditCategory">${categories.map(x=>`<option ${x===m.category?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Birim *</label><select id="materialEditUnit">${units.map(x=>`<option ${x===m.unit?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Mevcut Stok</label><input id="materialEditStock" type="number" min="0" step="0.01" value="${Number(m.stock)||0}"></div><div class="field"><label>Minimum Stok</label><input id="materialEditMinStock" type="number" min="0" step="0.01" value="${Number(m.minStock)||0}"></div><div class="field wide"><label>Açıklama</label><textarea id="materialEditDescription" rows="3">${esc(m.description||"")}</textarea></div><div class="modal-actions wide"><button type="button" class="danger" id="deleteMaterialFromEditor" data-material-id="${esc(m.id)}">Malzemeyi Sil</button><button type="button" class="secondary" id="cancelMaterialEditor">Vazgeç</button><button type="submit" class="primary">Değişiklikleri Kaydet</button></div></form></div></div>`;
+  const editable=canManageMaterialCatalog();
+  const disabled=editable?"":"disabled";
+  return `<div class="modal-backdrop" id="materialEditorBackdrop"><div class="modal material-editor-modal"><div class="modal-head"><div><span>MALZEME DETAYI</span><h2>${esc(m.name)}</h2><p>${esc(m.code)}</p></div><button type="button" id="closeMaterialEditor">×</button></div><form id="materialEditorForm" class="material-editor-form"><input type="hidden" id="materialEditorId" value="${esc(m.id)}"><div class="field"><label>Malzeme Kodu *</label><input id="materialEditCode" value="${esc(m.code)}" ${disabled} required></div><div class="field wide"><label>Malzeme Adı *</label><input id="materialEditName" value="${esc(m.name)}" ${disabled} required></div><div class="field"><label>Kategori *</label><select id="materialEditCategory" ${disabled}>${categories.map(x=>`<option ${x===m.category?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Birim *</label><select id="materialEditUnit" ${disabled}>${units.map(x=>`<option ${x===m.unit?"selected":""}>${esc(x)}</option>`).join("")}</select></div><div class="field"><label>Mevcut Stok</label><input id="materialEditStock" type="number" min="0" step="0.01" value="${Number(m.stock)||0}" ${disabled}></div><div class="field"><label>Minimum Stok</label><input id="materialEditMinStock" type="number" min="0" step="0.01" value="${Number(m.minStock)||0}" ${disabled}></div><div class="field wide"><label>Depodaki Konumu</label><input id="materialEditLocation" value="${esc(m.warehouseLocation||"")}" placeholder="Örn. Ana Depo · A Rafı · 3. Göz" ${disabled}></div><div class="field wide"><label>Açıklama</label><textarea id="materialEditDescription" rows="3" ${disabled}>${esc(m.description||"")}</textarea></div><div class="modal-actions wide">${editable?`<button type="button" class="danger" id="deleteMaterialFromEditor" data-material-id="${esc(m.id)}">Malzemeyi Sil</button><button type="button" class="secondary" id="cancelMaterialEditor">Vazgeç</button><button type="submit" class="primary">Değişiklikleri Kaydet</button>`:`<button type="button" class="primary" id="cancelMaterialEditor">Kapat</button>`}</div></form></div></div>`;
 }
 function page(){
   if(!canAccess(s.page))s.page=allowedNavItems()[0]?.[0]||"dashboard";
@@ -760,7 +777,7 @@ function app(){
   ensureNotificationBaseline();
   return `<div class="top">
     <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menüyü aç" aria-expanded="false">☰</button>
-    <div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi</small></div>
+    <div class="brand">ETİLİ<span>SMART</span><small>Bakım Yönetim Sistemi · v${APP_VERSION}</small></div>
     <div class="top-user"><span class="top-user-name">${esc(s.user?.name||"")}</span><span class="top-user-role">${esc(s.user?.role||"")}</span><button id="out" class="secondary">Çıkış</button></div>
   </div>
   <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
@@ -768,7 +785,7 @@ function app(){
     <div class="mobile-drawer-head"><b>ETİLİSMART Menü</b><button type="button" id="mobileMenuClose" aria-label="Menüyü kapat">×</button></div>
     <div class="aside-user"><b>${esc(s.user?.name||"")}</b><small>${esc(s.user?.role||"")}</small></div>
     ${allowedNavItems().map(([page,icon,label])=>nav(page,`${icon}  ${label}`)).join("")}
-    <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}</div>
+    <div class="aside-scope"><small>YETKİ ALANI</small><b>${permissions().allFactories?"Tüm fabrikalar":userFactories().join(" · ")}</b>${s.user?.department?`<span>${esc(s.user.department)}</span>`:""}<span>Sürüm ${APP_VERSION} · ${APP_RELEASE_DATE}</span></div>
   </aside><main>${page()}</main></div>${personnelDetailModal()}${faultDetailModal()}${machineModal()}${workDetailModal()}${dailyControlDetailModal()}${maintenanceLogModal()}${materialEditorModal()}${qrModal()}${shiftPersonModal()}`;
 }
 function login(){
@@ -786,16 +803,16 @@ function login(){
         </div>
       </section>
       <section class="login-form-panel">
-        <div class="login-title"><span>ETİLİ<span>SMART</span></span><small>Dijital Bakım Yönetim Sistemi</small></div>
+        <div class="login-title"><span>ETİLİ<span>SMART</span></span><small>Dijital Bakım Yönetim Sistemi · v${APP_VERSION}</small></div>
         <h2>Hesabınıza giriş yapın</h2>
         <p>Size tanımlanan kullanıcı ID ve parolayı girin.</p>
         <form id="login">
           <div class="field"><label>Kullanıcı ID</label><input id="userId" inputmode="numeric" autocomplete="username" placeholder="Örn. 1111" required></div>
           <div class="field"><label>Parola</label><input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••" required></div>
+          <label class="remember-login"><input id="rememberMe" type="checkbox" ${rememberedLogin?"checked":""}><span>Beni hatırla</span></label>
           <div id="loginError" class="login-error"></div>
           <button class="primary login-submit">Giriş Yap <span>→</span></button>
         </form>
-        <div class="login-demo-note"><b>Demo hesapları</b><span>Genel yönetici: 1111 / 1111</span><small>Personeller kendilerine tanımlanan 4 haneli ID ve parola ile giriş yapabilir.</small></div>
       </section>
     </div>
   </div>`;

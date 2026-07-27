@@ -513,10 +513,8 @@ function workDetailModal(){
       ${!isRequest?`<section class="work-detail-materials">
         <div class="section-modern-head"><div><h2>Kullanılan Malzemeler</h2><p>İş emrine kaydedilen malzemeler.</p></div></div>
         ${canProgressEdit?`<form class="work-material-form work-detail-material-form" data-work-id="${esc(item.id)}">
-          <select class="work-material-id" required>
-            <option value="">Kullanılan malzeme</option>
-            ${MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(material=>`<option value="${esc(material.id)}">${esc(material.code)} · ${esc(material.name)}</option>`).join("")}
-          </select>
+          <input class="work-material-search" list="workMaterialList-${esc(item.id)}" placeholder="Kod veya malzeme adıyla ara..." autocomplete="off" required>
+          <datalist id="workMaterialList-${esc(item.id)}">${MATERIALS.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(material=>`<option value="${esc(material.code)} · ${esc(material.name)}"></option>`).join("")}</datalist>
           <input class="work-material-qty" type="number" min="0.01" step="0.01" value="1" required>
           <button class="secondary" type="submit">Malzeme Ekle</button>
         </form>`:""}
