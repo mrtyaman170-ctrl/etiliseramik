@@ -11,11 +11,11 @@ function addDays(base,days){
 function generatePlannedMaintenances(){
   const now=new Date();
   return [
-    {id:1,title:"Spray Dryer periyodik kontrol",factory:"2. Fabrika A Blok",line:"1. Hat",department:"Masse Bölümü",machine:"Spray Dryer",type:"Periyodik Bakım",priority:"Yüksek",date:dateOnly(addDays(now,1)),time:"09:00",duration:120,assigned:"Mekanik Bakım Ekibi",status:"planned",description:"Nozul, fan, brülör, sıcaklık sensörleri ve filtre kontrolü."},
-    {id:2,title:"Pres hidrolik sistem kontrolü",factory:"1. Fabrika",line:"2. Hat",department:"Pres Bölümü",machine:"Presler",type:"Mekanik Kontrol",priority:"Normal",date:dateOnly(addDays(now,3)),time:"13:30",duration:90,assigned:"Mekanik Bakım Ekibi",status:"planned",description:"Yağ seviyesi, kaçak, basınç ve hortum kontrolleri."},
-    {id:3,title:"Fırın pano termal kontrolü",factory:"2. Fabrika B Blok",line:"1. Hat",department:"Fırınlar",machine:"Fırın",type:"Elektrik Kontrolü",priority:"Kritik",date:dateOnly(addDays(now,5)),time:"08:30",duration:180,assigned:"Elektrik Bakım Ekibi",status:"planned",description:"Pano bağlantıları, kontaktörler ve termal kamera kontrolü."},
-    {id:4,title:"Dijital baskı kalibrasyonu",factory:"1. Fabrika",line:"1. Hat",department:"Sır Bantları",machine:"Dijital Baskı",type:"Kalibrasyon",priority:"Normal",date:dateOnly(addDays(now,8)),time:"10:00",duration:60,assigned:"Otomasyon Ekibi",status:"planned",description:"Baskı kafası ve eksen kalibrasyonu."},
-    {id:5,title:"Paketleme sensör temizliği",factory:"2. Fabrika A Blok",line:"2. Hat",department:"Paketleme",machine:"Paketleme",type:"Temizlik",priority:"Düşük",date:dateOnly(addDays(now,-2)),time:"15:00",duration:45,assigned:"Vardiya Bakım Ekibi",status:"done",description:"Fotosel ve sensör yüzeylerinin temizliği."}
+    {id:1,title:"Spray Dryer periyodik kontrol",factory:"2. Fabrika A Blok",line:"1. Hat",department:"Masse Bölümü",machine:"Spray Dryer",type:"Periyodik Bakım",priority:"Yüksek",date:dateOnly(addDays(now,1)),time:"09:00",duration:120,assigned:"Mekanik Bakım Ekibi",status:"planned",description:"Nozul, fan, brülör, sıcaklık sensörleri ve filtre kontrolü.",createdBy:"Kemal Ayrancı",createdAt:addDays(now,-4).toISOString()},
+    {id:2,title:"Pres hidrolik sistem kontrolü",factory:"1. Fabrika",line:"2. Hat",department:"Pres Bölümü",machine:"Presler",type:"Mekanik Kontrol",priority:"Normal",date:dateOnly(addDays(now,3)),time:"13:30",duration:90,assigned:"Mekanik Bakım Ekibi",status:"planned",description:"Yağ seviyesi, kaçak, basınç ve hortum kontrolleri.",createdBy:"Hamit Uysal",createdAt:addDays(now,-3).toISOString()},
+    {id:3,title:"Fırın pano termal kontrolü",factory:"2. Fabrika B Blok",line:"1. Hat",department:"Fırınlar",machine:"Fırın",type:"Elektrik Kontrolü",priority:"Kritik",date:dateOnly(addDays(now,5)),time:"08:30",duration:180,assigned:"Elektrik Bakım Ekibi",status:"planned",description:"Pano bağlantıları, kontaktörler ve termal kamera kontrolü.",createdBy:"Kemal Ayrancı",createdAt:addDays(now,-2).toISOString()},
+    {id:4,title:"Dijital baskı kalibrasyonu",factory:"1. Fabrika",line:"1. Hat",department:"Sır Bantları",machine:"Dijital Baskı",type:"Kalibrasyon",priority:"Normal",date:dateOnly(addDays(now,8)),time:"10:00",duration:60,assigned:"Otomasyon Ekibi",status:"planned",description:"Baskı kafası ve eksen kalibrasyonu.",createdBy:"Mert Yaman",createdAt:addDays(now,-1).toISOString()},
+    {id:5,title:"Paketleme sensör temizliği",factory:"2. Fabrika A Blok",line:"2. Hat",department:"Paketleme",machine:"Paketleme",type:"Temizlik",priority:"Düşük",date:dateOnly(addDays(now,-2)),time:"15:00",duration:45,assigned:"Vardiya Bakım Ekibi",status:"done",description:"Fotosel ve sensör yüzeylerinin temizliği.",createdBy:"Kemal Ayrancı",createdAt:addDays(now,-10).toISOString(),updatedBy:"Özgür Öz",updatedAt:addDays(now,-2).toISOString()}
   ];
 }
 
@@ -121,7 +121,7 @@ function plannedMaintenancePage(){
     const dayItems=items.filter(x=>x.date===key).sort((a,b)=>a.time.localeCompare(b.time));
     cells.push(`<div class="calendar-day ${inside?"":"outside"} ${key===today?"today":""}" data-calendar-date="${key}">
       <div class="calendar-day-number"><span>${label}</span>${dayItems.length?`<b>${dayItems.length}</b>`:""}</div>
-      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${esc(x.id)}" title="${esc(x.title)}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
+      <div class="calendar-events">${dayItems.slice(0,3).map(x=>`<button type="button" class="calendar-event ${maintenanceStatusClass(x.status)}" data-pm-id="${esc(x.id)}" title="${esc(x.title)} · Planlayan: ${esc(x.createdBy||"Sistem / Önceki Kayıt")}"><time>${esc(x.time)}</time><span>${esc(x.machine)}</span></button>`).join("")}${dayItems.length>3?`<small>+${dayItems.length-3} bakım</small>`:""}</div>
     </div>`);
   }
   return `${clockBlock()}
@@ -149,7 +149,7 @@ function plannedMaintenancePage(){
       <div class="upcoming-head"><div><h3>Yaklaşan Bakımlar</h3><p>Sıradaki planlı görevler</p></div><span>${upcoming.length}</span></div>
       <div class="upcoming-list">${upcoming.slice(0,8).map(x=>`<article class="upcoming-item priority-${esc(String(x.priority||"Normal").toLocaleLowerCase("tr-TR").replace("ü","u").replace("ş","s"))}" data-pm-id="${esc(x.id)}" tabindex="0">
         <div class="upcoming-date"><b>${new Date(x.date+"T00:00:00").getDate()}</b><small>${new Date(x.date+"T00:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></div>
-        <div class="upcoming-copy"><div><b>${esc(x.machine)}</b><span>${esc(x.time)}</span></div><p>${esc(x.title)}</p><small>${esc(x.factory)} · ${esc(x.line)}</small><em>${esc(x.priority)}</em></div>
+        <div class="upcoming-copy"><div><b>${esc(x.machine)}</b><span>${esc(x.time)}</span></div><p>${esc(x.title)}</p><small>${esc(x.factory)} · ${esc(x.line)}</small><small class="planned-by">Planlayan: ${esc(x.createdBy||"Sistem / Önceki Kayıt")}</small><em>${esc(x.priority)}</em></div>
         ${canEditPlannedMaintenance(x)?`<select class="pm-status" data-id="${esc(x.id)}"><option value="planned" ${x.status==="planned"?"selected":""}>Planlandı</option><option value="progress" ${x.status==="progress"?"selected":""}>Devam Ediyor</option><option value="done" ${x.status==="done"?"selected":""}>Tamamlandı</option><option value="cancelled" ${x.status==="cancelled"?"selected":""}>İptal</option></select>`:""}
       </article>`).join("")||'<div class="compact-empty"><span>✓</span><p>Yaklaşan planlı bakım bulunmuyor.</p></div>'}</div>
     </aside>

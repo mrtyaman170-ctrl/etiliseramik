@@ -74,7 +74,7 @@ function generateHistory(){
 /* Arıza, rapor ve makine ekranları */
 function newf(){
   if(!canCreateFault())return `<div class="card empty-panel"><h3>Yetkisiz işlem</h3><p>Arıza kaydını yalnızca operatörler, bölüm formenleri ve üretim müdürü açabilir.</p></div>`;
-  return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">▣ QR Kod Tara</button></div>
+  return `${clockBlock()}<div class="head"><div><h1>Arıza Kaydı Oluştur</h1><p>Yeni arıza kaydını sisteme ekleyin.</p></div><button type="button" class="qr-scan-button" id="openQrScanner">${qrScanIcon()}<span>QR Kod Tara</span></button></div>
   <div id="qrFilledInfo" class="qr-filled-info"></div><div class="fault-opener-preview"><span>ARIZA KAYDINI AÇAN</span><div><i>${esc((s.user?.name||"?").charAt(0))}</i><b>${esc(s.user?.name||"Giriş yapan kullanıcı")}</b><small>Kullanıcı ID: ${esc(s.user?.id||"-")}</small></div></div>
   <div class="card form"><form id="fault"><div class="formgrid">
   <div class="field"><label>Fabrika</label><select id="factory" required>${opts(userFactories(),"Fabrika seçiniz")}</select></div>
@@ -350,9 +350,20 @@ function machineModal(){
   const typeData=countBy(chartRangeFaultsFor(hist,"machineType"),"type").map(([label,value])=>({label,value}));
   const machineDowntime=countBy(chartRangeFaultsFor(hist,"machineDowntime").filter(x=>x.stopped),"subject").slice(0,8).map(([label,value])=>({label,value}));
   const topSubject=countBy(hist,"subject")[0]?.[0]||"-";
+  const maintenanceHistory=visibleMaintenances()
+    .filter(item=>item.factory===factory&&item.line===line&&item.machine===machine)
+    .sort((a,b)=>String(b.date+b.time).localeCompare(String(a.date+a.time)));
 
   let body="";
   if(s.machineTab==="history")body=table(hist);
+  else if(s.machineTab==="maintenance")body=`<section class="machine-maintenance-history">
+    <div class="section-modern-head"><div><h3>Planlı Bakım Geçmişi</h3><p>${esc(machine)} için tamamlanan ve yaklaşan bakım planları</p></div><span class="list-count blue">${maintenanceHistory.length}</span></div>
+    <div class="machine-maintenance-list">${maintenanceHistory.map(item=>`<article>
+      <div class="machine-maintenance-date"><b>${new Date(item.date+"T00:00:00").toLocaleDateString("tr-TR",{day:"2-digit",month:"short"})}</b><span>${esc(item.time||"-")}</span></div>
+      <div><small>${esc(item.type)} · ${esc(item.priority)}</small><h4>${esc(item.title)}</h4><p>${esc(item.description||"Açıklama girilmemiş.")}</p><span>Planlayan: <b>${esc(item.createdBy||"Sistem / Önceki Kayıt")}</b> · Atanan: <b>${esc(item.assigned||"-")}</b></span></div>
+      <strong class="maintenance-detail-status ${maintenanceStatusClass(item.status)}">${esc(maintenanceStatusLabel(item.status))}</strong>
+    </article>`).join("")||'<div class="compact-empty"><span>▦</span><p>Bu makine için planlı bakım kaydı bulunmuyor.</p></div>'}</div>
+  </section>`;
   else if(s.machineTab==="charts")body=`<div class="machine-chart-grid">
     <article class="analytics-chart-card wide"><div class="chart-panel-head"><div><h3>Makine Arıza Trendi</h3><p>${esc(machine)} için zaman bazlı arıza sayısı</p></div>${chartRangeControlsFor("machineTrend")}</div>${lineChartSVG(machineTrend.length?machineTrend:[{label:"Yok",value:0}],"")}</article>
     <article class="analytics-chart-card"><div class="chart-panel-head"><div><h3>Arıza Tipi Dağılımı</h3><p>Makinenin arıza türleri</p></div>${chartRangeControlsFor("machineType")}</div>${barChartSVG(typeData.length?typeData:[{label:"Yok",value:0}],"")}</article>
@@ -363,7 +374,7 @@ function machineModal(){
 
   return `<div class="modal-backdrop" id="modalCloseBg"><div class="modal machine-modal">
     <div class="modal-head"><div><h2>${esc(machine)}</h2><p>${esc(factory)} · ${esc(line)} · ${esc(department||"-")}</p></div><div class="modal-head-actions"><button type="button" class="machine-qr-button" data-qr-machine="${esc(machine)}" data-qr-factory="${esc(factory)}" data-qr-line="${esc(line)}">QR</button>${canManageMachines()?`<button type="button" class="danger machine-detail-delete" data-delete-machine="${esc(machine)}" data-delete-factory="${esc(factory)}" data-delete-line="${esc(line)}" data-delete-department="${esc(department)}">Makineyi Sil</button>`:""}<button id="modalClose">×</button></div></div>
-    <div class="tabs"><button data-tab="overview" class="${s.machineTab==="overview"?"active":""}">Genel Bakış</button><button data-tab="history" class="${s.machineTab==="history"?"active":""}">Arıza Geçmişi</button>${roleHasCharts()?`<button data-tab="charts" class="${s.machineTab==="charts"?"active":""}">Grafikler</button>`:""}<button data-tab="documents" class="${s.machineTab==="documents"?"active":""}">Dokümanlar</button></div>
+    <div class="tabs"><button data-tab="overview" class="${s.machineTab==="overview"?"active":""}">Genel Bakış</button><button data-tab="history" class="${s.machineTab==="history"?"active":""}">Arıza Geçmişi</button><button data-tab="maintenance" class="${s.machineTab==="maintenance"?"active":""}">Planlı Bakım Geçmişi</button>${roleHasCharts()?`<button data-tab="charts" class="${s.machineTab==="charts"?"active":""}">Grafikler</button>`:""}<button data-tab="documents" class="${s.machineTab==="documents"?"active":""}">Dokümanlar</button></div>
     ${body}
   </div></div>`;
 }

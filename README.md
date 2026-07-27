@@ -1,12 +1,28 @@
-# ETİLİSMART Modüler Proje
+# ETİLİSMART Modüler Proje — v9
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
 
+## v9 yenilikleri
+
+- Ana panelde canlı saat ve aktif vardiyadaki bakım ekipleri için ayrı bloklar
+- Daha profesyonel QR tarama simgesi
+- Aranabilir ve sütun başlıklarından sıralanabilir arıza kayıtları
+- Üç fabrika için ayrı arıza geçmişi görünümü
+- İş talebi ve iş emri geçmişleri
+- Yetkili bakım yöneticileri için taşeron işleri yönetimi
+- Planlı bakımı oluşturan kullanıcı bilgisi
+- Makine detayında planlı bakım geçmişi
+- Masaüstüyle aynı işlem yetkilerini koruyan sade mobil görünüm
+
 ## Çalıştırma
 
-`index.html` dosyasını Chrome veya Edge ile açın. İnternet bağlantısı olmadan
-temel ekranlar çalışır. Kamera ile QR okutma özelliği tarayıcı güvenlik
+En kolay kullanım için `dist/ETILISMART.html` dosyasını Chrome veya Edge ile
+açın. Bu dosya bütün stil ve kodları tek dosyada içerir.
+
+Geliştirme yapmak veya GitHub Pages üzerinde yayımlamak için `index.html`,
+`css`, `js` ve `tools` klasörlerini birlikte kullanın. İnternet bağlantısı
+olmadan temel ekranlar çalışır. Kamera ile QR okutma özelliği tarayıcı güvenlik
 kısıtlamaları nedeniyle yerel dosyada izin isteyebilir.
 
 ## Geliştirme dosyaları

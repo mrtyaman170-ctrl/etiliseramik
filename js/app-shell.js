@@ -92,6 +92,7 @@ let s={
   dailyControlDetail:null,
   utilityStatsDays:14,
   workTab:"requests",
+  workSearch:"",
   workCreateMode:"",
   calendarDate:new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString(),
   plannedModal:false,
@@ -100,6 +101,11 @@ let s={
   plannedSelectedDate:"",
   dashboardFactory:"Tümü",
   dashboardFaultTab:"active",
+  faultTab:"active",
+  faultHistoryFactory:"Tümü",
+  faultSearch:"",
+  faultSortKey:"createdAt",
+  faultSortDir:"desc",
   reportFactory:"Tümü",
   reportStart:"",
   reportEnd:"",
@@ -223,6 +229,17 @@ function clockBlock(){
   </section>`;
 }
 
+function qrScanIcon(className=""){
+  return `<svg class="qr-scan-icon ${esc(className)}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path class="qr-scan-frame" d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>
+    <rect x="7" y="7" width="3" height="3" rx=".45"/>
+    <rect x="14" y="7" width="3" height="3" rx=".45"/>
+    <rect x="7" y="14" width="3" height="3" rx=".45"/>
+    <path d="M14 14h1.5v1.5H17V17h-3z"/>
+    <path class="qr-scan-line" d="M5.5 12h13"/>
+  </svg>`;
+}
+
 function countBy(items,key){
   const map=new Map();
   items.forEach(item=>{
@@ -234,10 +251,27 @@ function countBy(items,key){
 function statusLabel(status){
   return status==="done"?"Tamamlandı":status==="progress"?"Müdahale Ediliyor":"Açık";
 }
-function table(items,editable=false){
+function faultSortHeader(label,key,sortable){
+  if(!sortable)return esc(label);
+  const active=s.faultSortKey===key;
+  const direction=active?(s.faultSortDir==="asc"?"▲":"▼"):"↕";
+  return `<button type="button" class="fault-sort-button ${active?"active":""}" data-fault-sort="${esc(key)}" title="${esc(label)} sütununa göre sırala">${esc(label)} <span>${direction}</span></button>`;
+}
+function table(items,editable=false,options={}){
+  const sortable=!!options.sortable;
   if(!items.length)return `<div class="card empty-panel"><h3>Kayıt bulunamadı</h3><p>Seçilen kriterlere uygun arıza kaydı yok.</p></div>`;
   return `<div class="card table-wrap"><table>
-    <thead><tr><th>Tarih</th><th>Fabrika / Hat</th><th>Bölüm / Makine</th><th>Arıza</th><th>Kaydı Açan</th><th>Sorumlu Bakımcı</th><th>Durum</th><th>Süre</th>${editable?"<th>İşlem</th>":""}</tr></thead>
+    <thead><tr>
+      <th>${faultSortHeader("Tarih","createdAt",sortable)}</th>
+      <th>Fabrika / Hat</th>
+      <th>${faultSortHeader("Bölüm / Makine","department",sortable)}</th>
+      <th>Arıza</th>
+      <th>${faultSortHeader("Kaydı Açan","openedBy",sortable)}</th>
+      <th>${faultSortHeader("Sorumlu Bakımcı","assignedTo",sortable)}</th>
+      <th>Durum</th>
+      <th>${faultSortHeader("Süre","duration",sortable)}</th>
+      ${editable?"<th>İşlem</th>":""}
+    </tr></thead>
     <tbody>${items.map(f=>`<tr class="fault-click-row" data-fault-detail-id="${esc(f.id)}" title="Arıza detaylarını görüntülemek için tıklayın">
       <td data-label="Tarih">${fmtDate(f.createdAt)}</td>
       <td data-label="Fabrika / Hat"><b>${esc(f.factory)}</b><br><small>${esc(f.line)}</small></td>
@@ -256,6 +290,85 @@ function table(items,editable=false){
       </select></td>`:editable?'<td data-label="İşlem"><small>Yetkiniz yok</small></td>':""}
     </tr>`).join("")}</tbody>
   </table></div>`;
+}
+
+function faultSearchMatches(fault,query){
+  if(!query)return true;
+  const searchable=[
+    fault.id,
+    fault.factory,
+    fault.line,
+    fault.department,
+    fault.machine,
+    fault.type,
+    fault.subject,
+    fault.description,
+    fault.openedBy,
+    fault.assignedTo,
+    ...(Array.isArray(fault.participants)?fault.participants:[])
+  ].join(" ").toLocaleLowerCase("tr-TR");
+  return searchable.includes(query.toLocaleLowerCase("tr-TR"));
+}
+function faultSortValue(fault,key){
+  if(key==="duration")return durationMs(fault);
+  if(key==="createdAt")return new Date(fault.createdAt).getTime()||0;
+  return String(fault?.[key]||"").toLocaleLowerCase("tr-TR");
+}
+function sortFaultRecords(items){
+  const direction=s.faultSortDir==="asc"?1:-1;
+  const key=s.faultSortKey||"createdAt";
+  return [...items].sort((a,b)=>{
+    const av=faultSortValue(a,key),bv=faultSortValue(b,key);
+    if(typeof av==="number"&&typeof bv==="number")return (av-bv)*direction;
+    const compared=String(av).localeCompare(String(bv),"tr",{numeric:true,sensitivity:"base"});
+    if(compared)return compared*direction;
+    return (new Date(b.createdAt)-new Date(a.createdAt));
+  });
+}
+function faultRecordsPage(){
+  const all=visibleFaults();
+  const active=all.filter(fault=>fault.status!=="done");
+  const history=all.filter(fault=>fault.status==="done");
+  const factoryTabs=["Tümü",...Object.keys(FACTORIES).filter(factory=>userCanSeeFactory(factory))];
+  if(!factoryTabs.includes(s.faultHistoryFactory))s.faultHistoryFactory="Tümü";
+  let records=s.faultTab==="history"?history:active;
+  if(s.faultTab==="history"&&s.faultHistoryFactory!=="Tümü"){
+    records=records.filter(fault=>fault.factory===s.faultHistoryFactory);
+  }
+  records=sortFaultRecords(records.filter(fault=>faultSearchMatches(fault,s.faultSearch.trim())));
+  const counts=Object.fromEntries(Object.keys(FACTORIES).map(factory=>[
+    factory,
+    history.filter(fault=>fault.factory===factory).length
+  ]));
+
+  return `${clockBlock()}
+  <section class="desktop-page-title fault-page-title">
+    <div><span>BAKIM OPERASYONLARI</span><h1>Arıza Kayıtları</h1><p>Aktif arızaları yönetin; tamamlanan kayıtları fabrika bazında geçmişten inceleyin.</p></div>
+    <div class="desktop-page-actions">
+      <div class="record-count"><small>GÖSTERİLEN KAYIT</small><b>${records.length}</b></div>
+      ${canAccess("new")?'<button class="primary" data-p="new">+ Yeni Arıza</button>':""}
+    </div>
+  </section>
+
+  <section class="fault-record-toolbar">
+    <div class="fault-record-tabs">
+      <button type="button" data-fault-tab="active" class="${s.faultTab==="active"?"active":""}">Aktif Arızalar <span>${active.length}</span></button>
+      <button type="button" data-fault-tab="history" class="${s.faultTab==="history"?"active":""}">Arıza Geçmişi <span>${history.length}</span></button>
+    </div>
+    <label class="record-search">
+      <span>⌕</span>
+      <input id="faultRecordSearch" value="${esc(s.faultSearch)}" autocomplete="off" placeholder="Arıza, makine, bölüm, kişi veya bakımcı ara">
+    </label>
+  </section>
+
+  ${s.faultTab==="history"?`<section class="fault-factory-tabs" aria-label="Arıza geçmişi fabrika seçimi">
+    ${factoryTabs.map(factory=>`<button type="button" data-fault-history-factory="${esc(factory)}" class="${s.faultHistoryFactory===factory?"active":""}">
+      <span>${esc(factory)}</span><b>${factory==="Tümü"?history.length:counts[factory]||0}</b>
+    </button>`).join("")}
+  </section>`:""}
+
+  <div class="fault-sort-help"><span>↕</span>Sıralamak için Tarih, Bölüm/Makine, Kaydı Açan, Sorumlu Bakımcı veya Süre başlığına tıklayın.</div>
+  ${table(records,!!permissions().editStatus,{sortable:true})}`;
 }
 function nav(page,label){
   return `<button class="nav ${s.page===page?"active":""}" data-p="${page}"><span class="nav-copy">${esc(label)}</span>${notificationBadge(page)}</button>`;
@@ -541,7 +654,7 @@ function barChartSVG(data,title){
 function compactFaultList(items,emptyText){
   if(!items.length)return `<div class="compact-empty"><span>✓</span><p>${esc(emptyText)}</p></div>`;
   return `<div class="compact-fault-list">${items.slice(0,8).map(f=>`
-    <button class="compact-fault-row" data-p="faults">
+    <button class="compact-fault-row fault-click-row" data-fault-detail-id="${esc(f.id)}" title="Arıza ayrıntılarını aç">
       <span class="compact-state ${f.stopped?"stop":esc(f.status)}"></span>
       <div class="compact-fault-copy">
         <div><b>${esc(f.machine)}</b><time>${durationText(f)}</time></div>
@@ -609,15 +722,7 @@ function materialEditorModal(){
 function page(){
   if(!canAccess(s.page))s.page=allowedNavItems()[0]?.[0]||"dashboard";
   if(s.page==="new")return newf();
-  if(s.page==="faults")return `${clockBlock()}
-  <section class="desktop-page-title">
-    <div><span>BAKIM OPERASYONLARI</span><h1>Arıza Kayıtları</h1><p>Yetki alanınızdaki tüm arıza kayıtlarını görüntüleyin ve yönetin.</p></div>
-    <div class="desktop-page-actions">
-      <div class="record-count"><small>TOPLAM KAYIT</small><b>${visibleFaults().length}</b></div>
-      ${canAccess("new")?'<button class="primary" data-p="new">+ Yeni Arıza</button>':""}
-    </div>
-  </section>
-  ${table([...visibleFaults()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)),!!permissions().editStatus)}`;
+  if(s.page==="faults")return faultRecordsPage();
   if(s.page==="layout")return layoutPage();
   if(s.page==="planned")return plannedMaintenancePage();
   if(s.page==="shifts")return shiftSchedulePage();

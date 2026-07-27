@@ -2225,3 +2225,487 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .brand small{font-size:6px!important}
   .top .secondary{padding:7px 8px!important;font-size:9px!important}
 }
+
+
+/* === Operasyon geçmişleri, taşeron işleri ve profesyonel QR görünümü === */
+.qr-scan-icon{
+  display:block;
+  width:23px;
+  height:23px;
+  flex:0 0 auto;
+  overflow:visible;
+  color:currentColor
+}
+.qr-scan-icon .qr-scan-frame,
+.qr-scan-icon .qr-scan-line{
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.65;
+  stroke-linecap:round;
+  stroke-linejoin:round
+}
+.qr-scan-icon .qr-scan-line{
+  stroke:#f3b71b;
+  stroke-width:1.4;
+  filter:drop-shadow(0 0 2px rgba(243,183,27,.35))
+}
+.qr-scan-icon rect,
+.qr-scan-icon path:not(.qr-scan-frame):not(.qr-scan-line){
+  fill:currentColor;
+  stroke:none
+}
+.qr-scan-icon.large{width:31px;height:31px}
+.qr-scan-icon.hero{width:29px;height:29px}
+.qr-scan-button,
+.qr-home-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px
+}
+.hero-qr .qr-scan-icon{transition:transform .18s ease}
+.hero-qr:hover .qr-scan-icon{transform:scale(1.08)}
+.qr-home-symbol{font-size:0}
+.qr-home-symbol .qr-scan-line{stroke:#fff}
+
+.dashboard-primary-actions{
+  grid-template-columns:repeat(2,minmax(220px,1fr));
+  max-width:720px
+}
+.dashboard-duty-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:14px;
+  margin:0 0 16px
+}
+.dashboard-duty-grid .on-duty-card{
+  min-width:0;
+  margin:0;
+  padding:17px;
+  border-color:#dce4ea;
+  box-shadow:0 7px 22px rgba(28,47,63,.055)
+}
+.dashboard-duty-grid .on-duty-head span{
+  font-size:9px;
+  letter-spacing:.75px
+}
+.dashboard-duty-grid .on-duty-head h3{
+  margin-top:5px;
+  font-size:15px
+}
+.dashboard-duty-grid .on-duty-head button{
+  min-height:34px;
+  padding:7px 10px;
+  border:1px solid #d9e6ef;
+  border-radius:9px;
+  background:#f2f7fb;
+  font-size:9px
+}
+.dashboard-duty-grid .on-duty-columns{
+  gap:12px;
+  margin-top:12px
+}
+.dashboard-duty-grid .on-duty-columns>div{
+  min-width:0;
+  padding:11px;
+  border-radius:12px;
+  background:#f8fafb
+}
+.dashboard-duty-grid .on-duty-columns h4{
+  margin-bottom:9px;
+  font-size:10px;
+  color:#314251
+}
+.dashboard-duty-grid .on-duty-columns h4 em{font-size:8.5px}
+.dashboard-duty-grid .on-duty-columns li{
+  min-width:0;
+  padding:8px;
+  background:#fff
+}
+.dashboard-duty-grid .on-duty-columns li b{font-size:9.5px}
+.dashboard-duty-grid .on-duty-columns li small{font-size:8px}
+
+.fault-record-toolbar,
+.work-browser{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 12px;
+  padding:7px;
+  border:1px solid #dce4ea;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 6px 20px rgba(31,47,60,.045)
+}
+.fault-record-tabs,
+.work-tabs{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  width:auto
+}
+.fault-record-tabs button,
+.work-tabs button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:39px;
+  padding:9px 13px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#667684;
+  font-size:10px;
+  font-weight:850;
+  white-space:nowrap;
+  cursor:pointer
+}
+.fault-record-tabs button span,
+.work-tabs button span{
+  min-width:21px;
+  padding:3px 6px;
+  border-radius:999px;
+  background:#edf1f4;
+  color:#667684;
+  font-size:8px;
+  line-height:1.2
+}
+.fault-record-tabs button.active,
+.work-tabs button.active{
+  background:#253b50;
+  color:#fff;
+  box-shadow:0 5px 13px rgba(24,45,63,.18)
+}
+.fault-record-tabs button.active span,
+.work-tabs button.active span{
+  background:rgba(255,255,255,.18);
+  color:#fff
+}
+.record-search{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:min(410px,100%);
+  min-height:41px;
+  padding:0 12px;
+  border:1px solid #dce3e9;
+  border-radius:11px;
+  background:#f7f9fb;
+  color:#73818c;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease
+}
+.record-search:focus-within{
+  border-color:#79a7ca;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(54,126,179,.11)
+}
+.record-search>span{
+  font-size:20px;
+  line-height:1;
+  transform:rotate(-15deg)
+}
+.record-search input{
+  width:100%;
+  min-width:0;
+  padding:9px 0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#2d3d4a;
+  font:600 11px/1.3 "Segoe UI Variable","Segoe UI",Arial,sans-serif
+}
+.record-search input::placeholder{color:#8a96a0;font-weight:500}
+.fault-factory-tabs{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  margin:0 0 11px
+}
+.fault-factory-tabs button{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:47px;
+  padding:10px 13px;
+  border:1px solid #dce4ea;
+  border-radius:12px;
+  background:#fff;
+  color:#526370;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer
+}
+.fault-factory-tabs button b{
+  display:grid;
+  place-items:center;
+  min-width:26px;
+  height:26px;
+  padding:0 6px;
+  border-radius:8px;
+  background:#eef2f5;
+  color:#42525f;
+  font-size:9px
+}
+.fault-factory-tabs button.active{
+  border-color:#e8bb43;
+  background:#fff9e9;
+  color:#765600;
+  box-shadow:0 5px 15px rgba(196,145,7,.08)
+}
+.fault-factory-tabs button.active b{background:#f2bd2e;color:#2b2515}
+.fault-sort-help,
+.work-search-result{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0 2px 8px;
+  color:#74818c;
+  font-size:9px
+}
+.fault-sort-help span{
+  display:grid;
+  place-items:center;
+  width:21px;
+  height:21px;
+  border-radius:7px;
+  background:#edf3f7;
+  color:#3e769f;
+  font-weight:900
+}
+.fault-sort-button{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  width:100%;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  cursor:pointer
+}
+.fault-sort-button span{margin-left:auto;color:#92a0aa;font-size:8px}
+.fault-sort-button.active{color:#1d6fa8}
+.fault-sort-button.active span{color:#d79b00}
+
+.work-page-title .desktop-page-actions{flex-wrap:wrap;justify-content:flex-end}
+.contractor-create-button{
+  min-height:44px;
+  padding:0 16px;
+  border:1px solid #b98b20;
+  border-radius:11px;
+  background:linear-gradient(135deg,#2f3540,#171c23);
+  color:#fff;
+  font-size:10px;
+  font-weight:850;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(23,28,35,.16)
+}
+.contractor-create-button:hover{background:#111820}
+.work-kpis{grid-template-columns:repeat(5,minmax(0,1fr))}
+.work-browser{align-items:flex-start}
+.work-browser .work-tabs{
+  flex:1;
+  flex-wrap:wrap
+}
+.work-record-search{flex:0 1 350px}
+.work-search-result b{color:#2e719f;font-size:11px}
+.work-card{position:relative;overflow:hidden}
+.work-card::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:inherit;
+  pointer-events:none
+}
+.work-card-head h3,
+.contractor-card-head h3{font-size:15px}
+.work-card-head p,
+.contractor-card-head p{font-size:9px}
+.work-description{font-size:10px}
+.work-meta{font-size:9px}
+.work-result-preview{
+  margin-top:11px;
+  padding:10px 12px;
+  border-left:3px solid #3e9567;
+  border-radius:0 10px 10px 0;
+  background:#f0f8f4
+}
+.work-result-preview small{
+  display:block;
+  margin-bottom:4px;
+  color:#3f7c5a;
+  font-size:7.5px;
+  font-weight:900;
+  letter-spacing:.6px
+}
+.work-result-preview p{margin:0;color:#40554a;font-size:9px;line-height:1.5}
+.contractor-card{border-left-color:#a57918;background:linear-gradient(135deg,#fff,#fffdf8)}
+.contractor-card-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:14px;
+  align-items:start
+}
+.contractor-card-head>div>span{
+  color:#9b7216;
+  font-size:7.5px;
+  font-weight:900;
+  letter-spacing:.55px
+}
+.contractor-card-head h3{margin:5px 0;color:#293744}
+.contractor-card-head p{margin:0;color:#7b8791}
+.contractor-company{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  width:max-content;
+  max-width:100%;
+  margin-top:12px;
+  padding:8px 11px;
+  border:1px solid #eee2c5;
+  border-radius:10px;
+  background:#fffaf0
+}
+.contractor-company small{color:#96711d;font-size:7px;font-weight:900}
+.contractor-company b{overflow-wrap:anywhere;color:#3e3a30;font-size:10px}
+.contractor-dates{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:11px
+}
+.contractor-dates span{
+  min-width:125px;
+  padding:9px 11px;
+  border-radius:10px;
+  background:#f5f7f9
+}
+.contractor-dates small,
+.contractor-dates b{display:block}
+.contractor-dates small{margin-bottom:4px;color:#7b8791;font-size:7px}
+.contractor-dates b{color:#33424e;font-size:9px}
+.contractor-dates i{color:#b28a2f;font-style:normal;font-weight:900}
+.contractor-create-card{border-color:#e2c878;background:linear-gradient(145deg,#fffdf6,#fff)}
+.work-detail-kind.contractor{color:#946a0a}
+.contractor-summary article{background:#fffaf0;border-color:#eee0bc}
+.contractor-detail-modal .work-detail-form{border-color:#e8dcc0;background:#fffdf8}
+
+.machine-maintenance-history{padding:3px}
+.machine-maintenance-list{display:grid;gap:9px}
+.machine-maintenance-list>article{
+  display:grid;
+  grid-template-columns:76px minmax(0,1fr) auto;
+  gap:13px;
+  align-items:center;
+  padding:13px;
+  border:1px solid #dfe6eb;
+  border-radius:13px;
+  background:#fff
+}
+.machine-maintenance-date{
+  display:grid;
+  place-items:center;
+  min-height:61px;
+  padding:8px;
+  border-radius:11px;
+  background:#edf5fb;
+  text-align:center
+}
+.machine-maintenance-date b{color:#2f6f9e;font-size:12px}
+.machine-maintenance-date span{margin-top:3px;color:#6f7e89;font-size:8px}
+.machine-maintenance-list article>div:nth-child(2)>small{
+  color:#7d8993;
+  font-size:7.5px;
+  font-weight:850
+}
+.machine-maintenance-list h4{margin:4px 0;color:#2c3c48;font-size:12px}
+.machine-maintenance-list p{margin:0 0 6px;color:#697681;font-size:9px;line-height:1.45}
+.machine-maintenance-list article>div:nth-child(2)>span{color:#6f7c86;font-size:8px}
+.planned-by{
+  display:block;
+  margin-top:4px;
+  color:#3d789e!important;
+  font-weight:800
+}
+
+@media(max-width:1100px){
+  .work-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .work-browser{display:grid}
+  .work-record-search{width:100%;max-width:none}
+}
+@media(max-width:900px){
+  .desktop-page-title{align-items:flex-start}
+  .pro-date-copy small,
+  .pro-date-copy b,
+  .pro-date-copy em,
+  .pro-time-item small,
+  .pro-time-item b,
+  .pro-time-item em{display:block!important}
+  .pro-date-copy small,
+  .pro-time-item small{margin:0 0 4px!important}
+  .pro-date-copy em,
+  .pro-time-item em{margin-top:3px!important}
+  .dashboard-duty-grid{grid-template-columns:1fr}
+  .fault-record-toolbar{align-items:stretch;flex-direction:column}
+  .record-search{width:100%;max-width:none}
+  .fault-factory-tabs{grid-template-columns:1fr 1fr}
+  .machine-maintenance-list>article{grid-template-columns:70px minmax(0,1fr)}
+  .machine-maintenance-list>article>.maintenance-detail-status{grid-column:2}
+}
+@media(max-width:700px){
+  .desktop-page-title{display:grid}
+  .desktop-page-actions{width:100%;justify-content:flex-start!important}
+  .desktop-page-actions>button{flex:1 1 150px}
+  .record-count{text-align:left}
+  .dashboard-primary-actions{grid-template-columns:1fr;max-width:none}
+  .dashboard-duty-grid{grid-template-columns:minmax(0,1fr)}
+  .dashboard-duty-grid .on-duty-columns{grid-template-columns:1fr}
+  .fault-record-tabs{display:grid;grid-template-columns:1fr 1fr}
+  .fault-record-tabs button{white-space:normal}
+  .work-kpis{grid-template-columns:1fr 1fr}
+  .work-tabs{display:grid!important;grid-template-columns:1fr 1fr;width:100%!important}
+  .work-tabs button{white-space:normal}
+  .contractor-card-head{grid-template-columns:1fr}
+  .contractor-card-head>.work-status{justify-self:start}
+  .work-detail-summary{grid-template-columns:1fr 1fr}
+  .work-detail-form{grid-template-columns:1fr 1fr}
+  .work-detail-title-field{grid-column:1/-1}
+}
+@media(max-width:480px){
+  .qr-scan-button span{display:none}
+  .work-page-title .desktop-page-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px
+  }
+  .work-page-title .desktop-page-actions>button{width:100%;min-width:0}
+  .work-page-title .contractor-create-button{grid-column:1/-1}
+  .fault-factory-tabs{grid-template-columns:1fr}
+  .fault-sort-help{align-items:flex-start;line-height:1.45}
+  .work-kpis{grid-template-columns:1fr 1fr}
+  .work-tabs{grid-template-columns:1fr!important}
+  .work-card{padding:13px}
+  .work-card-head{grid-template-columns:1fr}
+  .work-card-side{align-items:flex-start;text-align:left}
+  .contractor-dates{display:grid;grid-template-columns:1fr auto 1fr}
+  .contractor-dates span{min-width:0}
+  .work-detail-summary,
+  .work-detail-form{grid-template-columns:1fr}
+  .work-detail-title-field,
+  .work-detail-description-field{grid-column:auto}
+  .machine-maintenance-list>article{grid-template-columns:1fr}
+  .machine-maintenance-date{display:flex;justify-content:space-between;min-height:0}
+  .machine-maintenance-list>article>.maintenance-detail-status{grid-column:auto}
+}

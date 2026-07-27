@@ -26,7 +26,11 @@ function bind(){
 
     markNotificationsSeen("work");
     s.page="work";
-    s.workTab=item.kind==="request"?"requests":"orders";
+    s.workTab=item.kind==="contractor"
+      ?"contractors"
+      :item.kind==="request"
+        ?(["done","rejected","cancelled","converted"].includes(item.status)?"requestHistory":"requests")
+        :(["done","cancelled"].includes(item.status)?"orderHistory":"orders");
     s.workDetailId=String(item.id);
     render();
   });
@@ -65,10 +69,41 @@ function bind(){
   });
 
   document.querySelectorAll(".fault-click-row").forEach(row=>row.onclick=e=>{
-    if(e.target.closest("select,button,input,a,label"))return;
+    const interactive=e.target.closest("select,button,input,a,label");
+    if(interactive&&interactive!==row)return;
     s.faultModalId=Number(row.dataset.faultDetailId);
     render();
   });
+
+  document.querySelectorAll("[data-fault-tab]").forEach(button=>button.onclick=()=>{
+    s.faultTab=button.dataset.faultTab==="history"?"history":"active";
+    render();
+  });
+  document.querySelectorAll("[data-fault-history-factory]").forEach(button=>button.onclick=()=>{
+    s.faultHistoryFactory=button.dataset.faultHistoryFactory||"Tümü";
+    render();
+  });
+  document.querySelectorAll("[data-fault-sort]").forEach(button=>button.onclick=()=>{
+    const key=button.dataset.faultSort;
+    if(s.faultSortKey===key)s.faultSortDir=s.faultSortDir==="asc"?"desc":"asc";
+    else{
+      s.faultSortKey=key;
+      s.faultSortDir=key==="createdAt"||key==="duration"?"desc":"asc";
+    }
+    render();
+  });
+  const faultRecordSearch=document.getElementById("faultRecordSearch");
+  if(faultRecordSearch)faultRecordSearch.oninput=()=>{
+    const value=faultRecordSearch.value;
+    const cursor=faultRecordSearch.selectionStart;
+    s.faultSearch=value;
+    render();
+    const next=document.getElementById("faultRecordSearch");
+    if(next){
+      next.focus();
+      next.setSelectionRange(cursor,cursor);
+    }
+  };
 
   const faultModalClose=document.getElementById("faultModalClose");
   const faultModalCloseBg=document.getElementById("faultModalCloseBg");
@@ -654,6 +689,44 @@ function bind(){
     render();
   };
 
+  const contractorDetailForm=document.getElementById("contractorDetailForm");
+  if(contractorDetailForm)contractorDetailForm.onsubmit=e=>{
+    e.preventDefault();
+    const item=findWorkItemById(contractorDetailForm.dataset.workId);
+    if(!item||!canManageContractorWork(item))return;
+    const factory=document.getElementById("contractorDetailFactory")?.value||"";
+    const department=document.getElementById("contractorDetailDepartment")?.value||"";
+    const location=(document.getElementById("contractorDetailLocation")?.value||"").trim();
+    const company=(document.getElementById("contractorDetailCompany")?.value||"").trim();
+    const title=(document.getElementById("contractorDetailTitle")?.value||"").trim();
+    const startDate=document.getElementById("contractorDetailStartDate")?.value||"";
+    const endDate=document.getElementById("contractorDetailEndDate")?.value||"";
+    const description=(document.getElementById("contractorDetailDescription")?.value||"").trim();
+    if(!factory||!department||!location||!company||!title||!startDate||!description){
+      alert("Fabrika, bölüm, iş yeri, taşeron firma, yapılan iş, başlangıç tarihi ve açıklama alanlarını doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+      return;
+    }
+    if(endDate&&endDate<startDate){
+      alert("Bitiş tarihi başlangıç tarihinden önce olamaz.");
+      return;
+    }
+    Object.assign(item,{
+      factory,department,location,
+      contractorCompany:company,
+      title,startDate,endDate,description,
+      status:endDate?"done":"progress",
+      updatedBy:s.user?.name||"Bilinmeyen Kullanıcı",
+      updatedAt:new Date().toISOString()
+    });
+    saveWorkItems();
+    alert("Taşeron işi güncellendi.");
+    render();
+  };
+
   const deleteWorkDetail=document.getElementById("deleteWorkDetail");
   if(deleteWorkDetail)deleteWorkDetail.onclick=()=>{
     const item=findWorkItemById(s.workDetailId);
@@ -661,11 +734,11 @@ function bind(){
 
     if(deleteWorkDetail.dataset.confirmDelete!=="yes"){
       deleteWorkDetail.dataset.confirmDelete="yes";
-      deleteWorkDetail.textContent=`Tekrar Tıkla: ${item.kind==="request"?"Talebi":"İş Emrini"} Sil`;
+      deleteWorkDetail.textContent=`Tekrar Tıkla: ${item.kind==="request"?"Talebi":item.kind==="contractor"?"Taşeron İşini":"İş Emrini"} Sil`;
       setTimeout(()=>{
         if(document.body.contains(deleteWorkDetail)){
           deleteWorkDetail.dataset.confirmDelete="";
-          deleteWorkDetail.textContent=item.kind==="request"?"Talebi Sil":"İş Emrini Sil";
+          deleteWorkDetail.textContent=item.kind==="request"?"Talebi Sil":item.kind==="contractor"?"Taşeron İşini Sil":"İş Emrini Sil";
         }
       },5000);
       return;
@@ -675,17 +748,29 @@ function bind(){
     if(!result.ok){
       alert(result.message);
       deleteWorkDetail.dataset.confirmDelete="";
-      deleteWorkDetail.textContent=item.kind==="request"?"Talebi Sil":"İş Emrini Sil";
+      deleteWorkDetail.textContent=item.kind==="request"?"Talebi Sil":item.kind==="contractor"?"Taşeron İşini Sil":"İş Emrini Sil";
       return;
     }
 
     s.workDetailId=null;
-    s.workTab=item.kind==="request"?"requests":"orders";
-    alert(`${item.id} numaralı ${item.kind==="request"?"iş talebi":"iş emri"} silindi.`);
+    s.workTab=item.kind==="contractor"?"contractors":item.kind==="request"?"requests":"orders";
+    alert(`${item.id} numaralı ${item.kind==="request"?"iş talebi":item.kind==="contractor"?"taşeron işi":"iş emri"} silindi.`);
     render();
   };
 
   document.querySelectorAll("[data-work-tab]").forEach(btn=>btn.onclick=()=>{s.workTab=btn.dataset.workTab;render()});
+  const workRecordSearch=document.getElementById("workRecordSearch");
+  if(workRecordSearch)workRecordSearch.oninput=()=>{
+    const value=workRecordSearch.value;
+    const cursor=workRecordSearch.selectionStart;
+    s.workSearch=value;
+    render();
+    const next=document.getElementById("workRecordSearch");
+    if(next){
+      next.focus();
+      next.setSelectionRange(cursor,cursor);
+    }
+  };
   document.querySelectorAll("[data-open-work-create]").forEach(btn=>btn.onclick=()=>{s.workCreateMode=btn.dataset.openWorkCreate;render()});
   const closeWorkCreate=document.getElementById("closeWorkCreate");
   if(closeWorkCreate)closeWorkCreate.onclick=()=>{s.workCreateMode="";render()};
@@ -755,6 +840,45 @@ function bind(){
     }
     s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory,department,location,title,category,priority:document.getElementById("woPriority").value,description,requestedDate:"",planStart,planEnd,status:assignedTo?"assigned":"open",createdBy:s.user?.name||"Bilinmeyen Kullanıcı",createdAt:new Date().toISOString(),assignedTeam:team,assignedTo,sourceRequestId:"",workDescription:"",completedAt:null,usedMaterials:[]});
     saveWorkItems();s.workCreateMode="";s.workTab="orders";render();
+  };
+
+  const contractorWorkForm=document.getElementById("contractorWorkForm");
+  if(contractorWorkForm)contractorWorkForm.onsubmit=e=>{
+    e.preventDefault();
+    if(!canManageContractorWork())return;
+    const factory=document.getElementById("contractorFactory")?.value||"";
+    const department=document.getElementById("contractorDepartment")?.value||"";
+    const location=(document.getElementById("contractorLocation")?.value||"").trim();
+    const contractorCompany=(document.getElementById("contractorCompany")?.value||"").trim();
+    const title=(document.getElementById("contractorTitle")?.value||"").trim();
+    const startDate=document.getElementById("contractorStartDate")?.value||"";
+    const endDate=document.getElementById("contractorEndDate")?.value||"";
+    const description=(document.getElementById("contractorDescription")?.value||"").trim();
+    if(!factory||!department||!location||!contractorCompany||!title||!startDate||!description){
+      alert("Fabrika, bölüm, iş yeri, taşeron firma, yapılan iş, başlangıç tarihi ve açıklama alanlarını doldurun.");
+      return;
+    }
+    if(!userFactories().includes(factory)||!Object.prototype.hasOwnProperty.call(STRUCTURE,department)){
+      alert("Yetki alanınız dışında veya geçersiz fabrika/bölüm seçildi.");
+      return;
+    }
+    if(endDate&&endDate<startDate){
+      alert("Bitiş tarihi başlangıç tarihinden önce olamaz.");
+      return;
+    }
+    const actor=s.user?.name||"Bilinmeyen Kullanıcı";
+    const now=new Date().toISOString();
+    s.workItems.push({
+      id:nextWorkId("contractor"),
+      kind:"contractor",
+      factory,department,location,title,contractorCompany,description,startDate,endDate,
+      status:endDate?"done":"progress",
+      createdBy:actor,createdAt:now,updatedBy:actor,updatedAt:now
+    });
+    saveWorkItems();
+    s.workCreateMode="";
+    s.workTab="contractors";
+    render();
   };
 
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{

@@ -315,13 +315,13 @@ function dashboard(){
         <p>Arıza kaydı açabilir, kendi kayıtlarınızın durumunu ve vardiyadaki bakım personellerini görebilirsiniz.</p>
       </div>
       <div class="home-action-buttons">
-        <button type="button" class="qr-home-button" id="openQrScanner">▣ QR Kod Tara</button>
+        <button type="button" class="qr-home-button" id="openQrScanner">${qrScanIcon()}<span>QR Kod Tara</span></button>
         <button class="primary operator-new-btn" data-p="new">+ Arıza Kaydı Aç</button>
       </div>
     </div>
 
     <div class="qr-home-card">
-      <div class="qr-home-symbol">▣</div>
+      <div class="qr-home-symbol">${qrScanIcon("large")}</div>
       <div><b>Makine QR Kodunu Tara</b><span>Makine bilgilerini görüntüle ve doğrudan arıza kaydı oluştur.</span></div>
       <button type="button" class="primary" id="openQrScannerCard">Kamerayı Aç</button>
     </div>
@@ -414,7 +414,7 @@ function dashboard(){
   };
   const recentMaintenanceLogs=visibleMaintenanceLogs().slice(0,6);
 
-  return `
+  return `${clockBlock()}
   <section class="app-hero">
     <div class="hero-copy">
       <span class="hero-version">MOBİL PRO v2</span>
@@ -422,16 +422,13 @@ function dashboard(){
       <p>${factoryLabel} · ${shift.name} · ${shift.range}</p>
       <div class="hero-meta">${new Date().toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric",weekday:"long"})}</div>
     </div>
-    <button type="button" class="hero-qr" id="openQrScanner"><span>⌗</span><b>QR Tara</b></button>
+    <button type="button" class="hero-qr" id="openQrScanner">${qrScanIcon("hero")}<b>QR Tara</b></button>
   </section>
 
-  <section class="quick-actions">
+  ${canAccess("new")||canAddMaintenanceLog()?`<section class="quick-actions dashboard-primary-actions">
     ${canAccess("new")?`<button data-p="new"><span>＋</span><div><b>Yeni Arıza</b><small>Hızlı kayıt oluştur</small></div></button>`:""}
-    <button data-p="faults"><span>≡</span><div><b>Arızalar</b><small>Tüm kayıtları gör</small></div></button>
-    <button data-p="layout"><span>⌘</span><div><b>Fabrika Şeması</b><small>Bölüm ve makineleri görüntüle</small></div></button>
     ${canAddMaintenanceLog()?`<button type="button" id="openMaintenanceLog"><span>✎</span><div><b>Yapılan İş Ekle</b><small>Atölye ve saha işini kaydet</small></div></button>`:""}
-    ${roleHasCharts()?`<button data-p="report"><span>▥</span><div><b>Grafikler</b><small>Analiz ve performans</small></div></button>`:""}
-  </section>
+  </section>`:""}
 
   <section class="mobile-filter-card">
     <div><small>GÖRÜNÜM</small><b>${factoryLabel}</b></div>
@@ -467,6 +464,10 @@ function dashboard(){
     <article><small>VARDİYADAKİ BAKIMCI</small><b>${crewNow.electrical.length+crewNow.mechanical.length}</b><span>Elektrik ${crewNow.electrical.length} · Mekanik ${crewNow.mechanical.length}</span></article>
   </section>
 
+  <section class="dashboard-duty-grid">
+    ${dashboardFactories.map(factory=>onDutyDashboardCard(factory)).join("")}
+  </section>
+
   <section class="dashboard-operations-grid ${canAccess("work")?"with-work":"fault-only"}">
     <article class="dashboard-list-card dashboard-fault-hub optimized">
       <div class="section-modern-head">
@@ -480,8 +481,6 @@ function dashboard(){
         <span><small>ÜRETİM DURUŞU</small><b>${active.filter(fault=>fault.stopped).length}</b></span>
         <span><small>BU VARDİYA</small><b>${currentShiftAll.length}</b></span>
       </div>
-
-      ${onDutyDashboardCard(s.dashboardFactory==="Tümü"?(userFactories()[0]||"1. Fabrika"):s.dashboardFactory)}
 
       <div class="dashboard-fault-tabs">
         <button type="button" data-dashboard-fault-tab="active" class="${s.dashboardFaultTab==="active"?"active":""}">
@@ -497,8 +496,6 @@ function dashboard(){
           ?compactFaultList(currentShiftAll,"Bu vardiyada arıza kaydı bulunmuyor.")
           :compactFaultList(active,"Aktif arıza bulunmuyor.")}
       </div>
-
-      <button class="list-footer-link" data-p="faults">Tüm arıza kayıtlarını görüntüle ›</button>
     </article>
 
     ${canAccess("work")?`<article class="dashboard-list-card dashboard-work-orders-card">
@@ -527,16 +524,15 @@ function dashboard(){
   <section class="top-machines-card">
     <div class="section-modern-head">
       <div><h2>En Çok Arıza Çıkaran Makineler</h2><p>Yetki alanınızdaki tüm kayıtlara göre ilk 6 makine</p></div>
-      ${roleHasCharts()?'<button data-p="report">Grafiklerde İncele ›</button>':""}
     </div>
     <div class="top-machine-list">
       ${countBy(all,"machine").slice(0,6).map(([machine,total],index)=>{
         const pct=Math.round(total/Math.max(1,countBy(all,"machine")[0]?.[1]||1)*100);
-        return `<button class="top-machine-row" data-p="report">
+        return `<div class="top-machine-row">
           <span class="machine-rank">${index+1}</span>
           <div class="machine-rank-copy"><b>${esc(machine)}</b><small>${total} arıza kaydı</small><i><em style="width:${pct}%"></em></i></div>
           <strong>${total}</strong>
-        </button>`;
+        </div>`;
       }).join("")}
     </div>
   </section>
@@ -544,7 +540,6 @@ function dashboard(){
   <section class="line-preview-card">
     <div class="section-modern-head">
       <div><h2>Fabrika Şeması Özeti</h2><p>Makine durumlarını hızlı kontrol et</p></div>
-      <button data-p="layout">Fabrika Şemasını Aç ›</button>
     </div>
     <div class="mini-process-flow">
       ${["Hammadde Silo","Değirmen","Spray Dryer","Pres","Fırın","Dijital Baskı","Paketleme","Paletleme"].map((m,i)=>{
