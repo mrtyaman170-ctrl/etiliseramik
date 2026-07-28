@@ -476,6 +476,7 @@ function canAccess(page){
   if(page==="work")return !!p.workRequests;
   if(page==="workshop")return !!p.workshop;
   if(page==="dailyChecks")return !!p.dailyChecks;
+  if(page==="telegram")return typeof canManageTelegramSettings==="function"&&canManageTelegramSettings();
   return false;
 }
 function roleHasCharts(){
@@ -766,6 +767,7 @@ function page(){
   if(s.page==="work")return workManagementPage();
   if(s.page==="workshop")return workshopPage();
   if(s.page==="report")return reportPage();
+  if(s.page==="telegram")return telegramAdminPage();
   return dashboard();
 }
 function allowedNavItems(){
@@ -781,6 +783,7 @@ function allowedNavItems(){
     ["dailyChecks","✓","Günlük Kontroller"],
     ["work","◇","Talepler ve İş Emirleri"],
     ["workshop","⚙","Mekanik Atölye"],
+    ["telegram","✈","Telegram Bildirimleri"],
     ["layout","⌘","Fabrika Şeması"]
   ];
   return items.filter(([page])=>canAccess(page));

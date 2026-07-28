@@ -2981,3 +2981,57 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .work-date-range button{grid-column:1/-1}
   .work-record-table{min-width:1020px}
 }
+
+/* Telegram bildirim yönetimi — v1.5.0 */
+.telegram-page-title{align-items:center}
+.telegram-open-bot{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}
+.telegram-kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 18px}
+.telegram-kpi-grid article{padding:18px;border:1px solid #e1e5ea;border-radius:16px;background:#fff;box-shadow:0 8px 26px rgba(25,31,40,.05)}
+.telegram-kpi-grid small{display:block;color:#78818d;font-size:10px;font-weight:900;letter-spacing:.7px}
+.telegram-kpi-grid b{display:block;margin:8px 0 4px;color:#20252d;font-size:22px}
+.telegram-kpi-grid span{color:#69727e;font-size:12px}
+.telegram-settings-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:16px;margin-bottom:16px}
+.telegram-panel{padding:20px;border:1px solid #dfe4ea;border-radius:18px;background:#fff;box-shadow:0 10px 30px rgba(20,28,38,.05)}
+.telegram-panel .section-modern-head{margin-bottom:16px}
+.telegram-panel form{display:grid;gap:12px}
+.telegram-form-actions{display:flex;flex-wrap:wrap;gap:9px}
+.telegram-ui-message{margin-top:13px;padding:11px 13px;border-radius:11px;background:#f2f4f7;color:#56606d;font-size:12px;font-weight:700}
+.telegram-ui-message.success{background:#e7f7ed;color:#176a37}
+.telegram-ui-message.warning{background:#fff4d8;color:#7a5700}
+.telegram-ui-message.danger{background:#fde9eb;color:#a52832}
+.telegram-scope-note{display:block;margin-top:12px;color:#78818d;line-height:1.45}
+.telegram-test-help{margin:13px 0 0;color:#6b7480;font-size:12px;line-height:1.5}
+.telegram-personnel-panel{margin-bottom:20px}
+.telegram-personnel-table td:first-child b,.telegram-personnel-table td:first-child small{display:block}
+.telegram-personnel-table td:first-child small{margin-top:3px;color:#87909b}
+.telegram-shift-state,.telegram-link-state,.telegram-missing{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 9px;background:#eef1f4;color:#65707d;font-size:10px;font-weight:900;white-space:nowrap}
+.telegram-shift-state.active{background:#e7f7ed;color:#16703a}
+.telegram-link-state.linked{background:#e7f7ed;color:#16703a}
+.telegram-link-state.checking{background:#fff4d8;color:#7a5700}
+.telegram-link-state.missing,.telegram-missing{background:#f1f2f4;color:#7b838d}
+.telegram-link-state.danger{background:#fde9eb;color:#a52832}
+.telegram-delivery-card>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.telegram-delivery-card>div:first-child span{margin:0}
+.telegram-delivery-card>div:first-child strong{border-radius:999px;padding:6px 10px;background:#eef1f4;color:#596370;font-size:11px}
+.telegram-delivery-card.success{border-color:#bfe5cc;background:#f7fcf8}
+.telegram-delivery-card.success>div:first-child strong{background:#dff4e6;color:#176a37}
+.telegram-delivery-card.warning{border-color:#edd998;background:#fffdf6}
+.telegram-delivery-card.warning>div:first-child strong{background:#fff0c5;color:#745400}
+.telegram-delivery-card.danger{border-color:#f0bec3;background:#fff9fa}
+.telegram-delivery-card.danger>div:first-child strong{background:#fbe1e4;color:#a12631}
+.telegram-delivery-card p{margin:10px 0 0}
+.telegram-delivery-card small{display:block;margin-top:8px;color:#8a5e00}
+.profile-chips .telegram-chip{background:#e8f4ff;color:#17649a}
+.personnel-card-login .telegram-defined{color:#176a37}
+.personnel-card-login .telegram-undefined{color:#8b6266}
+.personnel-editor-modal .field>small{display:block;margin-top:6px;color:#77818d;font-size:10px;line-height:1.35}
+
+@media(max-width:900px){
+  .telegram-kpi-grid{grid-template-columns:1fr}
+  .telegram-settings-grid{grid-template-columns:1fr}
+  .telegram-page-title{align-items:stretch}
+  .telegram-open-bot{width:100%;box-sizing:border-box}
+  .telegram-personnel-panel{padding:14px}
+  .telegram-personnel-table{min-width:820px}
+  .telegram-form-actions>*{flex:1 1 180px}
+}

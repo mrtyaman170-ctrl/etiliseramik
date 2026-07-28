@@ -372,7 +372,7 @@ function faultDetailModal(){
     <section class="fault-detail-card"><span>PERSONEL BİLGİLERİ</span><dl><div><dt>Kaydı Açan</dt><dd>${esc(f.openedBy||"Bilinmiyor")}</dd></div><div><dt>Atanan Personel</dt><dd>${esc(f.assignedTo||"Atama Bekliyor")}</dd></div><div><dt>Üstlenme Durumu</dt><dd>${f.assignmentState==="accepted"?`Üstlenildi · ${esc(f.claimedBy||f.assignedTo||"")}${f.claimedAt?`<br><small>${fmtDate(f.claimedAt)}</small>`:""}`:"Personelin kabulü bekleniyor"}</dd></div><div class="fault-assignment-row"><dt>Müdahale Edenler</dt><dd>${assignmentControl}${claimButton}${selfJoin}</dd></div></dl></section>
     <section class="fault-detail-card"><span>ZAMAN BİLGİLERİ</span><dl><div><dt>Açılış Tarihi</dt><dd>${fmtDate(f.createdAt)}</dd></div><div><dt>Kapanış Tarihi</dt><dd>${closeDate}</dd></div><div><dt>Geçen Süre</dt><dd class="duration" data-id="${esc(f.id)}">${durationText(f)}</dd></div></dl></section>
     <section class="fault-detail-card"><span>KAYIT ÖZETİ</span><dl><div><dt>Kayıt No</dt><dd>#${esc(f.id)}</dd></div><div><dt>Aktif mi?</dt><dd>${isDone?"Hayır":"Evet"}</dd></div><div><dt>Duruş Kaydı</dt><dd>${f.stopped?"Var":"Yok"}</dd></div></dl></section>
-    ${handoverSection}${handoverHistory}${solutionSection}${materialSection}
+    ${telegramFaultDeliveryCard(f)}${handoverSection}${handoverHistory}${solutionSection}${materialSection}
   </div></div></div>`;
 }
 

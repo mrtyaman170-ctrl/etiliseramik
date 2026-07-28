@@ -1,7 +1,24 @@
-# ETİLİSMART Modüler Proje — v1.4.6
+# ETİLİSMART Modüler Proje — v1.5.0
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## GitHub Pages için hazır dosya
+
+`dist/index.html` tek dosyalık, yayına hazır sürümdür. GitHub deposundaki eski
+`index.html` yerine bu dosyayı yükleyebilirsiniz. Telegram Worker adresi henüz
+oluşmadıysa uygulama normal çalışmaya devam eder; bildirimler kurulum tamamlanana
+kadar “Worker adresi tanımlanmadı” durumunda kalır.
+
+## v1.5.0 yenilikleri
+
+- Yeni arızalar, fabrika ve bakım disiplinine göre yalnızca aktif vardiyadaki ilgili bakım personellerine kişisel Telegram mesajı olarak gönderilir.
+- Telegram mesajında kayıt numarası, fabrika, hat, bölüm, makine, arıza türü, açıklama, açan kişi, sistem ataması, vardiya ve üretim duruşu bulunur.
+- Personel hesaplarına Telegram kullanıcı adı alanı eklendi; bot bağlantı durumu ayrı yönetim ekranından izlenebilir.
+- Yazılımcı ve Bakım Müdürü için Worker bağlantı kontrolü, personel eşleştirme görünümü ve test mesajı ekranı eklendi.
+- Her arızanın detayında Telegram gönderiminin başarılı, kısmi, bekleyen veya hatalı durumu görünür.
+- Bot tokenını HTML ve GitHub dışında tutan Cloudflare Worker, KV kullanıcı eşleştirmesi, webhook doğrulaması, CORS, hız sınırı ve tekrarlı gönderim koruması pakete eklendi.
+- Kurulum dosyası: `TELEGRAM_KURULUM_REHBERI.md`.
 
 ## v1.4.6 yenilikleri
 
@@ -121,6 +138,10 @@ kısıtlamaları nedeniyle yerel dosyada izin isteyebilir.
 - `js/qr.js`: QR üretme ve okutma
 - `js/app-shell.js`: Ortak uygulama durumu ve sayfa yönlendirme
 - `js/runtime.js`: Ekran olayları ve uygulamanın başlatılması
+- `js/config.js`: Telegram Worker ve uygulama adresi yapılandırması
+- `js/telegram.js`: Aktif vardiyaya göre kişisel Telegram bildirimleri
+- `telegram-worker/`: Bot tokenını gizli tutan Cloudflare Worker servisi
+- `TELEGRAM_KURULUM_REHBERI.md`: Telegram ve Worker kurulum adımları
 - `KULLANICI_HESAPLARI.md`: Güncel demo kullanıcı ID ve şifre listesi
 
 Yeni geliştirmelerde yalnızca ilgili dosya düzenlenmelidir. Büyük tek HTML

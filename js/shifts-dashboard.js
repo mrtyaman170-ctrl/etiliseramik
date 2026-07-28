@@ -352,7 +352,9 @@ function activeTeamMembers(factory,team,date=new Date()){
 }
 function activeMaintenanceForFault(fault,date=new Date()){
   const team=maintenanceDisciplineForFault(fault);
-  return activeTeamMembers(shiftFactoryName(fault.factory),team,date).map(p=>p.name);
+  return activeTeamMembers(shiftFactoryName(fault.factory),team,date)
+    .filter(person=>APP_USERS[String(person.id)]?.role==="Bakım Personeli")
+    .map(person=>person.name);
 }
 function availableMaintenanceForFault(fault){
   const active=activeMaintenanceForFault(fault);
@@ -674,7 +676,7 @@ function dashboard(){
   return `${clockBlock()}
   <section class="app-hero">
     <div class="hero-copy">
-      <span class="hero-version">MOBİL PRO v2</span>
+      <span class="hero-version">ETİLİSMART v${esc(APP_VERSION)}</span>
       <h1>${isManagementRole()?"Yönetim Paneli":"Ana Panel"}</h1>
       <p>${factoryLabel} · ${shift.name} · ${shift.range}</p>
       <div class="hero-meta">${new Date().toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric",weekday:"long"})}</div>

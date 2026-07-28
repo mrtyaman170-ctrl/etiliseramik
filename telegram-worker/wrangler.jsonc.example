@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "etilismart-telegram",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-28",
+  "kv_namespaces": [
+    {
+      "binding": "TELEGRAM_LINKS",
+      "id": "CLOUDFLARE_KV_NAMESPACE_ID"
+    }
+  ],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://mrtyaman170-ctrl.github.io",
+    "APP_URL": "https://mrtyaman170-ctrl.github.io/etiliseramik/"
+  }
+}

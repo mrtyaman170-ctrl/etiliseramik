@@ -12,6 +12,7 @@ function render(){
 }
 function bind(){
   bindWorkshopPage();
+  if(typeof bindTelegramUi==="function")bindTelegramUi();
   const appRoot=document.getElementById("app");
   if(appRoot)appRoot.addEventListener("click",event=>{
     const detailTarget=event.target.closest("[data-work-detail-id]");
@@ -1377,6 +1378,7 @@ function bind(){
     const teamEl=document.getElementById("personnelTeam");
     const roleEl=document.getElementById("personnelRole");
     const departmentEl=document.getElementById("personnelDepartment");
+    const telegramEl=document.getElementById("personnelTelegramUsername");
     original.value=id;
     if(id&&APP_USERS[id]){
       const u=APP_USERS[id];
@@ -1386,11 +1388,13 @@ function bind(){
       if(roleEl&&[...roleEl.options].some(option=>option.value===u.role))roleEl.value=u.role;
       if(departmentEl)departmentEl.value=u.department||"";
       if([...teamEl.options].some(option=>option.value===(u.team||"")))teamEl.value=u.team||"";
+      if(telegramEl)telegramEl.value=u.telegramUsername||"";
     }else{
       document.getElementById("personnelEditorTitle").textContent=roleEl?"Yeni Kullanıcı Hesabı":"Yeni Bakım Personeli";
       idEl.value=nextFourDigitId();passEl.value=randomFourDigitPassword();nameEl.value="";
       if(roleEl)roleEl.value="Bakım Personeli";
       if(departmentEl)departmentEl.value="";
+      if(telegramEl)telegramEl.value="";
       if(teamEl.options.length===1)teamEl.selectedIndex=0;
     }
     personnelBackdrop.style.display="flex";
@@ -1412,9 +1416,11 @@ function bind(){
     const team=document.getElementById("personnelTeam").value;
     const role=document.getElementById("personnelRole")?.value||"Bakım Personeli";
     const department=document.getElementById("personnelDepartment")?.value||"";
+    const telegramUsername=normalizeTelegramUsername(document.getElementById("personnelTelegramUsername")?.value||"");
     const managesAllAccounts=!!permissions().manageAllUserAccounts;
     if(!/^\d{4}$/.test(newId)||!/^\d{4}$/.test(password)){alert("ID ve şifre tam olarak 4 haneli olmalıdır.");return}
     if(!name){alert("Personelin adını ve soyadını girin.");return}
+    if(!validTelegramUsername(telegramUsername)){alert("Telegram kullanıcı adı 5–32 karakter olmalı; yalnızca harf, rakam ve alt çizgi içerebilir.");return}
     if(managesAllAccounts?!EDITABLE_ACCOUNT_ROLES.includes(role):(!["1. Fabrika","2. Fabrika"].includes(factory)||!["Elektrik Bakım","Mekanik Bakım"].includes(team))){
       alert(managesAllAccounts?"Geçerli bir kullanıcı rolü seçin.":"Geçerli bir fabrika ve bakım ekibi seçin.");
       return;
@@ -1423,6 +1429,8 @@ function bind(){
       alert("Geçerli bir fabrika ve bakım ekibi seçin.");
       return;
     }
+    const duplicateTelegramOwner=telegramUsername&&appUserEntries().find(([id,account])=>id!==original&&telegramUsernameForAccount(account)===telegramUsername);
+    if(duplicateTelegramOwner){alert(`Bu Telegram kullanıcı adı ${duplicateTelegramOwner[1].name} hesabında zaten tanımlı.`);return}
     if(APP_USERS[newId]&&newId!==original){alert("Bu kullanıcı ID zaten kullanılıyor.");return}
     const existing=original?APP_USERS[original]:null;
     if(existing?.role==="Yazılımcı"&&role!=="Yazılımcı"&&appUserEntries().filter(([,user])=>user.role==="Yazılımcı").length<=1){
@@ -1434,7 +1442,7 @@ function bind(){
       return;
     }
     const factories=selectedAccountFactories(factory);
-    const candidate={password,name,role,factories,department,team};
+    const candidate={password,name,role,factories,department,team,telegramUsername};
     if(!canManagePersonnelAccount(candidate)){alert("Bu kullanıcı hesabını yönetme yetkiniz yok.");return}
     if(original&&original!==newId){
       delete APP_USERS[original];
@@ -1587,7 +1595,9 @@ function bind(){
     fault.assignedTo=deterministicPerson(activePeople,fault.id,31)||"Atama Bekliyor";
     fault.assignmentHistory.push({action:"assigned",from:"",to:fault.assignedTo,by:"Sistem",at:now,shift:currentShiftLabel()});
     s.faults.push(fault);
-    save();s.page="faults";render();
+    save();
+    void sendFaultTelegramNotification(fault);
+    s.page="faults";render();
     alert(fault.assignedTo==="Atama Bekliyor"?"Arıza kaydı oluşturuldu. Aktif vardiyada uygun bakım personeli bulunamadığı için atama bekliyor.":`Arıza kaydı ${fault.assignedTo} personeline atandı. Müdahalenin başlaması için personelin arızayı üstlenmesi gerekiyor.`);
   };
   document.querySelectorAll(".status-sel").forEach(x=>x.onchange=()=>{

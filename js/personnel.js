@@ -2,7 +2,7 @@
 const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Depo Sorumlusu","Atölye Personeli","Genel Müdür","Yazılımcı"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 
-const APP_VERSION="1.4.6";
+const APP_VERSION="1.5.0";
 const APP_RELEASE_DATE="28.07.2026";
 const AUTH_VERSION="pc-v5";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
@@ -28,7 +28,7 @@ const PRODUCTION_MANAGER_USERS={
   "3902":{"password":"3902","name":"2. Fabrika Üretim Müdürü","role":"Üretim Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""}
 };
 const DEVELOPER_USERS={
-  "9001":{"password":"9001","name":"Mert Yaman","role":"Yazılımcı","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"}
+  "9001":{"password":"9001","name":"Mert Yaman","role":"Yazılımcı","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım","telegramUsername":"merty17"}
 };
 const WAREHOUSE_USERS={
   "8001":{"password":"8001","name":"Depo Sorumlusu","role":"Depo Sorumlusu","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Depo"}
@@ -49,7 +49,7 @@ const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
 const SYSTEM_ACCOUNT_SCOPES={
   ...Object.fromEntries(Object.entries(FACTORY_DEPARTMENT_FOREMEN).map(([id,user])=>[id,{role:user.role,factories:user.factories,department:user.department,team:""}])),
   ...Object.fromEntries(Object.entries(PRODUCTION_MANAGER_USERS).map(([id,user])=>[id,{role:user.role,factories:user.factories,department:user.department,team:""}])),
-  ...Object.fromEntries(Object.entries(DEVELOPER_USERS).map(([id,user])=>[id,{role:user.role,factories:user.factories,department:"",team:user.team}])),
+  ...Object.fromEntries(Object.entries(DEVELOPER_USERS).map(([id,user])=>[id,{role:user.role,factories:user.factories,department:"",team:user.team,telegramUsername:user.telegramUsername||""}])),
   ...Object.fromEntries(Object.entries(WAREHOUSE_USERS).map(([id,user])=>[id,{role:user.role,factories:user.factories,department:"",team:user.team}])),
   ...Object.fromEntries(Object.entries(WORKSHOP_USERS).map(([id,user])=>[id,{role:user.role,factories:user.factories,department:"",team:user.team}]))
 };
@@ -85,7 +85,8 @@ function validStoredUsers(saved){
       role,
       factories,
       department:String(account.department||"").trim(),
-      team:String(account.team||"").trim()
+      team:String(account.team||"").trim(),
+      telegramUsername:String(account.telegramUsername||"").trim().replace(/^@+/,"").toLocaleLowerCase("en-US")
     };
   });
   return valid;
@@ -351,7 +352,10 @@ function nextShiftLabel(date=new Date()){
 function nextShiftMembersForFault(fault){
   const team=maintenanceDisciplineForFault(fault);
   const factory=shiftFactoryName(fault.factory);
-  return activeTeamMembers(factory,team,nextShiftDate()).map(p=>p.name).filter(name=>name!==s.user?.name);
+  return activeTeamMembers(factory,team,nextShiftDate())
+    .filter(person=>APP_USERS[String(person.id)]?.role==="Bakım Personeli")
+    .map(person=>person.name)
+    .filter(name=>name!==s.user?.name);
 }
 function canHandoverFault(fault){
   if(!fault||fault.status==="done")return false;
@@ -549,7 +553,7 @@ function personnelDetailModal(){
       <div class="modal-head"><div><span>BAKIM PERSONELİ PROFİLİ</span><h2>${esc(u.name)}</h2><p>${esc(shiftFactoryName(u.factories?.[0]||""))} · ${esc(u.team||"-")}</p></div><button type="button" id="closePersonnelDetail">×</button></div>
       <section class="personnel-profile-head">
         <div class="personnel-avatar">${esc(u.name.split(" ").map(x=>x[0]).slice(0,2).join(""))}</div>
-        <div class="personnel-profile-main"><h3>${esc(u.name)}</h3><span>${esc(u.role)}</span><div class="profile-chips"><b>${esc(shiftFactoryName(u.factories?.[0]||""))}</b><b>${esc(u.team||"-")}</b><b class="active-chip">Aktif</b></div></div>
+        <div class="personnel-profile-main"><h3>${esc(u.name)}</h3><span>${esc(u.role)}</span><div class="profile-chips"><b>${esc(shiftFactoryName(u.factories?.[0]||""))}</b><b>${esc(u.team||"-")}</b><b class="active-chip">Aktif</b>${u.telegramUsername?`<b class="telegram-chip">@${esc(u.telegramUsername)}</b>`:""}</div></div>
         <div class="profile-login-box"><small>KULLANICI ID</small><strong>${esc(s.personnelDetailId)}</strong><small>ŞİFRE</small><strong>${esc(u.password)}</strong>${canEdit?`<button class="secondary personnel-detail-edit" data-user-id="${esc(s.personnelDetailId)}">Hesabı Düzenle</button>${permissions().manageAllPersonnel?`<button class="danger personnel-delete-btn" data-user-id="${esc(s.personnelDetailId)}">Personeli Sil</button>`:""}`:""}</div>
       </section>
       <div class="detail-period-tabs"><button class="${selectedPeriod==="weekly"?"active":""}" data-performance-period="weekly">Haftalık</button><button class="${selectedPeriod==="monthly"?"active":""}" data-performance-period="monthly">Aylık</button><button class="${selectedPeriod==="yearly"?"active":""}" data-performance-period="yearly">Yıllık</button></div>
@@ -623,7 +627,7 @@ function personnelManagementPage(){
         <div><small>Aktif</small><b>${p.active}</b></div>
         <div><small>Ort. Süre</small><b>${p.avgMinutes?Math.floor(p.avgMinutes/60)+"s "+p.avgMinutes%60+"dk":"-"}</b></div>
       </div>
-      <div class="personnel-card-login"><span>ID: <b>${esc(id)}</b></span><span>Şifre: <b>${esc(u.password)}</b></span></div>
+      <div class="personnel-card-login"><span>ID: <b>${esc(id)}</b></span><span>Şifre: <b>${esc(u.password)}</b></span><span class="${u.telegramUsername?"telegram-defined":"telegram-undefined"}">${u.telegramUsername?`Telegram: <b>@${esc(u.telegramUsername)}</b>`:"Telegram tanımlanmadı"}</span></div>
       ${canManagePersonnelAccount(u)?`<div class="personnel-card-actions">
         <button class="secondary personnel-edit-btn" data-user-id="${esc(id)}">Düzenle</button>
       </div>`:""}
@@ -723,6 +727,7 @@ function personnelManagementPage(){
           ${canManageAllAccounts?`<div class="field"><label>Bölüm Kapsamı</label><select id="personnelDepartment"><option value="">Bölüm kapsamı yok</option>${departmentOptions.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>`:""}
           <div class="field"><label>4 Haneli Kullanıcı ID</label><input id="personnelId" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required></div>
           <div class="field"><label>4 Haneli Şifre</label><div class="password-generate-row"><input id="personnelPassword" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required><button type="button" class="secondary" id="generatePersonnelPassword">Üret</button></div></div>
+          <div class="field wide"><label>Telegram Kullanıcı Adı</label><input id="personnelTelegramUsername" autocomplete="off" placeholder="Örn. merty17"><small>@ işareti yazmadan da girebilirsiniz. Personel botta Başlat düğmesine basmalıdır.</small></div>
         </div>
         <div class="modal-actions"><button type="button" class="secondary" id="cancelPersonnelEditor">Vazgeç</button><button class="primary" type="submit">Kaydet</button></div>
       </form>
