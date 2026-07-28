@@ -1562,6 +1562,9 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .fault-solution-card.missing-solution .fault-solution-head>strong{background:#fde7e7;color:#a83838}
 .solution-missing-message{margin-top:10px;padding:10px 12px;border:1px solid #efcaca;border-radius:10px;background:#fff3f3;color:#a33a3a;font-size:9px;font-weight:850}
 .missing-solution-tag{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:999px;background:#fff0f0;color:#ac3b3b;font-size:7px;font-weight:850;white-space:nowrap}
+.missing-material-tag{background:#fff6df;color:#95651a}
+.fault-material-card.missing-materials{border-color:#ead7aa;background:linear-gradient(180deg,#fffdf7,#fff)}
+.material-missing-message{margin-top:10px;padding:10px 12px;border:1px solid #ead7aa;border-radius:10px;background:#fff9e9;color:#8f651d;font-size:9px;font-weight:850}
 .material-kpi-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
 .material-catalog-tools{display:grid;grid-template-columns:minmax(260px,1fr) 220px auto;gap:10px;align-items:center;margin:2px 0 14px}
 .material-search-box{display:flex;align-items:center;gap:8px;padding:0 11px;border:1px solid #d8e0e6;border-radius:11px;background:#fff}
@@ -2784,7 +2787,8 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .shift-view-switch{display:grid;grid-template-columns:1fr 1fr;align-self:end;padding:4px;border:1px solid #dbe2e8;border-radius:11px;background:#f5f7f9}
 .shift-view-switch button{min-height:34px;border:0;border-radius:8px;background:transparent;color:#697783;font-size:9px;font-weight:900;cursor:pointer}
 .shift-view-switch button.active{background:#26333f;color:#fff;box-shadow:0 2px 7px rgba(25,35,44,.18)}
-.shift-filter-card.team-only{grid-template-columns:auto 1fr 1fr 1.2fr}
+.shift-filter-card.team-only{grid-template-columns:auto 1fr 1fr 1.2fr auto}
+.shift-export-button{align-self:end;min-height:40px;white-space:nowrap}
 .shift-import-panel{margin:0 0 13px;border:1px solid #cddbe5;border-radius:15px;background:#fff;overflow:hidden}
 .shift-import-panel>summary{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:13px 15px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#edf6fc,#fff)}
 .shift-import-panel>summary::-webkit-details-marker{display:none}
@@ -2802,9 +2806,10 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
 .fault-record-table .fault-assignee-column{width:200px!important;min-width:200px!important;max-width:200px!important}
 .fault-record-table .fault-status-column{width:165px!important;min-width:165px!important;max-width:165px!important}
 .fault-record-table .fault-assignee-column .personnel-sel{width:180px;max-width:180px}
-@media(max-width:1000px){.shift-filter-card.team-only{grid-template-columns:1fr 1fr}.shift-view-switch{grid-column:1/-1}}
+@media(max-width:1000px){.shift-filter-card.team-only{grid-template-columns:1fr 1fr}.shift-view-switch{grid-column:1/-1}.shift-export-button{justify-self:start}}
 @media(max-width:700px){
   .shift-filter-card.team-only{grid-template-columns:1fr}
+  .shift-export-button{width:100%}
   .fault-record-table{width:100%!important;min-width:0;table-layout:fixed}
   .fault-record-table .fault-assignee-column,.fault-record-table .fault-status-column{width:auto!important;min-width:0!important;max-width:none!important}
   .fault-record-table .personnel-sel{max-width:100%}

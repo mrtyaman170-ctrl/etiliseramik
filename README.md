@@ -1,7 +1,12 @@
-# ETİLİSMART Modüler Proje — v1.4.1
+# ETİLİSMART Modüler Proje — v1.4.2
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## v1.4.2 yenilikleri
+
+- Vardiya planı, seçili ay ve bakım ekibi için renkli hücre yapısını koruyan **Vardiyalı Çalışma Çizelgesi** Excel şablonu olarak dışa aktarılabilir.
+- Tamamlanmış arızalarda malzeme kaydı yoksa arıza listesinde ve detay ekranında **“Malzeme girilmedi”** uyarısı görünür.
 
 ## v1.4.1 yenilikleri
 

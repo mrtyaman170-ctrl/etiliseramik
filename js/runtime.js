@@ -1430,6 +1430,13 @@ function bind(){
       importShiftExcel.disabled=false;importShiftExcel.textContent="Excel’i Kontrol Et ve Aktar";
     }
   };
+  const exportShiftTemplate=document.getElementById("exportShiftTemplate");
+  if(exportShiftTemplate)exportShiftTemplate.onclick=()=>{
+    try{
+      const result=exportShiftTemplateFile(s.shiftFactory,s.shiftTeam,s.shiftMonthDate);
+      alert(`Vardiya çizelgesi Excel dosyası indirildi: ${result.filename}`);
+    }catch(error){alert(`Excel çıktısı oluşturulamadı: ${error.message}`)}
+  };
   document.querySelectorAll(".shift-assignment-select").forEach(el=>el.onchange=()=>{
     if(!canManageShiftTeam(s.shiftTeam)){render();return}
     const personId=el.dataset.shiftPersonId;

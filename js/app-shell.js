@@ -297,7 +297,7 @@ function table(items,editable=false,options={}){
       <td class="fault-assignee-column" data-label="Sorumlu Bakımcı">${canRedirectFault(f)
         ?`<select class="sel personnel-sel" data-personnel-id="${esc(f.id)}">${personnelSelectOptions(f)}</select>`
         :`<span class="assigned-person">${esc(f.assignedTo||"Otomatik atanıyor")}</span>`}</td>
-      <td class="fault-status-column" data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza çözümü yazılmadı</span>':""}</td>
+      <td class="fault-status-column" data-label="Durum"><span class="status ${esc(f.status)}">${statusLabel(f.status)}</span>${f.status==="done"&&!String(f.solutionText||"").trim()?'<br><span class="missing-solution-tag">Arıza çözümü yazılmadı</span>':""}${f.status==="done"&&!(Array.isArray(f.usedMaterials)&&f.usedMaterials.length)?'<br><span class="missing-solution-tag missing-material-tag">Malzeme girilmedi</span>':""}</td>
       <td data-label="Süre"><span class="duration" data-id="${esc(f.id)}">${durationText(f)}</span></td>
       ${editable&&canUpdateFaultStatus(f)?`<td data-label="İşlem"><select class="sel status-sel" data-id="${esc(f.id)}">
         <option value="open" ${f.status==="open"?"selected":""}>Yeni</option>
