@@ -7,10 +7,30 @@ const SHIFT_TEMPLATE_MAX_DAYS=31;
 // Bu stiller boş personel satırlarında renkli vardiya bloklarını kaldırır.
 const SHIFT_TEMPLATE_BLANK_NAME_STYLE=47;
 const SHIFT_TEMPLATE_BLANK_DAY_STYLES=[29,29,46];
-// Şablondaki sürekli 08–16 vardiyası için kullanılan gri desen.
-const SHIFT_TEMPLATE_DAY_NAME_STYLE=62;
-const SHIFT_TEMPLATE_DAY_STYLES=[29,63,46];
 const SHIFT_TEMPLATE_SCHEDULED_SHIFTS=["00-08","08-16","16-24"];
+const SHIFT_TEMPLATE_STYLE_BASES={name:47,inner:29,end:46};
+const SHIFT_TEMPLATE_PERSON_COLORS=[
+  {name:"EAF3FB",active:"9DC3E6"},
+  {name:"ECF4E6",active:"A9D18E"},
+  {name:"FCEDE4",active:"F4B183"},
+  {name:"F1EAF7",active:"D9B3E6"},
+  {name:"FFF7DB",active:"FFE699"},
+  {name:"E8F2F8",active:"9BC2E6"},
+  {name:"FCE9E9",active:"F4B6B6"},
+  {name:"EAF0FA",active:"B4C7E7"},
+  {name:"E6F4F5",active:"B7DEE8"},
+  {name:"EDF5E7",active:"C6E0B4"},
+  {name:"F9E8E8",active:"F4CCCC"},
+  {name:"FFF5D9",active:"FFD966"},
+  {name:"EAF4E5",active:"D9EAD3"},
+  {name:"EDF3FC",active:"C9DAF8"},
+  {name:"F7EAEE",active:"EAD1DC"},
+  {name:"E7F0F1",active:"D0E0E3"},
+  {name:"FFF0E3",active:"FCE5CD"}
+];
+// Sabit gündüz çalışanları önceki talebe uygun olarak nötr griyle ayırt edilir.
+const SHIFT_TEMPLATE_DAY_COLOR={name:"EEF1F4",active:"C6CCD2"};
+const SHIFT_TEMPLATE_OFF_COLOR="E7EDF3";
 
 function shiftTemplateBase64Bytes(base64){
   const binary=atob(base64);
@@ -182,36 +202,106 @@ function shiftTemplateSetRowHidden(xml,row,hidden){
     return `<row${clean}${hidden?' hidden="1"':""}>`;
   });
 }
-function shiftTemplateStyleFillIds(stylesXml){
+function shiftTemplateCellXfTags(stylesXml){
   const section=stylesXml.match(/<cellXfs\b[^>]*>([\s\S]*?)<\/cellXfs>/)?.[1]||"";
-  return [...section.matchAll(/<xf\b[^>]*>/g)].map(match=>{
-    const fill=match[0].match(/\bfillId="(\d+)"/);
-    return fill?Number(fill[1]):0;
+  return [...section.matchAll(/<xf\b[^>]*\/>|<xf\b[^>]*>[\s\S]*?<\/xf>/g)].map(match=>match[0]);
+}
+function shiftTemplateSolidFill(color){
+  const rgb=String(color||"").replace(/^#/,"").toUpperCase();
+  if(!/^[0-9A-F]{6}$/.test(rgb))throw new Error("Vardiya renk tanımı geçersiz.");
+  return `<fill><patternFill patternType="solid"><fgColor rgb="FF${rgb}"/><bgColor indexed="64"/></patternFill></fill>`;
+}
+function shiftTemplateAppendFills(stylesXml,colors){
+  let fillIds=[];
+  const updated=stylesXml.replace(/<fills\b([^>]*)>([\s\S]*?)<\/fills>/,(_tag,attributes,body)=>{
+    const countText=attributes.match(/\bcount="(\d+)"/)?.[1];
+    const currentCount=Number.isInteger(Number(countText))?Number(countText):[...body.matchAll(/<fill\b[\s\S]*?<\/fill>/g)].length;
+    fillIds=colors.map((_color,index)=>currentCount+index);
+    const cleanAttributes=attributes.replace(/\s+count="[^"]*"/g,"");
+    return `<fills${cleanAttributes} count="${currentCount+colors.length}">${body}${colors.map(shiftTemplateSolidFill).join("")}</fills>`;
   });
+  if(updated===stylesXml)throw new Error("Excel şablonunda renk stilleri bulunamadı.");
+  return {stylesXml:updated,fillIds};
 }
-function shiftTemplateMostFrequent(values,fallback=0){
-  const counts=new Map();
-  values.filter(Number.isInteger).forEach(value=>counts.set(value,(counts.get(value)||0)+1));
-  return [...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]??fallback;
+function shiftTemplateCloneXfWithFill(xf,fillId){
+  let updated=String(xf).replace(/\bfillId="\d+"/,`fillId="${fillId}"`);
+  if(updated===xf)updated=updated.replace(/^<xf\b/,`<xf fillId="${fillId}"`);
+  if(!/\bapplyFill="[^"]*"/.test(updated))updated=updated.replace(/^<xf\b/,"<xf applyFill=\"1\"");
+  return updated;
 }
-function shiftTemplateRowPattern(sheetXml,styles,row){
-  const nameStyle=shiftTemplateCellStyle(shiftTemplateCellTag(sheetXml,`A${row}`));
-  const rowFill=styles[nameStyle]||0;
-  const active=[[],[],[]],inactive=[[],[],[]];
-  let leave=null;
-  for(let day=0;day<SHIFT_TEMPLATE_MAX_DAYS;day++){
-    const tags=[0,1,2].map(offset=>shiftTemplateCellTag(sheetXml,`${shiftTemplateColumnName(1+day*3+offset)}${row}`));
-    const hasLeave=tags.some(tag=>/<v>\d+<\/v>/.test(tag)||/inlineStr/.test(tag));
-    const styleIds=tags.map(shiftTemplateCellStyle);
-    if(hasLeave&&!leave){leave=styleIds;continue}
-    styleIds.forEach((styleId,offset)=>{
-      if((styles[styleId]||0)===rowFill&&rowFill!==0)active[offset].push(styleId);
-      else inactive[offset].push(styleId);
-    });
+function shiftTemplateAppendCellXfs(stylesXml,xfs){
+  const updated=stylesXml.replace(/<cellXfs\b([^>]*)>([\s\S]*?)<\/cellXfs>/,(_tag,attributes,body)=>{
+    const countText=attributes.match(/\bcount="(\d+)"/)?.[1];
+    const present=[...body.matchAll(/<xf\b[^>]*\/>|<xf\b[^>]*>[\s\S]*?<\/xf>/g)].length;
+    const currentCount=Number.isInteger(Number(countText))?Number(countText):present;
+    const cleanAttributes=attributes.replace(/\s+count="[^"]*"/g,"");
+    return `<cellXfs${cleanAttributes} count="${currentCount+xfs.length}">${body}${xfs.join("")}</cellXfs>`;
+  });
+  if(updated===stylesXml)throw new Error("Excel şablonunda hücre stilleri bulunamadı.");
+  return updated;
+}
+function shiftTemplateExportStyles(stylesXml,people){
+  const baseXfs=shiftTemplateCellXfTags(stylesXml);
+  const baseName=baseXfs[SHIFT_TEMPLATE_STYLE_BASES.name];
+  const baseInner=baseXfs[SHIFT_TEMPLATE_STYLE_BASES.inner];
+  const baseEnd=baseXfs[SHIFT_TEMPLATE_STYLE_BASES.end];
+  if(!baseName||!baseInner||!baseEnd)throw new Error("Excel şablonundaki satır stilleri bulunamadı.");
+
+  const rows=Array.isArray(people)?people:[];
+  const colors=rows.map((person,index)=>shiftTemplatePermanentDayWorker(person)
+    ?SHIFT_TEMPLATE_DAY_COLOR
+    :SHIFT_TEMPLATE_PERSON_COLORS[index%SHIFT_TEMPLATE_PERSON_COLORS.length]);
+  const fillColors=[...colors.flatMap(color=>[color.name,color.active]),SHIFT_TEMPLATE_OFF_COLOR];
+  const fills=shiftTemplateAppendFills(stylesXml,fillColors);
+  const personStyles=[];
+  const appendedXfs=[];
+  let nextStyleId=baseXfs.length;
+
+  colors.forEach((_color,index)=>{
+    const nameFill=fills.fillIds[index*2];
+    const activeFill=fills.fillIds[index*2+1];
+    const name=nextStyleId++;
+    const activeInner=nextStyleId++;
+    const activeEnd=nextStyleId++;
+    appendedXfs.push(
+      shiftTemplateCloneXfWithFill(baseName,nameFill),
+      shiftTemplateCloneXfWithFill(baseInner,activeFill),
+      shiftTemplateCloneXfWithFill(baseEnd,activeFill)
+    );
+    personStyles.push({name,active:[activeInner,activeInner,activeEnd]});
+  });
+
+  const offFill=fills.fillIds.at(-1);
+  const offInner=nextStyleId++;
+  const offEnd=nextStyleId++;
+  appendedXfs.push(
+    shiftTemplateCloneXfWithFill(baseInner,offFill),
+    shiftTemplateCloneXfWithFill(baseEnd,offFill)
+  );
+  return {
+    stylesXml:shiftTemplateAppendCellXfs(fills.stylesXml,appendedXfs),
+    personStyles,
+    offStyles:[offInner,offInner,offEnd]
+  };
+}
+function shiftTemplateCanonicalShift(value){
+  if(SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(value)||value===SHIFT_OFF)return value;
+  if(typeof normalizeImportedShift==="function"){
+    const normalized=normalizeImportedShift(value);
+    if(SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(normalized)||normalized===SHIFT_OFF)return normalized;
   }
-  const inactiveStyles=inactive.map(values=>shiftTemplateMostFrequent(values));
-  const activeStyles=active.map((values,offset)=>shiftTemplateMostFrequent(values,inactiveStyles[offset]));
-  return {nameStyle,inactiveStyles,activeStyles,leaveStyles:leave||activeStyles};
+  const text=String(value??"").trim().toLocaleUpperCase("tr-TR").replace(/\s+/g,"");
+  if(["00:00-08:00","0-8","0:00-8:00","24/8","24-8","24:00-08:00","A","1","GECE"].includes(text))return "00-08";
+  if(["08:00-16:00","8-16","8:00-16:00","8/16","B","2","GÜNDÜZ","SABAH"].includes(text))return "08-16";
+  if(["16:00-24:00","16-00","16:00-00:00","16/24","C","3","AKŞAM"].includes(text))return "16-24";
+  if(["İ","IZIN","İZİN","OFF","TATİL","R","RAPOR","İSTİRAHAT"].includes(text))return SHIFT_OFF;
+  return "";
+}
+function shiftTemplatePermanentDayWorker(person){
+  const shifts=(person?.days||[])
+    .map(day=>shiftTemplateCanonicalShift(day?.shift))
+    .filter(shift=>SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(shift));
+  return shifts.length>0&&shifts.every(shift=>shift==="08-16");
 }
 function shiftTemplateReplaceDataMerges(sheetXml,offRanges){
   return sheetXml.replace(/<mergeCells\b[^>]*>([\s\S]*?)<\/mergeCells>/,(_all,body)=>{
@@ -266,12 +356,6 @@ function shiftTemplateSheetPath(workbookXml,relationshipsXml){
 function shiftTemplateSafeFilename(value){
   return String(value||"").trim().replace(/[^\p{L}\p{N}]+/gu,"_").replace(/^_+|_+$/g,"")||"Vardiya";
 }
-function shiftTemplatePermanentDayWorker(person){
-  const shifts=(person?.days||[])
-    .map(day=>day?.shift)
-    .filter(shift=>SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(shift));
-  return shifts.length>0&&shifts.every(shift=>shift==="08-16");
-}
 async function buildShiftTemplateXlsx(templateBytes,factory,team,monthValue,schedule){
   const month=new Date(monthValue);
   if(Number.isNaN(month.getTime()))throw new Error("Seçili ay okunamadı.");
@@ -292,7 +376,7 @@ async function buildShiftTemplateXlsx(templateBytes,factory,team,monthValue,sche
   const sheetPath=shiftTemplateSheetPath(workbookXml,relationshipsXml);
   const sheetEntry=byName.get(sheetPath);
   if(!sheetEntry)throw new Error("Vardiya çizelgesi çalışma sayfası eksik.");
-  const styles=shiftTemplateStyleFillIds(shiftTemplateXmlText(stylesEntry.data));
+  const exportStyles=shiftTemplateExportStyles(shiftTemplateXmlText(stylesEntry.data),schedule.rows);
   let sheetXml=shiftTemplateXmlText(sheetEntry.data);
 
   sheetXml=shiftTemplateSetCell(sheetXml,"Q3",{value:`${factory} · ${team}`.toLocaleUpperCase("tr-TR")});
@@ -310,29 +394,28 @@ async function buildShiftTemplateXlsx(templateBytes,factory,team,monthValue,sche
 
   const offRanges=[];
   for(let row=SHIFT_TEMPLATE_DATA_START_ROW;row<=SHIFT_TEMPLATE_DATA_END_ROW;row++){
-    const person=schedule.rows[row-SHIFT_TEMPLATE_DATA_START_ROW];
-    const pattern=shiftTemplateRowPattern(sheetXml,styles,row);
-    const permanentDayWorker=shiftTemplatePermanentDayWorker(person);
+    const personIndex=row-SHIFT_TEMPLATE_DATA_START_ROW;
+    const person=schedule.rows[personIndex];
+    const personStyle=exportStyles.personStyles[personIndex];
     // Şablonun 17 personellik baskı yüksekliğini ve imza alanlarının konumunu koru.
     sheetXml=shiftTemplateSetRowHidden(sheetXml,row,false);
     sheetXml=shiftTemplateSetCell(sheetXml,`A${row}`,{
-      style:!person?SHIFT_TEMPLATE_BLANK_NAME_STYLE:(permanentDayWorker?SHIFT_TEMPLATE_DAY_NAME_STYLE:pattern.nameStyle),
+      style:person?personStyle.name:SHIFT_TEMPLATE_BLANK_NAME_STYLE,
       value:person?.name||""
     });
     for(let dayIndex=0;dayIndex<SHIFT_TEMPLATE_MAX_DAYS;dayIndex++){
       const day=person?.days?.[dayIndex];
       const startColumn=1+dayIndex*3;
-      const isOff=day?.shift===SHIFT_OFF;
-      const hasScheduledShift=SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(day?.shift);
+      const shift=shiftTemplateCanonicalShift(day?.shift);
+      const isOff=shift===SHIFT_OFF;
+      const activeShiftIndex=SHIFT_TEMPLATE_SCHEDULED_SHIFTS.indexOf(shift);
       for(let offset=0;offset<3;offset++){
         const address=`${shiftTemplateColumnName(startColumn+offset)}${row}`;
-        const style=isOff?pattern.leaveStyles[offset]:(!person||!hasScheduledShift)
+        const style=isOff?exportStyles.offStyles[offset]:(!person||activeShiftIndex<0)
           ?SHIFT_TEMPLATE_BLANK_DAY_STYLES[offset]
-          :permanentDayWorker
-            ?SHIFT_TEMPLATE_DAY_STYLES[offset]
-            :(offset===SHIFT_TEMPLATE_SCHEDULED_SHIFTS.indexOf(day.shift)
-              ?pattern.activeStyles[offset]
-              :pattern.inactiveStyles[offset]);
+          :(offset===activeShiftIndex
+              ?personStyle.active[offset]
+              :SHIFT_TEMPLATE_BLANK_DAY_STYLES[offset]);
         sheetXml=shiftTemplateSetCell(sheetXml,address,{
           style,
           value:isOff&&offset===0?"İZİN":null
@@ -347,6 +430,8 @@ async function buildShiftTemplateXlsx(templateBytes,factory,team,monthValue,sche
   sheetXml=shiftTemplateKeepOnePage(sheetXml);
   sheetEntry.data=shiftTemplateXmlBytes(sheetXml);
   sheetEntry.modified=true;
+  stylesEntry.data=shiftTemplateXmlBytes(exportStyles.stylesXml);
+  stylesEntry.modified=true;
   workbookEntry.data=shiftTemplateXmlBytes(shiftTemplateUpdateWorkbookXml(workbookXml));
   workbookEntry.modified=true;
 

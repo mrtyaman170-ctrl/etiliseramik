@@ -1,7 +1,15 @@
-# ETİLİSMART Modüler Proje — v1.4.5
+# ETİLİSMART Modüler Proje — v1.4.6
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## v1.4.6 yenilikleri
+
+- Vardiya Excel çıktısında artık vardiya hücreleri şablondaki satır renklerine bağlı değildir: her personelin aktif vardiyası net biçimde işaretlenir ve kişi bazlı renk kullanılır.
+- Aynı vardiya değeri farklı yazımla gelmiş olsa bile (`08:00-16:00` gibi) çıktıda doğru hücreye işlenir. Sabit 08–16 çalışanlar önceki talebe uygun gri tonda kalır.
+- Boş personel satırları beyaz hücre ve normal kenarlık düzeniyle korunur; izinli günler de tek, okunaklı bir blok olarak yazılır.
+- Telefon ekranında geniş vardiya çizelgesinin yatay kaydırması dokunmatik kullanım için iyileştirildi.
+- Tarayıcıda eski sürümden kalmış kullanıcı verisi olsa dahi bölüm formenleri, üretim müdürleri ve Yazılımcı hesabının fabrika/rol sınırları güncel yetki modeline göre güvenle düzeltilir; kullanıcının değiştirdiği parola korunur.
 
 ## v1.4.5 yenilikleri
 
