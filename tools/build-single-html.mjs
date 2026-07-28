@@ -23,6 +23,12 @@ if (!stylesheet) throw new Error("Stil dosyası bağlantısı bulunamadı.");
 
 const css = fs.readFileSync(path.join(projectRoot, stylesheet[1]), "utf8");
 html = html.replace(stylesheet[0], `<style>\n${css}\n</style>`);
+const shiftTemplatePath = path.join(projectRoot, "assets", "vardiya_sablonu.xlsx");
+const shiftTemplateBase64 = fs.readFileSync(shiftTemplatePath).toString("base64");
+html = html.replace(
+  "</head>",
+  `<script>window.ETILISMART_SHIFT_TEMPLATE_BASE64="${shiftTemplateBase64}";</script></head>`,
+);
 
 const scriptPattern = /<script\s+src=["']([^"']+)["']><\/script>/gi;
 html = html.replace(scriptPattern, (_tag, source) => {

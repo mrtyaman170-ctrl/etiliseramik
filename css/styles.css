@@ -2815,3 +2815,168 @@ main{padding:28px 32px 40px;max-width:1600px;width:100%}
   .fault-record-table .personnel-sel{max-width:100%}
   .monthly-shift-table th:first-child,.monthly-shift-table td:first-child{position:sticky;left:0;width:150px;min-width:150px;z-index:3}
 }
+
+/* v1.4.3 — açık işler, ayrı geçmişler ve çalışma kayıtları tablosu */
+.work-browser{
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);
+  align-items:stretch;
+  gap:13px;
+  padding:13px
+}
+.work-tab-groups{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0}
+.work-tab-group{
+  min-width:0;
+  padding:9px;
+  border:1px solid #e0e6eb;
+  border-radius:13px;
+  background:#f8fafb
+}
+.work-tab-group.history{background:#fffaf0;border-color:#eadcb9}
+.work-tab-group>small{
+  display:block;
+  margin:0 4px 7px;
+  color:#778691;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.75px
+}
+.work-tab-group.history>small{color:#91712d}
+.work-browser .work-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  width:100%!important;
+  gap:5px
+}
+.work-browser .work-tabs button{
+  min-width:0;
+  min-height:42px;
+  padding:8px 7px;
+  white-space:normal;
+  line-height:1.25
+}
+.work-browser .work-history-tabs button.active{background:#7e6227}
+.work-filter-panel{
+  display:grid;
+  align-content:center;
+  gap:9px;
+  min-width:0;
+  padding:9px;
+  border:1px solid #e1e7eb;
+  border-radius:13px;
+  background:#fbfcfd
+}
+.work-record-search{width:100%;max-width:none}
+.work-date-range{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+.work-date-range label{display:grid;gap:5px;color:#65737e;font-size:7px;font-weight:900}
+.work-date-range input{
+  width:100%;
+  min-height:37px;
+  padding:0 9px;
+  border:1px solid #d7e0e6;
+  border-radius:9px;
+  background:#fff;
+  color:#31404c;
+  font-size:9px
+}
+.work-date-range button{
+  min-height:37px;
+  padding:0 10px;
+  border:1px solid #d8e0e6;
+  border-radius:9px;
+  background:#fff;
+  color:#65737e;
+  font-size:8px;
+  font-weight:850;
+  cursor:pointer
+}
+.work-date-range button:disabled{opacity:.45;cursor:not-allowed}
+.work-table-wrap{
+  max-width:100%;
+  overflow:auto;
+  border:1px solid #dce4ea;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 7px 22px rgba(27,46,61,.045)
+}
+.work-record-table{width:100%;min-width:1180px;border-collapse:separate;border-spacing:0;table-layout:fixed}
+.work-record-table th,.work-record-table td{
+  padding:11px 10px;
+  border:0;
+  border-bottom:1px solid #e5eaee;
+  text-align:left;
+  vertical-align:middle;
+  color:#596874;
+  font-size:8.5px;
+  line-height:1.4
+}
+.work-record-table th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding-top:10px;
+  padding-bottom:10px;
+  background:#edf3f7;
+  color:#536675;
+  font-size:7.5px;
+  font-weight:900
+}
+.work-record-table th:nth-child(1){width:105px}
+.work-record-table th:nth-child(2){width:105px}
+.work-record-table th:nth-child(3){width:145px}
+.work-record-table th:nth-child(4){width:145px}
+.work-record-table th:nth-child(5){width:275px}
+.work-record-table th:nth-child(6){width:170px}
+.work-record-table th:nth-child(7){width:125px}
+.work-record-table th:nth-child(8){width:150px}
+.work-record-table tbody tr:last-child td{border-bottom:0}
+.work-table-row{cursor:pointer;transition:background .15s ease,box-shadow .15s ease}
+.work-table-row:hover,.work-table-row:focus{outline:0;background:#f3f8fc;box-shadow:inset 4px 0 #3c82b5}
+.work-table-row.contractor-row:hover,.work-table-row.contractor-row:focus{background:#fffaf0;box-shadow:inset 4px 0 #ae852b}
+.work-record-table td>b:first-child{color:#2e6f9e;font-size:9px}
+.work-record-table td strong,.work-record-table td small{display:block}
+.work-record-table td strong{color:#293946;font-size:9.5px}
+.work-record-table td small{margin-top:3px;color:#87939c;font-size:7.5px}
+.work-record-table td .procurement-badge,.work-record-table td .outsource-badge{
+  display:inline-flex;
+  margin:5px 5px 0 0;
+  padding:3px 6px;
+  font-size:6px;
+  font-style:normal
+}
+.work-sort-button{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  width:100%;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  cursor:pointer
+}
+.work-sort-button span{margin-left:auto;color:#91a0ab;font-size:8px}
+.work-sort-button.active{color:#1e6eaa}
+.work-sort-button.active span{color:#c88e08}
+.work-priority{display:inline-flex;padding:5px 8px;border-radius:999px;background:#edf2f5;color:#586875;font-size:7px;font-weight:900}
+.work-priority.priority-acil{background:#fde6e8;color:#aa3542}
+.work-priority.priority-yüksek{background:#fff0df;color:#a56224}
+.work-priority.priority-orta{background:#e8f2f9;color:#316e9b}
+.work-continues{display:inline-flex;padding:5px 8px;border-radius:999px;background:#fff1d0;color:#8d6718;font-size:7px;font-weight:900}
+.work-empty-panel{margin:0}
+@media(max-width:1250px){
+  .work-browser{grid-template-columns:1fr}
+  .work-filter-panel{grid-template-columns:minmax(260px,1fr) minmax(420px,auto);align-items:end}
+}
+@media(max-width:850px){
+  .work-tab-groups{grid-template-columns:1fr}
+  .work-filter-panel{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .work-browser .work-tabs{grid-template-columns:1fr!important}
+  .work-date-range{grid-template-columns:1fr 1fr}
+  .work-date-range button{grid-column:1/-1}
+  .work-record-table{min-width:1020px}
+}

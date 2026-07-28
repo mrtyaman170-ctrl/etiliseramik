@@ -1,7 +1,15 @@
-# ETİLİSMART Modüler Proje — v1.4.2
+# ETİLİSMART Modüler Proje — v1.4.3
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## v1.4.3 yenilikleri
+
+- Vardiya Excel çıktısı, yüklenen kurumsal şablonun logo, renk, birleşik hücre, imza alanı ve tek sayfalık yatay baskı düzenini korur.
+- Seçili fabrika, bakım ekibi, ay, yıl, personel ve vardiya planı aynı şablona işlenir.
+- Açık talepler, açık iş emirleri ve devam eden taşeron işleri ana grupta; üç ayrı geçmiş ise ayrı düğmelerde gösterilir.
+- Tüm iş kayıtlarında kelime araması, başlangıç/bitiş tarihi filtresi ve sütun başlığından çift yönlü sıralama bulunur.
+- Kayıt satırına tıklanarak ayrıntı ekranı açılır.
 
 ## v1.4.2 yenilikleri
 

@@ -150,6 +150,69 @@ function workSearchMatches(item,query){
   ].join(" ").toLocaleLowerCase("tr-TR");
   return searchable.includes(query.toLocaleLowerCase("tr-TR"));
 }
+function workRecordDate(item){
+  const value=item.kind==="contractor"?(item.startDate||item.createdAt):item.createdAt;
+  const date=new Date(String(value||"").length===10?`${value}T00:00:00`:value);
+  return Number.isNaN(date.getTime())?null:date;
+}
+function workDateMatches(item,start,end){
+  const date=workRecordDate(item);
+  if(!date)return !start&&!end;
+  const key=dateOnly(date);
+  return (!start||key>=start)&&(!end||key<=end);
+}
+function workSortValue(item,key){
+  if(key==="createdAt")return workRecordDate(item)?.getTime()||0;
+  if(key==="status")return workStatusLabel(item.status,item.kind);
+  if(key==="responsible")return item.kind==="contractor"
+    ?item.contractorCompany
+    :(item.assignedTo||item.createdBy);
+  if(key==="dateEnd")return item.kind==="contractor"
+    ?(item.endDate||"9999-12-31")
+    :(item.planEnd||item.requestedDate||"9999-12-31");
+  return item[key]??"";
+}
+function workSortRecords(records){
+  const direction=s.workSortDir==="asc"?1:-1;
+  const key=s.workSortKey||"createdAt";
+  return [...records].sort((left,right)=>{
+    const a=workSortValue(left,key);
+    const b=workSortValue(right,key);
+    if(typeof a==="number"&&typeof b==="number")return (a-b)*direction;
+    return String(a||"").localeCompare(String(b||""),"tr",{numeric:true,sensitivity:"base"})*direction;
+  });
+}
+function workSortButton(key,label){
+  const active=s.workSortKey===key;
+  return `<button type="button" class="work-sort-button ${active?"active":""}" data-work-sort="${esc(key)}">${esc(label)}<span>${active?(s.workSortDir==="asc"?"▲":"▼"):"↕"}</span></button>`;
+}
+function workTableDate(value){
+  if(!value)return "-";
+  const date=new Date(String(value).length===10?`${value}T00:00:00`:value);
+  return Number.isNaN(date.getTime())?"-":date.toLocaleDateString("tr-TR");
+}
+function renderWorkTable(records,kind,emptyText){
+  if(!records.length)return `<div class="card empty-panel work-empty-panel"><h3>Kayıt bulunamadı</h3><p>${esc(emptyText)}</p></div>`;
+  const commonHead=`<th>${workSortButton("id","Kayıt No")}</th><th>${workSortButton("createdAt","Tarih")}</th><th>${workSortButton("factory","Fabrika")}</th><th>${workSortButton("department","Bölüm")}</th><th>${workSortButton("title","İş / Talep")}</th>`;
+  let extraHead="",rows="";
+  if(kind==="request"){
+    extraHead=`<th>${workSortButton("responsible","Talep Eden")}</th><th>${workSortButton("priority","Öncelik")}</th><th>${workSortButton("status","Durum")}</th>`;
+    rows=records.map(item=>`<tr class="work-table-row" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.id)} talep detayını aç">
+      <td><b>${esc(item.id)}</b></td><td>${workTableDate(item.createdAt)}</td><td>${esc(item.factory)}</td><td>${esc(item.department)}</td><td><strong>${esc(item.title)}</strong><small>${esc(item.location||"-")}</small></td><td>${esc(item.createdBy||"-")}</td><td><span class="work-priority priority-${esc(String(item.priority||"Orta").toLocaleLowerCase("tr-TR"))}">${esc(item.priority||"-")}</span></td><td><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status,"request"))}</b></td>
+    </tr>`).join("");
+  }else if(kind==="workorder"){
+    extraHead=`<th>${workSortButton("responsible","Sorumlu")}</th><th>${workSortButton("dateEnd","Plan Bitişi")}</th><th>${workSortButton("status","Durum")}</th>`;
+    rows=records.map(item=>`<tr class="work-table-row" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.id)} iş emri detayını aç">
+      <td><b>${esc(item.id)}</b></td><td>${workTableDate(item.createdAt)}</td><td>${esc(item.factory)}</td><td>${esc(item.department)}</td><td><strong>${esc(item.title)}</strong><small>${esc(item.location||"-")}</small>${item.procurementRequired?'<em class="procurement-badge">SATIN ALINACAK</em>':""}${item.outsourcedRequired?'<em class="outsource-badge">TAŞERONA VERİLECEK</em>':""}</td><td>${esc(item.assignedTo||"Atama Bekliyor")}</td><td>${workTableDate(item.planEnd)}</td><td><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status))}</b></td>
+    </tr>`).join("");
+  }else{
+    extraHead=`<th>${workSortButton("responsible","Taşeron Firma")}</th><th>${workSortButton("dateEnd","Bitiş")}</th><th>${workSortButton("status","Durum")}</th>`;
+    rows=records.map(item=>`<tr class="work-table-row contractor-row" data-work-detail-id="${esc(item.id)}" role="button" tabindex="0" aria-label="${esc(item.id)} taşeron işi detayını aç">
+      <td><b>${esc(item.id)}</b></td><td>${workTableDate(item.startDate||item.createdAt)}</td><td>${esc(item.factory)}</td><td>${esc(item.department)}</td><td><strong>${esc(item.title)}</strong><small>${esc(item.location||"-")}</small></td><td>${esc(item.contractorCompany||"-")}</td><td>${item.endDate?workTableDate(item.endDate):'<span class="work-continues">Devam Ediyor</span>'}</td><td><b class="work-status ${esc(workStatusClass(item.status))}">${esc(workStatusLabel(item.status,"contractor"))}</b></td>
+    </tr>`).join("");
+  }
+  return `<div class="work-table-wrap"><table class="work-record-table"><thead><tr>${commonHead}${extraHead}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
 
 /* İş talebi ve iş emri ekranları */
 function renderRequestCards(records,emptyText){
@@ -201,6 +264,8 @@ function workManagementPage(){
   const requestHistory=requests.filter(x=>["done","rejected","cancelled","converted"].includes(x.status));
   const activeOrders=orders.filter(x=>!["done","cancelled"].includes(x.status));
   const orderHistory=orders.filter(x=>["done","cancelled"].includes(x.status));
+  const activeContractors=contractors.filter(x=>!["done","cancelled"].includes(x.status));
+  const contractorHistory=contractors.filter(x=>["done","cancelled"].includes(x.status));
   const overdue=activeOrders.filter(x=>x.planEnd&&x.planEnd<dateOnly(new Date()));
   const categories=["Aydınlatma","Klima / Havalandırma","Elektrik Tesisatı","Enerji Hattı","Kamera / Güvenlik","Mekanik İyileştirme","Kaynak / İmalat","Pnömatik Hat","Hidrolik Sistem","Makine Taşıma","Diğer"];
   const requestDepartmentField=permissions().allDepartments
@@ -252,43 +317,76 @@ function workManagementPage(){
     </form>
   </section>`:"";
 
-  const tabs=["requests","orders","requestHistory","orderHistory","contractors"];
+  const tabs=["requests","orders","contractors","requestHistory","orderHistory","contractorHistory"];
   if(!tabs.includes(s.workTab))s.workTab="requests";
   const search=s.workSearch.trim();
+  const start=s.workDateStart||"";
+  const end=s.workDateEnd||"";
   let selected=[];
   let listMarkup="";
   if(s.workTab==="requests"){
-    selected=activeRequests.filter(item=>workSearchMatches(item,search));
-    listMarkup=renderRequestCards(selected,"Aktif iş talebi bulunmuyor.");
+    selected=activeRequests;
   }else if(s.workTab==="orders"){
-    selected=activeOrders.filter(item=>workSearchMatches(item,search));
-    listMarkup=renderWorkOrderCards(selected,"Aktif iş emri bulunmuyor.");
+    selected=activeOrders;
   }else if(s.workTab==="requestHistory"){
-    selected=requestHistory.filter(item=>workSearchMatches(item,search));
-    listMarkup=renderRequestCards(selected,"Talep geçmişinde eşleşen kayıt bulunmuyor.");
+    selected=requestHistory;
   }else if(s.workTab==="orderHistory"){
-    selected=orderHistory.filter(item=>workSearchMatches(item,search));
-    listMarkup=renderWorkOrderCards(selected,"İş emri geçmişinde eşleşen kayıt bulunmuyor.");
+    selected=orderHistory;
+  }else if(s.workTab==="contractorHistory"){
+    selected=contractorHistory;
   }else{
-    selected=contractors.filter(item=>workSearchMatches(item,search));
-    listMarkup=renderContractorCards(selected);
+    selected=activeContractors;
   }
+  selected=workSortRecords(selected.filter(item=>workSearchMatches(item,search)&&workDateMatches(item,start,end)));
+  const selectedKind=["requests","requestHistory"].includes(s.workTab)
+    ?"request"
+    :["orders","orderHistory"].includes(s.workTab)
+      ?"workorder"
+      :"contractor";
+  const emptyText=(search||start||end)
+    ?"Arama ve tarih ölçütlerine uygun kayıt bulunmuyor."
+    :s.workTab==="requests"
+      ?"Açık iş talebi bulunmuyor."
+      :s.workTab==="orders"
+        ?"Açık iş emri bulunmuyor."
+        :s.workTab==="contractors"
+          ?"Devam eden taşeron işi bulunmuyor."
+          :"Bu geçmişte kayıt bulunmuyor.";
+  listMarkup=renderWorkTable(selected,selectedKind,emptyText);
 
   return `${clockBlock()}
   <section class="desktop-page-title work-page-title"><div><span>ARIZA DIŞI BAKIM İŞLERİ</span><h1>Talepler ve İş Emirleri</h1><p>Aktif işleri, tamamlanan kayıtları ve taşeron çalışmalarını ayrı geçmişlerde yönetin.</p></div><div class="desktop-page-actions">${permissions().createRequest?'<button class="secondary" data-open-work-create="request">+ Yeni Talep</button>':""}${permissions().createDirectWorkOrder?'<button class="primary" data-open-work-create="order">+ Doğrudan İş Emri</button>':""}${canManageContractorWork()?'<button class="contractor-create-button" data-open-work-create="contractor">+ Taşeron İşi</button>':""}</div></section>
-  <section class="work-kpis"><article><small>AKTİF TALEP</small><b>${activeRequests.length}</b></article><article><small>AKTİF İŞ EMRİ</small><b>${activeOrders.length}</b></article><article><small>GECİKEN</small><b>${overdue.length}</b></article><article><small>TAMAMLANAN İŞ EMRİ</small><b>${orderHistory.filter(x=>x.status==="done").length}</b></article><article><small>TAŞERON İŞİ</small><b>${contractors.length}</b></article></section>
+  <section class="work-kpis"><article><small>AKTİF TALEP</small><b>${activeRequests.length}</b></article><article><small>AKTİF İŞ EMRİ</small><b>${activeOrders.length}</b></article><article><small>GECİKEN</small><b>${overdue.length}</b></article><article><small>TAMAMLANAN İŞ EMRİ</small><b>${orderHistory.filter(x=>x.status==="done").length}</b></article><article><small>AKTİF TAŞERON İŞİ</small><b>${activeContractors.length}</b></article></section>
   ${requestForm}${directForm}${contractorForm}
   <section class="work-browser">
-    <div class="work-tabs">
-      <button data-work-tab="requests" class="${s.workTab==="requests"?"active":""}">Aktif Talepler <span>${activeRequests.length}</span></button>
-      <button data-work-tab="orders" class="${s.workTab==="orders"?"active":""}">Aktif İş Emirleri <span>${activeOrders.length}</span></button>
-      <button data-work-tab="requestHistory" class="${s.workTab==="requestHistory"?"active":""}">Talep Geçmişi <span>${requestHistory.length}</span></button>
-      <button data-work-tab="orderHistory" class="${s.workTab==="orderHistory"?"active":""}">İş Emri Geçmişi <span>${orderHistory.length}</span></button>
-      <button data-work-tab="contractors" class="${s.workTab==="contractors"?"active":""}">Taşeron İşleri <span>${contractors.length}</span></button>
+    <div class="work-tab-groups">
+      <div class="work-tab-group">
+        <small>AÇIK KAYITLAR</small>
+        <div class="work-tabs">
+          <button data-work-tab="requests" class="${s.workTab==="requests"?"active":""}">Açık Talepler <span>${activeRequests.length}</span></button>
+          <button data-work-tab="orders" class="${s.workTab==="orders"?"active":""}">Açık İş Emirleri <span>${activeOrders.length}</span></button>
+          <button data-work-tab="contractors" class="${s.workTab==="contractors"?"active":""}">Taşeron İşleri <span>${activeContractors.length}</span></button>
+        </div>
+      </div>
+      <div class="work-tab-group history">
+        <small>GEÇMİŞ KAYITLAR</small>
+        <div class="work-tabs work-history-tabs">
+          <button data-work-tab="requestHistory" class="${s.workTab==="requestHistory"?"active":""}">Talep Geçmişi <span>${requestHistory.length}</span></button>
+          <button data-work-tab="orderHistory" class="${s.workTab==="orderHistory"?"active":""}">İş Emri Geçmişi <span>${orderHistory.length}</span></button>
+          <button data-work-tab="contractorHistory" class="${s.workTab==="contractorHistory"?"active":""}">Taşeron Geçmişi <span>${contractorHistory.length}</span></button>
+        </div>
+      </div>
     </div>
-    <label class="record-search work-record-search"><span>⌕</span><input id="workRecordSearch" value="${esc(s.workSearch)}" autocomplete="off" placeholder="Kayıt no, başlık, fabrika, kişi veya firma ara"></label>
+    <div class="work-filter-panel">
+      <label class="record-search work-record-search"><span>⌕</span><input id="workRecordSearch" value="${esc(s.workSearch)}" autocomplete="off" placeholder="Kayıt no, başlık, fabrika, kişi veya firma ara"></label>
+      <div class="work-date-range">
+        <label><span>Başlangıç</span><input id="workDateStart" type="date" value="${esc(start)}" max="${esc(end||"9999-12-31")}"></label>
+        <label><span>Bitiş</span><input id="workDateEnd" type="date" value="${esc(end)}" min="${esc(start)}"></label>
+        <button type="button" id="clearWorkDates" ${start||end?"":"disabled"}>Tarihleri Temizle</button>
+      </div>
+    </div>
   </section>
-  <div class="work-search-result"><b>${selected.length}</b> kayıt gösteriliyor · Kartın üzerine tıklayarak ayrıntıları açabilirsiniz.</div>
+  <div class="work-search-result"><b>${selected.length}</b> kayıt gösteriliyor · Sütun adına basarak sıralayın, satıra basarak detayları açın.</div>
   <section class="work-list">${listMarkup}</section>`;
 }
 

@@ -28,7 +28,7 @@ function bind(){
     markNotificationsSeen("work");
     s.page="work";
     s.workTab=item.kind==="contractor"
-      ?"contractors"
+      ?(["done","cancelled"].includes(item.status)?"contractorHistory":"contractors")
       :item.kind==="request"
         ?(["done","rejected","cancelled","converted"].includes(item.status)?"requestHistory":"requests")
         :(["done","cancelled"].includes(item.status)?"orderHistory":"orders");
@@ -820,7 +820,22 @@ function bind(){
     render();
   };
 
-  document.querySelectorAll("[data-work-tab]").forEach(btn=>btn.onclick=()=>{s.workTab=btn.dataset.workTab;render()});
+  document.querySelectorAll("[data-work-tab]").forEach(btn=>btn.onclick=()=>{
+    s.workTab=btn.dataset.workTab;
+    s.workSortKey="createdAt";
+    s.workSortDir="desc";
+    render();
+  });
+  document.querySelectorAll("[data-work-sort]").forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.workSort;
+    if(!["id","createdAt","factory","department","title","responsible","priority","dateEnd","status"].includes(key))return;
+    if(s.workSortKey===key)s.workSortDir=s.workSortDir==="asc"?"desc":"asc";
+    else{
+      s.workSortKey=key;
+      s.workSortDir=["createdAt","dateEnd"].includes(key)?"desc":"asc";
+    }
+    render();
+  });
   const workRecordSearch=document.getElementById("workRecordSearch");
   if(workRecordSearch)workRecordSearch.oninput=()=>{
     const value=workRecordSearch.value;
@@ -832,6 +847,24 @@ function bind(){
       next.focus();
       next.setSelectionRange(cursor,cursor);
     }
+  };
+  const workDateStart=document.getElementById("workDateStart");
+  const workDateEnd=document.getElementById("workDateEnd");
+  if(workDateStart)workDateStart.onchange=()=>{
+    s.workDateStart=workDateStart.value;
+    if(s.workDateEnd&&s.workDateStart>s.workDateEnd)s.workDateEnd=s.workDateStart;
+    render();
+  };
+  if(workDateEnd)workDateEnd.onchange=()=>{
+    s.workDateEnd=workDateEnd.value;
+    if(s.workDateStart&&s.workDateEnd<s.workDateStart)s.workDateStart=s.workDateEnd;
+    render();
+  };
+  const clearWorkDates=document.getElementById("clearWorkDates");
+  if(clearWorkDates)clearWorkDates.onclick=()=>{
+    s.workDateStart="";
+    s.workDateEnd="";
+    render();
   };
   document.querySelectorAll("[data-open-work-create]").forEach(btn=>btn.onclick=()=>{s.workCreateMode=btn.dataset.openWorkCreate;render()});
   const closeWorkCreate=document.getElementById("closeWorkCreate");
@@ -1431,11 +1464,19 @@ function bind(){
     }
   };
   const exportShiftTemplate=document.getElementById("exportShiftTemplate");
-  if(exportShiftTemplate)exportShiftTemplate.onclick=()=>{
+  if(exportShiftTemplate)exportShiftTemplate.onclick=async()=>{
+    exportShiftTemplate.disabled=true;
+    const originalText=exportShiftTemplate.textContent;
+    exportShiftTemplate.textContent="Şablon hazırlanıyor...";
     try{
-      const result=exportShiftTemplateFile(s.shiftFactory,s.shiftTeam,s.shiftMonthDate);
+      const result=await exportShiftTemplateFile(s.shiftFactory,s.shiftTeam,s.shiftMonthDate);
       alert(`Vardiya çizelgesi Excel dosyası indirildi: ${result.filename}`);
-    }catch(error){alert(`Excel çıktısı oluşturulamadı: ${error.message}`)}
+    }catch(error){
+      alert(`Excel çıktısı oluşturulamadı: ${error.message}`);
+    }finally{
+      exportShiftTemplate.disabled=false;
+      exportShiftTemplate.textContent=originalText;
+    }
   };
   document.querySelectorAll(".shift-assignment-select").forEach(el=>el.onchange=()=>{
     if(!canManageShiftTeam(s.shiftTeam)){render();return}
