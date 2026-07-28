@@ -22,6 +22,9 @@ function saveWorkshopJobs(){storageSet(localStorage,WORKSHOP_KEY,JSON.stringify(
 function canCreateWorkshopRequest(){return !!permissions().createWorkshopRequest}
 function canCreateWorkshopDirect(){return !!permissions().createWorkshopDirect}
 function canManageWorkshopJobs(){return !!permissions().manageWorkshopJobs}
+function canDeleteWorkshopJob(job){
+  return !!job&&canManageWorkshopJobs()&&userCanSeeFactory(job.factory);
+}
 function workshopMaterialForJob(job){
   if(!job)return null;
   return materialById(job.linkedMaterialId)||MATERIALS.find(material=>String(material.workshopJobId||"")===String(job.id))||null;
@@ -71,8 +74,10 @@ function unlinkWorkshopMaterial(materialId){
   (s.workshopJobs||[]).forEach(job=>{if(String(job.linkedMaterialId||"")===String(materialId)){job.deletedMaterialId=String(materialId);job.linkedMaterialId="";changed=true}});
   if(changed)saveWorkshopJobs();
 }
-function workshopVisibleJobs(){
-  let jobs=[...(s.workshopJobs||[])].filter(job=>userCanSeeFactory(job.factory));
+function workshopVisibleJobs({includeDeleted=false}={}){
+  let jobs=[...(s.workshopJobs||[])]
+    .filter(job=>includeDeleted||!job.deletedAt)
+    .filter(job=>userCanSeeFactory(job.factory));
   if(roleIsDepartmentLimited()&&s.user?.department)jobs=jobs.filter(job=>job.department===s.user.department);
   return jobs;
 }
@@ -102,7 +107,9 @@ function workshopUsageVisible(record){
   return !roleIsDepartmentLimited()||!s.user?.department||record.department===s.user.department;
 }
 function workshopPartUsageHistory(){
-  const completed=workshopVisibleJobs().filter(job=>job.status==="Tamamlandı");
+  // Silinen atölye işi ekrandan kalkar; fakat daha önce kullanılan parçanın
+  // bakım geçmişi kaybolmamalıdır.
+  const completed=workshopVisibleJobs({includeDeleted:true}).filter(job=>job.status==="Tamamlandı");
   const materials=new Map();
   completed.forEach(job=>{
     const material=workshopMaterialForJob(job);
@@ -235,6 +242,7 @@ function workshopDetailModal(){
     <div class="workshop-detail-grid"><section><span>TALEP VE KULLANIM</span><p><b>${job.directEntry?"İşi kaydeden":"Talep başlığı"}:</b> ${job.directEntry?`${esc(job.requestedBy)} · ${fmtDate(job.requestedAt)}`:esc(job.title)}</p><p><b>Kullanılacağı makine:</b> ${esc(job.machine)}</p><p><b>Konum:</b> ${esc(job.factory)} · ${esc(job.line)} · ${esc(job.department)}</p>${job.directEntry?`<p><b>İş başlığı:</b> ${esc(job.title)}</p>`:`<p><b>Talep açan:</b> ${esc(job.requestedBy)} · ${fmtDate(job.requestedAt)}</p>`}</section><section><span>TEKNİK BİLGİ</span><p><b>Hammadde:</b> ${esc(job.materialSpec||"-")}</p><p><b>Açıklama / Ölçüler:</b> ${esc(job.description)}</p><p><b>Teknik resim:</b></p>${drawing}</section></div>
     ${canManageWorkshopJobs()?`<form id="workshopManageForm" class="workshop-manage-form" data-workshop-id="${esc(job.id)}"><section class="workshop-edit-section"><div class="workshop-section-title"><span>PARÇA VE KULLANIM BİLGİLERİ</span><p>Parça bilgilerini, minimum stok adedini ve teknik resmi güncelleyin.</p></div><div class="workshop-edit-grid"><div class="field"><label>Fabrika *</label><select id="workshopEditFactory" required>${workshopSelectOptions(factories,job.factory)}</select></div><div class="field"><label>Hat *</label><select id="workshopEditLine" required>${workshopSelectOptions(lines,job.line)}</select></div><div class="field"><label>Bölüm *</label><select id="workshopEditDepartment" required>${workshopSelectOptions(departments,job.department)}</select></div><div class="field"><label>Makine *</label><select id="workshopEditMachine" required>${workshopSelectOptions(machines,job.machine)}</select></div><div class="field wide"><label>İş Başlığı *</label><input id="workshopEditTitle" maxlength="140" value="${esc(job.title)}" required></div><div class="field"><label>Parça Adı *</label><input id="workshopEditPartName" maxlength="120" value="${esc(job.partName)}" required></div><div class="field"><label>Parça Kodu *</label><input id="workshopEditPartCode" maxlength="50" value="${esc(job.partCode||"")}" required></div><div class="field"><label>Parça Tipi *</label><select id="workshopEditPartType">${workshopSelectOptions(WORKSHOP_PART_TYPES,job.partType)}</select></div><div class="field"><label>Üretilen / İstenen Adet *</label><input id="workshopEditQuantity" type="number" min="1" step="1" value="${Number(job.quantity)||1}" required></div><div class="field"><label>Minimum Stok Adedi *</label><input id="workshopEditMinimumStock" type="number" min="0" step="1" value="${Number(job.minimumStock)||0}" required></div><div class="field"><label>Malzeme / Hammadde</label><input id="workshopEditMaterialSpec" maxlength="100" value="${esc(job.materialSpec||"")}"></div><div class="field"><label>Öncelik *</label><select id="workshopEditPriority">${workshopSelectOptions(["Normal","Orta","Yüksek","Acil"],job.priority||"Normal")}</select></div><div class="field wide"><label>Ölçüler ve İş Açıklaması *</label><textarea id="workshopEditDescription" rows="4" maxlength="1800" required>${esc(job.description||"")}</textarea></div><div class="field wide"><label>Teknik Resim / Dosya</label><input id="workshopEditDrawing" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.dxf"><small class="field-help">Yeni bir dosya seçildiğinde mevcut teknik resmin yerine geçer. En fazla 1,5 MB.</small>${job.technicalDrawingName?`<label class="workshop-remove-drawing"><input id="workshopRemoveDrawing" type="checkbox"> Mevcut teknik resmi kaldır (${esc(job.technicalDrawingName)})</label>`:""}</div></div></section><section class="workshop-progress-section"><div class="workshop-section-title"><span>ÜRETİM VE SONUÇ</span><p>İşin durumunu, tahmini süresini ve atölye notunu güncelleyin.</p></div><div class="workshop-progress-grid"><div class="field"><label>Durum *</label><select id="workshopStatus">${workshopSelectOptions(WORKSHOP_STATUSES,job.status)}</select></div><div class="field"><label>Tahmini Süre (saat) *</label><input id="workshopEstimate" type="number" min=".5" step=".5" value="${job.estimatedHours||""}" required></div><div class="field wide"><label>Atölye Çalışma Notu</label><textarea id="workshopNotes" rows="4">${esc(job.workNotes||"")}</textarea></div></div></section><button class="primary wide" type="submit">Parça ve Üretim Bilgilerini Kaydet</button></form>`:""}
     <section class="workshop-material-link"><div><span>MALZEME KATALOĞU BAĞLANTISI</span><b>${linked?`${esc(linked.code)} · ${esc(linked.name)}`:"Henüz malzeme kartıyla ilişkilendirilmedi"}</b><p>${linked?`Mevcut stok: ${Number(linked.stock)||0} ${esc(linked.unit||"Adet")} · Minimum stok: ${Number(linked.minStock)||0} ${esc(linked.unit||"Adet")}.`:"Tamamlanan parça stok ve kullanım takibi için malzeme kartına bağlanır."}</p></div>${linked&&canEditLinked?`<button type="button" class="primary" data-workshop-open-material="${esc(linked.id)}">Parça Kartını Düzenle</button>`:canManageWorkshopJobs()&&job.status==="Tamamlandı"&&!linked?`<button type="button" class="primary" data-workshop-create-material="${esc(job.id)}">Stok Kartını Oluştur</button>`:""}</section>
+    ${canDeleteWorkshopJob(job)?`<section class="workshop-danger-actions"><div><span>İŞ KAYDINI SİL</span><b>${esc(job.id)} numaralı atölye işi</b><p>İş listelerinden kaldırılır; bağlı malzeme kartı ve parça kullanım geçmişi korunur.</p></div><button type="button" class="danger" id="deleteWorkshopJob" data-workshop-id="${esc(job.id)}">İş Kaydını Sil</button></section>`:""}
   </div></div>`;
 }
 function readWorkshopDrawing(file){
@@ -250,6 +258,16 @@ function readWorkshopDrawing(file){
 function nextWorkshopId(){
   const values=(s.workshopJobs||[]).map(job=>Number(String(job.id).replace(/\D/g,""))||0);
   return `AT-${Math.max(1000,...values)+1}`;
+}
+function deleteWorkshopJob(id){
+  const job=(s.workshopJobs||[]).find(item=>String(item.id)===String(id));
+  if(!job)return {ok:false,message:"Atölye iş kaydı bulunamadı."};
+  if(!canDeleteWorkshopJob(job))return {ok:false,message:"Bu atölye işini silme yetkiniz yok."};
+  job.deletedAt=new Date().toISOString();
+  job.deletedBy=s.user?.name||"Bilinmeyen Kullanıcı";
+  job.deletedReason="Kullanıcı tarafından silindi";
+  saveWorkshopJobs();
+  return {ok:true,job};
 }
 function bindWorkshopPage(){
   document.querySelectorAll("[data-workshop-tab]").forEach(button=>button.onclick=()=>{const tab=button.dataset.workshopTab;s.workshopTab=["active","archive","usage"].includes(tab)?tab:"active";s.workshopDetailId=null;render()});
@@ -347,7 +365,35 @@ function bindWorkshopPage(){
     if(!material||!canManageMaterialCatalog(material))return;
     s.workshopDetailId=null;s.materialEditId=material.id;s.page="materials";render();
   });
+  const deleteButton=document.getElementById("deleteWorkshopJob");
+  if(deleteButton)deleteButton.onclick=()=>{
+    const job=(s.workshopJobs||[]).find(item=>String(item.id)===String(deleteButton.dataset.workshopId));
+    if(!canDeleteWorkshopJob(job)){
+      alert("Bu atölye işini silme yetkiniz yok.");
+      return;
+    }
+    // Yanlışlıkla silmeyi önlemek için tarayıcı penceresine bağlı olmayan iki
+    // tıklamalı onay uygulanır.
+    if(deleteButton.dataset.confirmDelete!=="yes"){
+      deleteButton.dataset.confirmDelete="yes";
+      deleteButton.textContent="Tekrar Tıkla: İş Kaydını Sil";
+      deleteButton.classList.add("delete-confirming");
+      setTimeout(()=>{
+        if(document.body.contains(deleteButton)&&deleteButton.dataset.confirmDelete==="yes"){
+          deleteButton.dataset.confirmDelete="";
+          deleteButton.textContent="İş Kaydını Sil";
+          deleteButton.classList.remove("delete-confirming");
+        }
+      },5000);
+      return;
+    }
+    const result=deleteWorkshopJob(job.id);
+    if(!result.ok){alert(result.message);return}
+    s.workshopDetailId=null;
+    render();
+    alert(`${result.job.id} numaralı atölye iş kaydı silindi. Bağlı malzeme kartı ve kullanım geçmişi korundu.`);
+  };
 }
 function workshopPartsForMachine(factory,line,department,machine){
-  return (s.workshopJobs||[]).filter(job=>job.factory===factory&&job.line===line&&job.department===department&&job.machine===machine&&job.status==="Tamamlandı").sort((a,b)=>new Date(b.completedAt||b.requestedAt)-new Date(a.completedAt||a.requestedAt));
+  return (s.workshopJobs||[]).filter(job=>!job.deletedAt&&job.factory===factory&&job.line===line&&job.department===department&&job.machine===machine&&job.status==="Tamamlandı").sort((a,b)=>new Date(b.completedAt||b.requestedAt)-new Date(a.completedAt||a.requestedAt));
 }

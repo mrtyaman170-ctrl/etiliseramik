@@ -2,12 +2,13 @@
 const ROLES=["Operatör","Bakım Personeli","Bölüm Formeni","Bölüm Yöneticisi","Üretim Müdürü","Bakım Formeni","Bakım Müdürü","Depo Sorumlusu","Atölye Personeli","Genel Müdür","Yazılımcı"];
 const TYPES=["Elektrik","Mekanik","Otomasyon","Pnömatik","Hidrolik","Diğer"];
 
-const APP_VERSION="1.4.4";
+const APP_VERSION="1.4.5";
 const APP_RELEASE_DATE="28.07.2026";
 const AUTH_VERSION="pc-v5";
 const DEMO_USERS={"1111":{"password":"1111","name":"Genel Yönetici","role":"Genel Müdür","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"2222":{"password":"2222","name":"1. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["1. Fabrika"],"department":""},"3333":{"password":"3333","name":"2. Fabrika Yöneticisi","role":"Fabrika Müdürü","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4444":{"password":"4444","name":"1. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},"5555":{"password":"5555","name":"2. Fabrika Bölüm Formeni","role":"Bölüm Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"6666":{"password":"6666","name":"1. Fabrika Operatörü","role":"Operatör","factories":["1. Fabrika"],"department":"Pres Bölümü"},"7777":{"password":"7777","name":"2. Fabrika Operatörü","role":"Operatör","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4001":{"password":"7318","name":"Hamit Uysal","role":"Bakım Müdürü","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":""},"4401":{"password":"1801","name":"Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Masse Bölümü"},"4402":{"password":"1802","name":"Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Pres Bölümü"},"4403":{"password":"1803","name":"Sır Bantları Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Sır Bantları"},"4404":{"password":"1804","name":"Fırınlar Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Fırınlar"},"4405":{"password":"1805","name":"Polisaj Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Polisaj"},"4406":{"password":"1806","name":"Paketleme Formeni","role":"Bölüm Formeni","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"Paketleme"},"4101":{"password":"2846","name":"Halil İbrahim Utku","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4102":{"password":"9573","name":"Adem Keleş","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4103":{"password":"6159","name":"Mert Yaman","role":"Elektrik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"4201":{"password":"3487","name":"Necip Gökkaya","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4202":{"password":"8294","name":"Serkan Çeviren","role":"Mekanik Bakım Formeni","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"4301":{"password":"5726","name":"Kemal Ayrancı","role":"Bakım Formeni","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Tüm Bakım"},"5101":{"password":"1937","name":"Sercan Şahin","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5102":{"password":"8462","name":"Onur Arga","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5103":{"password":"5271","name":"Mehmet Çağlayan","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5104":{"password":"3648","name":"Ali Sezer","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Elektrik Bakım"},"5201":{"password":"9185","name":"Üzeyir Toy","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"5202":{"password":"2469","name":"Recep Kocabıyık","role":"Bakım Personeli","factories":["1. Fabrika"],"department":"","team":"Mekanik Bakım"},"6101":{"password":"7834","name":"Ahmet Gürer","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6102":{"password":"4592","name":"Tayfun Akıncı","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6103":{"password":"1268","name":"Rasim Çelik","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6104":{"password":"8951","name":"Arda Uysal","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6105":{"password":"3176","name":"Buğra Varol","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6106":{"password":"6843","name":"Mustafa Çağrı Tekin","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Elektrik Bakım"},"6201":{"password":"5417","name":"Özgür Öz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6202":{"password":"9724","name":"Rasim Genel","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6203":{"password":"2385","name":"Ramazan Aykut","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6204":{"password":"7561","name":"Alper Boztepe","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6205":{"password":"4139","name":"Alperen Durmaz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6206":{"password":"8672","name":"Turgay Songur","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6207":{"password":"3294","name":"Ozan Kinet","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"},"6208":{"password":"5948","name":"Umut Tokgöz","role":"Bakım Personeli","factories":["2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Bakım"}};
 const USER_STORE_KEY="etilismart_users_v2";
 const DELETED_PERSONNEL_KEY="etilismart_deleted_personnel_ids_v1";
+const DELETED_USER_KEY="etilismart_deleted_user_ids_v1";
 const FACTORY_DEPARTMENT_FOREMEN={
   "4401":{"password":"1801","name":"1. Fabrika Masse Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Masse Bölümü"},
   "4402":{"password":"1802","name":"1. Fabrika Pres Bölümü Formeni","role":"Bölüm Formeni","factories":["1. Fabrika"],"department":"Pres Bölümü"},
@@ -37,18 +38,19 @@ const WORKSHOP_USERS={
   "8102":{"password":"8102","name":"Atölye Personeli","role":"Atölye Personeli","factories":["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"],"department":"","team":"Mekanik Atölye"}
 };
 const VALID_ACCOUNT_ROLES=new Set([...ROLES,"Elektrik Bakım Formeni","Mekanik Bakım Formeni","Fabrika Müdürü"]);
-let DELETED_PERSONNEL_IDS=new Set(storageJsonArray(localStorage,DELETED_PERSONNEL_KEY,[]).map(String));
+// "Fabrika Müdürü" yalnızca eski kayıtlarda uyumluluk için tanınır; yeni hesap
+// oluşturma ekranında sunulmaz. Fabrika yönetimi Üretim Müdürü rolüyle yapılır.
+const EDITABLE_ACCOUNT_ROLES=[...ROLES,"Elektrik Bakım Formeni","Mekanik Bakım Formeni"];
+let DELETED_USER_IDS=new Set([
+  ...storageJsonArray(localStorage,DELETED_PERSONNEL_KEY,[]),
+  ...storageJsonArray(localStorage,DELETED_USER_KEY,[])
+].map(String));
 const REMOVED_LEGACY_USER_IDS=["2222","3333","4444","5555"];
 function removeLegacyUsers(users){
   REMOVED_LEGACY_USER_IDS.forEach(id=>delete users[id]);
   return users;
 }
 const DEFAULT_USERS=removeLegacyUsers({...DEMO_USERS,...FACTORY_DEPARTMENT_FOREMEN,...PRODUCTION_MANAGER_USERS,...DEVELOPER_USERS,...WAREHOUSE_USERS,...WORKSHOP_USERS});
-const PROTECTED_USERS=Object.fromEntries(
-  Object.entries(DEFAULT_USERS)
-    .filter(([,account])=>account.role!=="Bakım Personeli")
-    .map(([id,account])=>[id,JSON.parse(JSON.stringify(account))])
-);
 function validStoredUsers(saved){
   const valid={};
   Object.entries(saved||{}).forEach(([id,account])=>{
@@ -72,25 +74,21 @@ function validStoredUsers(saved){
   });
   return valid;
 }
-function saveDeletedPersonnelIds(){
-  storageSet(localStorage,DELETED_PERSONNEL_KEY,JSON.stringify([...DELETED_PERSONNEL_IDS]));
+function saveDeletedUserIds(){
+  const ids=JSON.stringify([...DELETED_USER_IDS]);
+  // Eski kayıt anahtarını da güncel tutarak önceki sürümden gelen silmeleri koru.
+  storageSet(localStorage,DELETED_PERSONNEL_KEY,ids);
+  storageSet(localStorage,DELETED_USER_KEY,ids);
 }
 function loadAppUsers(){
   const saved=storageJsonRecord(localStorage,USER_STORE_KEY,null);
-  if(saved){
-    const merged=removeLegacyUsers({...JSON.parse(JSON.stringify(DEMO_USERS)),...validStoredUsers(saved),...PROTECTED_USERS});
-    DELETED_PERSONNEL_IDS.forEach(id=>{
-      if(merged[id]?.role==="Bakım Personeli")delete merged[id];
-    });
-    storageSet(localStorage,USER_STORE_KEY,JSON.stringify(merged));
-    return merged;
-  }
-  const initial=JSON.parse(JSON.stringify(DEFAULT_USERS));
-  DELETED_PERSONNEL_IDS.forEach(id=>{
-    if(initial[id]?.role==="Bakım Personeli")delete initial[id];
+  const merged=removeLegacyUsers({
+    ...JSON.parse(JSON.stringify(DEFAULT_USERS)),
+    ...validStoredUsers(saved)
   });
-  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(initial));
-  return initial;
+  DELETED_USER_IDS.forEach(id=>delete merged[id]);
+  storageSet(localStorage,USER_STORE_KEY,JSON.stringify(merged));
+  return merged;
 }
 let APP_USERS=loadAppUsers();
 function saveAppUsers(){storageSet(localStorage,USER_STORE_KEY,JSON.stringify(APP_USERS));}
@@ -138,12 +136,26 @@ function deterministicPerson(list,id,salt=0){
 function personnelFactoryGroup(user){
   return (user?.factories||[]).some(x=>String(x).startsWith("1."))?"1. Fabrika":"2. Fabrika";
 }
+function accountFactorySelectionValue(factories=[]){
+  const values=new Set(factories||[]);
+  const hasFirst=values.has("1. Fabrika");
+  const hasSecondA=values.has("2. Fabrika A Blok");
+  const hasSecondB=values.has("2. Fabrika B Blok");
+  if(hasFirst&&hasSecondA&&hasSecondB)return "Tümü";
+  return hasFirst?"1. Fabrika":"2. Fabrika";
+}
+function selectedAccountFactories(value){
+  if(value==="Tümü")return ["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"];
+  return value==="1. Fabrika"?["1. Fabrika"]:["2. Fabrika A Blok","2. Fabrika B Blok"];
+}
 function currentManagerScope(){
   if(permissions().manageAllPersonnel)return {all:true,team:"Tüm Bakım",factories:["1. Fabrika","2. Fabrika A Blok","2. Fabrika B Blok"]};
   return {all:false,team:s.user?.team||"",factories:userFactories()};
 }
 function canManagePersonnelAccount(account){
-  if(!account||account.role!=="Bakım Personeli")return false;
+  if(!account)return false;
+  if(permissions().manageAllUserAccounts)return true;
+  if(account.role!=="Bakım Personeli")return false;
   if(permissions().manageAllPersonnel)return true;
   if(!permissions().manageOwnTeam)return false;
   const sameFactory=(account.factories||[]).some(f=>userCanSeeFactory(f));
@@ -151,7 +163,9 @@ function canManagePersonnelAccount(account){
   return sameFactory&&sameTeam;
 }
 function canViewPersonnelAccount(account){
-  if(!account||account.role!=="Bakım Personeli")return false;
+  if(!account)return false;
+  if(permissions().manageAllUserAccounts)return true;
+  if(account.role!=="Bakım Personeli")return false;
   if(permissions().manageAllPersonnel)return true;
   const sameFactory=(account.factories||[]).some(f=>userCanSeeFactory(f));
   if(permissions().manageOwnTeam){
@@ -162,6 +176,11 @@ function canViewPersonnelAccount(account){
   return false;
 }
 function managedPersonnelEntries(){
+  return appUserEntries()
+    .filter(([,u])=>u.role==="Bakım Personeli"&&canViewPersonnelAccount(u))
+    .sort((a,b)=>a[1].name.localeCompare(b[1].name,"tr"));
+}
+function managedUserAccountEntries(){
   return appUserEntries()
     .filter(([,u])=>canViewPersonnelAccount(u))
     .sort((a,b)=>a[1].name.localeCompare(b[1].name,"tr"));
@@ -403,14 +422,19 @@ function randomFourDigitPassword(){
   return String(1000+Math.floor(Math.random()*9000));
 }
 
-function deleteMaintenancePersonnelAccount(id){
+function deletePersonnelAccount(id){
   const account=APP_USERS[id];
-  if(!account||account.role!=="Bakım Personeli")return {ok:false,message:"Personel hesabı bulunamadı."};
-  if(!permissions().manageAllPersonnel)return {ok:false,message:"Personel silme yetkisi yalnızca Bakım Müdüründedir."};
+  if(!account)return {ok:false,message:"Kullanıcı hesabı bulunamadı."};
+  if(!canManagePersonnelAccount(account))return {ok:false,message:"Bu kullanıcı hesabını silme yetkiniz yok."};
+  if(String(id)===String(s.user?.id))return {ok:false,message:"Giriş yaptığınız hesabı bu oturumdayken silemezsiniz. Önce başka bir Yazılımcı hesabıyla giriş yapın."};
+  if(account.role==="Yazılımcı"){
+    const otherDeveloper=appUserEntries().some(([userId,user])=>String(userId)!==String(id)&&user.role==="Yazılımcı");
+    if(!otherDeveloper)return {ok:false,message:"Son Yazılımcı hesabı silinemez. Önce başka bir Yazılımcı hesabı oluşturun."};
+  }
 
   delete APP_USERS[id];
-  DELETED_PERSONNEL_IDS.add(String(id));
-  saveDeletedPersonnelIds();
+  DELETED_USER_IDS.add(String(id));
+  saveDeletedUserIds();
   saveAppUsers();
 
   // Silinen personeli açık ve geçmiş arıza katılımcılarından kaldır.
@@ -482,6 +506,14 @@ const ROLE_PERMISSIONS={
   "Operatör":{dashboard:true,newFault:true,faults:true,report:false,layout:false,planned:true,shiftSchedule:true,workRequests:false,editPlanned:false,editStatus:false,departmentOnly:true,ownFaultsOnly:true,viewCurrentShiftMaintenance:true},
   "Yazılımcı":{dashboard:true,newFault:true,faults:true,report:true,layout:true,planned:true,shiftSchedule:true,personnel:true,materials:true,manageMaterials:true,workRequests:true,workshop:true,createWorkshopRequest:true,createWorkshopDirect:true,manageWorkshopJobs:true,dailyChecks:true,editPlanned:true,editStatus:true,manageShifts:true,redirectFaults:true,manageAllPersonnel:true,manageAllUserAccounts:true,manageOwnTeam:true,viewPerformance:true,allFactories:true,allDepartments:true,allDepartmentForemanRights:true,manageFaultMaterials:true,manageRequests:true,createRequest:true,createDirectWorkOrder:true,updateAssignedWorkOrders:true,viewAllShiftFactories:true,manageDailyChecks:true,completeDailyChecks:true,manageMachines:true,manageDailyControlCatalog:true}
 };
+// Yazılımcı hesabı tüm işlevleri yönetir. Yeni bir role yetki eklendiğinde bu
+// hesap da otomatik olarak o yetkiyi alır; rolü kısıtlayan bayraklar hariçtir.
+const DEVELOPER_RESTRICTION_KEYS=new Set(["departmentOnly","ownFaultsOnly"]);
+Object.values(ROLE_PERMISSIONS).forEach(rolePermissions=>{
+  Object.keys(rolePermissions).forEach(key=>{
+    if(!DEVELOPER_RESTRICTION_KEYS.has(key))ROLE_PERMISSIONS["Yazılımcı"][key]=true;
+  });
+});
 
 /* Personel ekranları */
 function personnelDetailModal(){
@@ -541,9 +573,18 @@ function personnelManagementPage(){
     u:entries[0][1],
     p:performanceForPeriod(entries[0][1].name,selectedPeriod)
   }:null;
-  const canAdd=permissions().manageAllPersonnel||permissions().manageOwnTeam;
+  const canManageAllAccounts=!!permissions().manageAllUserAccounts;
+  const canAdd=canManageAllAccounts||permissions().manageAllPersonnel||permissions().manageOwnTeam;
   const teamOptions=permissions().manageAllPersonnel?["Elektrik Bakım","Mekanik Bakım"]:(s.user?.team==="Tüm Bakım"?["Elektrik Bakım","Mekanik Bakım"]:[s.user?.team]);
   const factoryOptions=permissions().manageAllPersonnel?["1. Fabrika","2. Fabrika"]:Array.from(new Set(userFactories().map(shiftFactoryName)));
+  const accountFactoryOptions=canManageAllAccounts
+    ?[{value:"1. Fabrika",label:"1. Fabrika"},{value:"2. Fabrika",label:"2. Fabrika (A + B Blok)"},{value:"Tümü",label:"Tüm Fabrikalar"}]
+    :factoryOptions.map(value=>({value,label:value}));
+  const accountTeamOptions=canManageAllAccounts?["","Elektrik Bakım","Mekanik Bakım","Tüm Bakım","Depo","Mekanik Atölye"]:teamOptions;
+  const accountRoleOptions=canManageAllAccounts?EDITABLE_ACCOUNT_ROLES:["Bakım Personeli"];
+  const departmentOptions=canManageAllAccounts?[...new Set(Object.entries(FACTORIES).flatMap(([factory,lines])=>lines.flatMap(line=>catalogDepartments(factory,line))))]
+    .sort((a,b)=>a.localeCompare(b,"tr")):[];
+  const systemAccounts=canManageAllAccounts?managedUserAccountEntries():[];
 
   const groups=[
     {factory:"1. Fabrika",team:"Elektrik Bakım",icon:"⚡",title:"1. Fabrika Elektrik Bakım"},
@@ -575,7 +616,7 @@ function personnelManagementPage(){
 
   return `${clockBlock()}
   <section class="desktop-page-title personnel-title">
-    <div><span>BAKIM EKİBİ YÖNETİMİ</span><h1>Personel ve Performans</h1><p>Bakım ekipleri fabrika ve disipline göre ayrı listelenir. Performansları haftalık, aylık veya yıllık görüntüleyebilirsiniz.</p></div>
+    <div><span>${canManageAllAccounts?"KULLANICI VE YETKİ YÖNETİMİ":"BAKIM EKİBİ YÖNETİMİ"}</span><h1>${canManageAllAccounts?"Sistem Kullanıcıları ve Performans":"Personel ve Performans"}</h1><p>${canManageAllAccounts?"Tüm kullanıcı hesaplarını, rollerini, giriş bilgilerini ve fabrika/bölüm kapsamlarını buradan yönetin.":"Bakım ekipleri fabrika ve disipline göre ayrı listelenir. Performansları haftalık, aylık veya yıllık görüntüleyebilirsiniz."}</p></div>
     <div class="personnel-title-actions">
       <div class="performance-period-switch">
         <button class="${selectedPeriod==="weekly"?"active":""}" data-performance-period="weekly">Haftalık</button>
@@ -583,7 +624,7 @@ function personnelManagementPage(){
         <button class="${selectedPeriod==="yearly"?"active":""}" data-performance-period="yearly">Yıllık</button>
       </div>
       ${canAddMaintenanceLog()?'<button class="secondary" id="openMaintenanceLogFromPersonnel">+ Yapılan İş Ekle</button>':""}
-      ${canAdd?'<button class="primary" id="openPersonnelAdd">+ Yeni Bakım Personeli</button>':""}
+      ${canAdd?`<button class="primary" id="openPersonnelAdd">${canManageAllAccounts?"+ Yeni Kullanıcı":"+ Yeni Bakım Personeli"}</button>`:""}
     </div>
   </section>
 
@@ -593,6 +634,13 @@ function personnelManagementPage(){
     <article><small>AKTİF İŞ</small><b>${active}</b><span>devam eden</span></article>
     <article><small>ORTALAMA PERFORMANS</small><b>%${avgScore}</b><span>${performancePeriodLabel(selectedPeriod).toLowerCase()} ekip puanı</span></article>
   </section>
+
+  ${canManageAllAccounts?`<section class="personnel-table-card system-account-admin">
+    <div class="section-modern-head"><div><span>TÜM SİSTEM HESAPLARI</span><h2>Kullanıcı, rol ve giriş bilgileri</h2><p>Yazılımcı hesabı tüm roller için kullanıcı ekleyebilir, düzenleyebilir ve güvenli biçimde silebilir.</p></div><span class="list-count blue">${systemAccounts.length}</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Kullanıcı</th><th>Rol</th><th>Fabrika / Birim</th><th>Giriş Bilgileri</th><th>İşlem</th></tr></thead><tbody>
+      ${systemAccounts.map(([id,u])=>{const factories=[...new Set((u.factories||[]).map(shiftFactoryName))].join(" · ");return `<tr><td><b>${esc(u.name)}</b><small>${esc(u.department||"Bölüm kapsamı yok")}</small></td><td><b>${esc(u.role)}</b><small>${esc(u.team||"Genel kullanıcı")}</small></td><td>${esc(factories||"-")}</td><td><b>ID: ${esc(id)}</b><small>Şifre: ${esc(u.password)}</small></td><td><div class="inline-actions"><button type="button" class="secondary personnel-edit-btn" data-user-id="${esc(id)}">Düzenle</button><button type="button" class="danger personnel-delete-btn" data-user-id="${esc(id)}">Sil</button></div></td></tr>`;}).join("")||'<tr><td colspan="5">Kullanıcı hesabı bulunmuyor.</td></tr>'}
+    </tbody></table></div>
+  </section>`:""}
 
   ${employeeOfMonth?`<section class="employee-of-month">
     <div class="employee-month-crown">★</div>
@@ -648,13 +696,15 @@ function personnelManagementPage(){
 
   <div class="modal-backdrop" id="personnelEditorBackdrop" style="display:none">
     <div class="modal personnel-editor-modal">
-      <div class="modal-head"><div><span>PERSONEL HESABI</span><h2 id="personnelEditorTitle">Yeni Bakım Personeli</h2></div><button type="button" id="closePersonnelEditor">×</button></div>
+      <div class="modal-head"><div><span>${canManageAllAccounts?"SİSTEM KULLANICI HESABI":"PERSONEL HESABI"}</span><h2 id="personnelEditorTitle">${canManageAllAccounts?"Yeni Kullanıcı Hesabı":"Yeni Bakım Personeli"}</h2></div><button type="button" id="closePersonnelEditor">×</button></div>
       <form id="personnelEditorForm">
         <input type="hidden" id="personnelOriginalId">
         <div class="form-grid">
           <div class="field wide"><label>Ad Soyad</label><input id="personnelName" required></div>
-          <div class="field"><label>Fabrika</label><select id="personnelFactory">${factoryOptions.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>
-          <div class="field"><label>Ekip</label><select id="personnelTeam">${teamOptions.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>
+          ${canManageAllAccounts?`<div class="field"><label>Rol *</label><select id="personnelRole">${accountRoleOptions.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>`:""}
+          <div class="field"><label>Fabrika</label><select id="personnelFactory">${accountFactoryOptions.map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join("")}</select></div>
+          <div class="field"><label>Ekip / Birim</label><select id="personnelTeam">${accountTeamOptions.map(x=>`<option value="${esc(x)}">${esc(x||"Birim yok")}</option>`).join("")}</select></div>
+          ${canManageAllAccounts?`<div class="field"><label>Bölüm Kapsamı</label><select id="personnelDepartment"><option value="">Bölüm kapsamı yok</option>${departmentOptions.map(x=>`<option>${esc(x)}</option>`).join("")}</select></div>`:""}
           <div class="field"><label>4 Haneli Kullanıcı ID</label><input id="personnelId" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required></div>
           <div class="field"><label>4 Haneli Şifre</label><div class="password-generate-row"><input id="personnelPassword" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required><button type="button" class="secondary" id="generatePersonnelPassword">Üret</button></div></div>
         </div>

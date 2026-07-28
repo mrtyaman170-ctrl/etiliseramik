@@ -1,7 +1,14 @@
-# ETİLİSMART Modüler Proje — v1.4.4
+# ETİLİSMART Modüler Proje — v1.4.5
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## v1.4.5 yenilikleri
+
+- Vardiya Excel çıktısındaki boş personel satırları artık kurum şablonundaki normal beyaz hücre ve kenarlık düzeniyle yazılır; sürekli 08–16 çalışanlar gri vardiya deseniyle belirtilir.
+- Son 3 vardiya faaliyet raporu en eski vardiyadan güncel vardiyaya doğru, her vardiya içindeki faaliyetler de saat sırasıyla listelenir.
+- **Yazılımcı** hesabı tüm uygulama yetkilerine ve tüm kullanıcı hesaplarını ekleme, düzenleme ve silme ekranına sahiptir. Son Yazılımcı hesabı korunur.
+- Mekanik Atölye işleri Atölye Personeli, Bakım Müdürü ve Yazılımcı tarafından iki adımlı onayla silinebilir. Silinen iş, bağlı stok kartını ve daha önceki parça kullanım geçmişini bozmaz.
 
 ## v1.4.4 yenilikleri
 

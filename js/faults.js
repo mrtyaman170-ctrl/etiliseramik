@@ -93,7 +93,8 @@ function recentShiftWindows(reference=new Date()){
   const startHour=hour<8?0:hour<16?8:16;
   const currentStart=new Date(reference);
   currentStart.setHours(startHour,0,0,0);
-  return Array.from({length:3},(_,index)=>{
+  // Rapor kartları eski vardiyadan güncel vardiyaya doğru okunur.
+  return [2,1,0].map(index=>{
     const start=new Date(currentStart.getTime()-index*8*60*60*1000);
     const end=new Date(start.getTime()+8*60*60*1000);
     return {start,end,label:`${String(start.getHours()).padStart(2,"0")}:00–${String(end.getHours()).padStart(2,"0")}:00`,date:start.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric"})};
@@ -109,11 +110,11 @@ function lastThreeShiftReport(){
     const work=(s.workItems||[]).filter(item=>item.kind==="workorder"&&allowedFactory(item.factory)&&inWindow(item.completedAt||item.createdAt,window));
     const planned=(s.plannedMaintenances||[]).filter(item=>allowedFactory(item.factory)&&item.status==="done"&&inWindow(item.updatedAt||`${item.date}T${item.time||"00:00"}`,window));
     const rows=[
-      ...faults.map(item=>({type:"Arıza",title:item.subject,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assignedTo||"Atama bekliyor",status:item.status==="done"?"Tamamlandı":"Açık"})),
-      ...logs.map(item=>({type:item.workType||"Yapılan İş",title:item.title,location:`${item.factory} · ${item.location||"Konum belirtilmedi"}`,person:(item.participants||[]).join(", ")||item.createdBy,status:"Kaydedildi"})),
-      ...work.map(item=>({type:"İş Emri",title:item.title,location:`${item.factory} · ${item.department}`,person:item.completedBy||item.assignedTo||"-",status:workStatusLabel(item.status,"workorder")})),
-      ...planned.map(item=>({type:"Planlı Bakım",title:item.title,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assigned||item.updatedBy||"-",status:"Tamamlandı"}))
-    ];
+      ...faults.map(item=>({at:item.closedAt||item.createdAt,type:"Arıza",title:item.subject,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assignedTo||"Atama bekliyor",status:item.status==="done"?"Tamamlandı":"Açık"})),
+      ...logs.map(item=>({at:item.performedAt||item.createdAt,type:item.workType||"Yapılan İş",title:item.title,location:`${item.factory} · ${item.location||"Konum belirtilmedi"}`,person:(item.participants||[]).join(", ")||item.createdBy,status:"Kaydedildi"})),
+      ...work.map(item=>({at:item.completedAt||item.createdAt,type:"İş Emri",title:item.title,location:`${item.factory} · ${item.department}`,person:item.completedBy||item.assignedTo||"-",status:workStatusLabel(item.status,"workorder")})),
+      ...planned.map(item=>({at:item.updatedAt||`${item.date}T${item.time||"00:00"}`,type:"Planlı Bakım",title:item.title,location:`${item.factory} · ${item.department} · ${item.machine}`,person:item.assigned||item.updatedBy||"-",status:"Tamamlandı"}))
+    ].sort((a,b)=>new Date(a.at)-new Date(b.at));
     return {...window,rows,counts:{faults:faults.length,logs:logs.length,work:work.length,planned:planned.length}};
   });
   const total=entries.reduce((sum,item)=>sum+item.rows.length,0);
@@ -122,7 +123,7 @@ function lastThreeShiftReport(){
     <div class="shift-report-grid">${entries.map(entry=>`<article class="shift-report-card">
       <header><div><small>${entry.date}</small><h3>${entry.label} Vardiyası</h3></div><b>${entry.rows.length}</b></header>
       <div class="shift-report-counts"><span>${entry.counts.faults} arıza</span><span>${entry.counts.logs} yapılan iş</span><span>${entry.counts.work} iş emri</span><span>${entry.counts.planned} planlı bakım</span></div>
-      <div class="shift-report-list">${entry.rows.map(row=>`<div><span class="shift-report-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.location)}</small><em>${esc(row.person)} · ${esc(row.status)}</em></div>`).join("")||'<div class="shift-report-empty">Bu vardiyada kayıtlı faaliyet bulunmuyor.</div>'}</div>
+      <div class="shift-report-list">${entry.rows.map(row=>`<div><span class="shift-report-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.location)}</small><em>${fmtDate(row.at)} · ${esc(row.person)} · ${esc(row.status)}</em></div>`).join("")||'<div class="shift-report-empty">Bu vardiyada kayıtlı faaliyet bulunmuyor.</div>'}</div>
     </article>`).join("")}</div>
   </section>`;
 }

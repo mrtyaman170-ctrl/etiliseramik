@@ -3,6 +3,14 @@ const SHIFT_TEMPLATE_SHEET="şubat kopyası";
 const SHIFT_TEMPLATE_DATA_START_ROW=7;
 const SHIFT_TEMPLATE_DATA_END_ROW=23;
 const SHIFT_TEMPLATE_MAX_DAYS=31;
+// Yüklenen kurum şablonundaki beyaz, düzenli satır deseni.
+// Bu stiller boş personel satırlarında renkli vardiya bloklarını kaldırır.
+const SHIFT_TEMPLATE_BLANK_NAME_STYLE=47;
+const SHIFT_TEMPLATE_BLANK_DAY_STYLES=[29,29,46];
+// Şablondaki sürekli 08–16 vardiyası için kullanılan gri desen.
+const SHIFT_TEMPLATE_DAY_NAME_STYLE=62;
+const SHIFT_TEMPLATE_DAY_STYLES=[29,63,46];
+const SHIFT_TEMPLATE_SCHEDULED_SHIFTS=["00-08","08-16","16-24"];
 
 function shiftTemplateBase64Bytes(base64){
   const binary=atob(base64);
@@ -258,6 +266,12 @@ function shiftTemplateSheetPath(workbookXml,relationshipsXml){
 function shiftTemplateSafeFilename(value){
   return String(value||"").trim().replace(/[^\p{L}\p{N}]+/gu,"_").replace(/^_+|_+$/g,"")||"Vardiya";
 }
+function shiftTemplatePermanentDayWorker(person){
+  const shifts=(person?.days||[])
+    .map(day=>day?.shift)
+    .filter(shift=>SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(shift));
+  return shifts.length>0&&shifts.every(shift=>shift==="08-16");
+}
 async function buildShiftTemplateXlsx(templateBytes,factory,team,monthValue,schedule){
   const month=new Date(monthValue);
   if(Number.isNaN(month.getTime()))throw new Error("Seçili ay okunamadı.");
@@ -298,18 +312,27 @@ async function buildShiftTemplateXlsx(templateBytes,factory,team,monthValue,sche
   for(let row=SHIFT_TEMPLATE_DATA_START_ROW;row<=SHIFT_TEMPLATE_DATA_END_ROW;row++){
     const person=schedule.rows[row-SHIFT_TEMPLATE_DATA_START_ROW];
     const pattern=shiftTemplateRowPattern(sheetXml,styles,row);
+    const permanentDayWorker=shiftTemplatePermanentDayWorker(person);
     // Şablonun 17 personellik baskı yüksekliğini ve imza alanlarının konumunu koru.
     sheetXml=shiftTemplateSetRowHidden(sheetXml,row,false);
-    sheetXml=shiftTemplateSetCell(sheetXml,`A${row}`,{style:pattern.nameStyle,value:person?.name||""});
+    sheetXml=shiftTemplateSetCell(sheetXml,`A${row}`,{
+      style:!person?SHIFT_TEMPLATE_BLANK_NAME_STYLE:(permanentDayWorker?SHIFT_TEMPLATE_DAY_NAME_STYLE:pattern.nameStyle),
+      value:person?.name||""
+    });
     for(let dayIndex=0;dayIndex<SHIFT_TEMPLATE_MAX_DAYS;dayIndex++){
       const day=person?.days?.[dayIndex];
       const startColumn=1+dayIndex*3;
       const isOff=day?.shift===SHIFT_OFF;
+      const hasScheduledShift=SHIFT_TEMPLATE_SCHEDULED_SHIFTS.includes(day?.shift);
       for(let offset=0;offset<3;offset++){
         const address=`${shiftTemplateColumnName(startColumn+offset)}${row}`;
-        const style=isOff?pattern.leaveStyles[offset]:day?(
-          offset===SHIFT_LABELS.indexOf(day.shift)?pattern.activeStyles[offset]:pattern.inactiveStyles[offset]
-        ):pattern.inactiveStyles[offset];
+        const style=isOff?pattern.leaveStyles[offset]:(!person||!hasScheduledShift)
+          ?SHIFT_TEMPLATE_BLANK_DAY_STYLES[offset]
+          :permanentDayWorker
+            ?SHIFT_TEMPLATE_DAY_STYLES[offset]
+            :(offset===SHIFT_TEMPLATE_SCHEDULED_SHIFTS.indexOf(day.shift)
+              ?pattern.activeStyles[offset]
+              :pattern.inactiveStyles[offset]);
         sheetXml=shiftTemplateSetCell(sheetXml,address,{
           style,
           value:isOff&&offset===0?"İZİN":null

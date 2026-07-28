@@ -1302,17 +1302,19 @@ function bind(){
     btn.onclick=e=>{
       e.preventDefault();
       e.stopPropagation();
-      if(!permissions().manageAllPersonnel){
-        alert("Personel silme yetkisi yalnızca Bakım Müdüründedir.");
-        return;
-      }
       const id=btn.dataset.userId;
       const account=APP_USERS[id];
       if(!account){
-        alert("Personel hesabı bulunamadı veya daha önce silinmiş.");
+        alert("Kullanıcı hesabı bulunamadı veya daha önce silinmiş.");
         render();
         return;
       }
+      if(!canManagePersonnelAccount(account)){
+        alert("Bu kullanıcı hesabını silme yetkiniz yok.");
+        return;
+      }
+      const defaultLabel=btn.dataset.defaultLabel||btn.textContent;
+      btn.dataset.defaultLabel=defaultLabel;
 
       // Tarayıcı onay pencerelerine bağlı kalmadan iki tıklamalı güvenli silme.
       if(btn.dataset.confirmDelete!=="yes"){
@@ -1322,25 +1324,25 @@ function bind(){
         setTimeout(()=>{
           if(document.body.contains(btn)&&btn.dataset.confirmDelete==="yes"){
             btn.dataset.confirmDelete="";
-            btn.textContent="Personeli Sil";
+            btn.textContent=defaultLabel;
             btn.classList.remove("delete-confirming");
           }
         },5000);
         return;
       }
 
-      const result=deleteMaintenancePersonnelAccount(id);
+      const result=deletePersonnelAccount(id);
       if(!result.ok){
         alert(result.message);
         return;
       }
       s.personnelDetailId=null;
       render();
-      alert(`${result.name} sistemden silindi.`);
+      alert(`${result.name} kullanıcı hesabı sistemden silindi.`);
     };
   }
 
-  bindPersonnelDeleteButton(document.querySelector(".personnel-delete-btn"));
+  document.querySelectorAll(".personnel-delete-btn").forEach(bindPersonnelDeleteButton);
 
   const personnelDetailEdit=document.querySelector(".personnel-detail-edit");
   if(personnelDetailEdit)personnelDetailEdit.onclick=e=>{
@@ -1373,16 +1375,22 @@ function bind(){
     const nameEl=document.getElementById("personnelName");
     const factoryEl=document.getElementById("personnelFactory");
     const teamEl=document.getElementById("personnelTeam");
+    const roleEl=document.getElementById("personnelRole");
+    const departmentEl=document.getElementById("personnelDepartment");
     original.value=id;
     if(id&&APP_USERS[id]){
       const u=APP_USERS[id];
-      document.getElementById("personnelEditorTitle").textContent="Personel Hesabını Düzenle";
+      document.getElementById("personnelEditorTitle").textContent=roleEl?"Kullanıcı Hesabını Düzenle":"Personel Hesabını Düzenle";
       idEl.value=id;passEl.value=u.password;nameEl.value=u.name;
-      factoryEl.value=shiftFactoryName(u.factories?.[0]||"1. Fabrika");
-      teamEl.value=u.team||teamEl.options[0]?.value||"";
+      factoryEl.value=roleEl?accountFactorySelectionValue(u.factories):shiftFactoryName(u.factories?.[0]||"1. Fabrika");
+      if(roleEl&&[...roleEl.options].some(option=>option.value===u.role))roleEl.value=u.role;
+      if(departmentEl)departmentEl.value=u.department||"";
+      if([...teamEl.options].some(option=>option.value===(u.team||"")))teamEl.value=u.team||"";
     }else{
-      document.getElementById("personnelEditorTitle").textContent="Yeni Bakım Personeli";
+      document.getElementById("personnelEditorTitle").textContent=roleEl?"Yeni Kullanıcı Hesabı":"Yeni Bakım Personeli";
       idEl.value=nextFourDigitId();passEl.value=randomFourDigitPassword();nameEl.value="";
+      if(roleEl)roleEl.value="Bakım Personeli";
+      if(departmentEl)departmentEl.value="";
       if(teamEl.options.length===1)teamEl.selectedIndex=0;
     }
     personnelBackdrop.style.display="flex";
@@ -1402,26 +1410,42 @@ function bind(){
     const name=document.getElementById("personnelName").value.trim();
     const factory=document.getElementById("personnelFactory").value;
     const team=document.getElementById("personnelTeam").value;
+    const role=document.getElementById("personnelRole")?.value||"Bakım Personeli";
+    const department=document.getElementById("personnelDepartment")?.value||"";
+    const managesAllAccounts=!!permissions().manageAllUserAccounts;
     if(!/^\d{4}$/.test(newId)||!/^\d{4}$/.test(password)){alert("ID ve şifre tam olarak 4 haneli olmalıdır.");return}
     if(!name){alert("Personelin adını ve soyadını girin.");return}
-    if(!["1. Fabrika","2. Fabrika"].includes(factory)||!["Elektrik Bakım","Mekanik Bakım"].includes(team)){
+    if(managesAllAccounts?!EDITABLE_ACCOUNT_ROLES.includes(role):(!["1. Fabrika","2. Fabrika"].includes(factory)||!["Elektrik Bakım","Mekanik Bakım"].includes(team))){
+      alert(managesAllAccounts?"Geçerli bir kullanıcı rolü seçin.":"Geçerli bir fabrika ve bakım ekibi seçin.");
+      return;
+    }
+    if(!["1. Fabrika","2. Fabrika","Tümü"].includes(factory)){
       alert("Geçerli bir fabrika ve bakım ekibi seçin.");
       return;
     }
     if(APP_USERS[newId]&&newId!==original){alert("Bu kullanıcı ID zaten kullanılıyor.");return}
-    const factories=factory==="1. Fabrika"?["1. Fabrika"]:["2. Fabrika A Blok","2. Fabrika B Blok"];
-    const candidate={password,name,role:"Bakım Personeli",factories,department:"",team};
-    if(!canManagePersonnelAccount(candidate)){alert("Yalnızca kendi fabrikanızdaki ve ekibinizdeki bakım personellerini yönetebilirsiniz.");return}
+    const existing=original?APP_USERS[original]:null;
+    if(existing?.role==="Yazılımcı"&&role!=="Yazılımcı"&&appUserEntries().filter(([,user])=>user.role==="Yazılımcı").length<=1){
+      alert("Son Yazılımcı hesabının rolü değiştirilemez. Önce başka bir Yazılımcı hesabı oluşturun.");
+      return;
+    }
+    if(String(original||"")===String(s.user?.id||"")&&(newId!==original||role!==existing?.role)){
+      alert("Giriş yaptığınız hesabın ID veya rolünü bu oturumda değiştiremezsiniz. Başka bir Yazılımcı hesabıyla giriş yapın.");
+      return;
+    }
+    const factories=selectedAccountFactories(factory);
+    const candidate={password,name,role,factories,department,team};
+    if(!canManagePersonnelAccount(candidate)){alert("Bu kullanıcı hesabını yönetme yetkiniz yok.");return}
     if(original&&original!==newId){
       delete APP_USERS[original];
-      DELETED_PERSONNEL_IDS.add(String(original));
+      DELETED_USER_IDS.add(String(original));
     }
-    DELETED_PERSONNEL_IDS.delete(String(newId));
-    saveDeletedPersonnelIds();
+    DELETED_USER_IDS.delete(String(newId));
+    saveDeletedUserIds();
     APP_USERS[newId]=candidate;
     saveAppUsers();
     render();
-    alert(`${name} personel hesabı kaydedildi.`);
+    alert(`${name} kullanıcı hesabı kaydedildi.`);
   };
 
   const shiftSearch=document.getElementById("shiftSearch");
