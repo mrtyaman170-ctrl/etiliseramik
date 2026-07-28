@@ -60,14 +60,14 @@ CUSTOM_DAILY_CONTROL_ASSETS=storageJsonRecordArray(localStorage,DAILY_CONTROL_CU
   .filter(asset=>typeof asset.id==="string"
     &&["1. Fabrika","2. Fabrika"].includes(asset.factory)
     &&typeof asset.name==="string"&&asset.name.trim()
-    &&["compressor","generator","ups","compensation","gas","water","other"].includes(asset.type)
-    &&["Elektrik Bakım","Mekanik Bakım"].includes(asset.team))
+    &&["compressor","transformer","generator","ups","compensation","breakerRoom","breakerPanel","gas","gasStation","fireSystem","water","other"].includes(asset.type)
+    &&["Elektrik Bakım","Mekanik Bakım","Periyodik Kontrol","Taşeron"].includes(asset.team))
   .map(asset=>({
     ...asset,
     id:asset.id.trim(),
     name:asset.name.trim(),
     special:["water","gas"].includes(asset.type),
-    contractorMonthly:false,
+    contractorMonthly:!!asset.contractorMonthly,
     custom:true
   }));
 DELETED_DAILY_CONTROL_ASSETS=storageJsonArray(localStorage,DAILY_CONTROL_DELETED_CATALOG_KEY,[]).filter(id=>typeof id==="string");
@@ -113,8 +113,28 @@ function addDailyControlToCatalog({factory,name,type,team}){
   saveDailyControlCatalog();
   return {ok:true,asset};
 }
+function addPeriodicControlToCatalog({factory,name,type,team}){
+  const clean=String(name||"").trim();
+  if(!canManageDailyControlCatalog()||!dailyControlFactories().includes(factory)){
+    return {ok:false,message:"Bu fabrika için periyodik kontrol tanımlama yetkiniz bulunmuyor."};
+  }
+  if(!clean)return {ok:false,message:"Periyodik kontrol adı boş bırakılamaz."};
+  const allowedTypes=["transformer","breakerRoom","breakerPanel","gasStation","fireSystem","generator","ups","other"];
+  if(!allowedTypes.includes(type))return {ok:false,message:"Geçerli bir periyodik kontrol türü seçiniz."};
+  if(DAILY_CONTROL_ASSETS.some(item=>item.factory===factory&&item.name.toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){
+    return {ok:false,message:"Bu fabrikada aynı isimde bir kontrol zaten bulunuyor."};
+  }
+  const asset={
+    id:`PERIODIC-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+    factory,type,name:clean,team:team||"Periyodik Kontrol",
+    special:false,contractorMonthly:true,custom:true,
+    createdBy:s.user?.name||"",createdAt:new Date().toISOString()
+  };
+  CUSTOM_DAILY_CONTROL_ASSETS.push(asset);DAILY_CONTROL_ASSETS.push(asset);saveDailyControlCatalog();
+  return {ok:true,asset};
+}
 function deleteDailyControlFromCatalog(id){
-  const index=DAILY_CONTROL_ASSETS.findIndex(asset=>asset.id===id&&!asset.contractorMonthly);
+  const index=DAILY_CONTROL_ASSETS.findIndex(asset=>asset.id===id);
   if(index<0)return false;
   DAILY_CONTROL_ASSETS.splice(index,1);
   const customIndex=CUSTOM_DAILY_CONTROL_ASSETS.findIndex(asset=>asset.id===id);
@@ -294,9 +314,9 @@ function dailyControlDetailModal(){
   const assignees=isContractor?[]:dailyDutyMembers(asset.factory,asset.team,period);
   const consumption=!isContractor&&asset.special?utilityConsumption(asset,period,record):null;
   const canAct=isContractor?canRecordContractorCheck(asset):(asset.special?canCompleteUtilityAsset(asset,period):canCompleteDailyAsset(asset,period));
-  const canDelete=!isContractor&&canManageDailyControlCatalog();
+  const canDelete=canManageDailyControlCatalog()&&(!isContractor||canRecordContractorCheck(asset));
   const detailKind=isContractor
-    ?"AYLIK TAŞERON KONTROLÜ"
+    ?"PERİYODİK KONTROL"
     :asset.special
       ?"GÜNLÜK SAYAÇ KONTROLÜ"
       :"GÜNLÜK EKİPMAN KONTROLÜ";
@@ -381,6 +401,29 @@ function dailyControlDetailModal(){
       </form>
     </section>
   `:"";
+  const periodicEditor=isContractor&&canAct?`
+    <section class="daily-detail-editor periodic-detail-editor">
+      <div class="daily-detail-section-head">
+        <div><small>YETKİLİ İŞLEM</small><h3>${done?"Periyodik Kontrolü Düzenle":"Periyodik Kontrol Kaydı Gir"}</h3><p>Tüm kontrol ayrıntıları yalnızca bu detay ekranından kaydedilir.</p></div>
+      </div>
+      <form class="contractor-check-form periodic-detail-form" data-asset-id="${esc(asset.id)}">
+        <div class="field"><label>Kontrol firması / sorumlu *</label><input class="contractor-company" value="${esc(record?.company||"")}" placeholder="Firma veya sorumlu kişi" required></div>
+        <div class="field"><label>Rapor / form numarası *</label><input class="contractor-report-no" value="${esc(record?.reportNo||"")}" placeholder="Rapor no" required></div>
+        <div class="field"><label>Kontrol tarihi *</label><input class="contractor-performed-date" type="date" value="${esc(record?.performedDate||dateOnly(new Date()))}" required></div>
+        <div class="field"><label>Sonraki kontrol tarihi</label><input class="contractor-next-date" type="date" value="${esc(record?.nextDueDate||"")}"></div>
+        <div class="field"><label>Kontrol sonucu *</label><select class="contractor-result">${dailyResultOptions(record)}</select></div>
+        <div class="field"><label>Standart / kontrol kapsamı</label><input class="contractor-standard" value="${esc(record?.standard||"")}" placeholder="Örn. yönetmelik, test kapsamı"></div>
+        <div class="field periodic-full"><label>Tespitler ve ölçüm sonuçları</label><textarea class="contractor-findings" rows="4" placeholder="Ölçümler, uygunsuzluklar ve kontrol bulguları">${esc(record?.findings||"")}</textarea></div>
+        <div class="field periodic-full"><label>Yapılacak işlem / öneri</label><textarea class="contractor-action" rows="3" placeholder="Takip edilecek işlem veya düzeltici faaliyet">${esc(record?.actionRequired||"")}</textarea></div>
+        <div class="field periodic-full"><label>Genel açıklama</label><textarea class="contractor-note-input" rows="3" placeholder="Periyodik kontrol açıklaması">${esc(record?.note||"")}</textarea></div>
+        <div class="field periodic-full"><label>Rapor / kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="contractor-photo" type="file" accept="image/*" capture="environment" ${record?.photoStored?"":"required"}></div>
+        <div class="daily-detail-editor-actions periodic-full">
+          ${done?`<button type="button" class="secondary undo-contractor-check" data-asset-id="${esc(asset.id)}">Kaydı Geri Al</button>`:""}
+          <button type="submit" class="primary">${done?"Değişiklikleri Kaydet":"Periyodik Kontrolü Kaydet"}</button>
+        </div>
+      </form>
+    </section>
+  `:"";
 
   return `<div class="modal-backdrop" id="dailyControlDetailBackdrop">
     <div class="modal daily-control-detail-modal">
@@ -420,10 +463,11 @@ function dailyControlDetailModal(){
       ${utilityCharts}
       ${regularEditor}
       ${utilityEditor}
+      ${periodicEditor}
 
       <div class="modal-actions">
         ${done&&record?.photoStored?`<button type="button" class="secondary view-control-photo" data-photo-key="${esc(photoKey)}" data-photo-title="${esc(asset.name)}">▣ Kontrol Fotoğrafını Gör</button>`:""}
-        ${canDelete?`<button type="button" class="danger delete-daily-control ${asset.special?"special-delete-control":""}" data-delete-daily-control="${esc(asset.id)}">${asset.special?"Bu Günlük Kontrolü Sil":"Kontrolü Sil"}</button>`:""}
+        ${canDelete?`<button type="button" class="danger delete-daily-control ${asset.special?"special-delete-control":""}" data-delete-daily-control="${esc(asset.id)}">${isContractor?"Periyodik Kontrolü Sil":asset.special?"Bu Günlük Kontrolü Sil":"Kontrolü Sil"}</button>`:""}
         <button type="button" class="primary" id="closeDailyControlDetailBottom">Kapat</button>
       </div>
     </div>
@@ -456,7 +500,12 @@ function dailyCheckHistory(factory,days=7){
     date.setHours(12,0,0,0);
     date.setDate(date.getDate()-i);
     const key=dateKeyLocal(date);
-    rows.push({date:key,...dailyCompletionStats(factory,key)});
+    rows.push({
+      date:key,
+      ...dailyCompletionStats(factory,key),
+      electricalDuty:dailyDutyMembers(factory,"Elektrik Bakım",key),
+      mechanicalDuty:dailyDutyMembers(factory,"Mekanik Bakım",key)
+    });
   }
   return rows;
 }
@@ -495,7 +544,7 @@ function utilityReadingState(record,previous,fields){
   return "valid";
 }
 function utilityStatisticsRows(factory,endDate,days=14){
-  const normalizedDays=[7,14,30].includes(Number(days))?Number(days):14;
+  const normalizedDays=Math.max(1,Math.min(31,Number(days)||14));
   const waterAsset=dailyAssetsForFactory(factory).find(asset=>asset.type==="water");
   const gasAsset=dailyAssetsForFactory(factory).find(asset=>asset.type==="gas");
   const rows=[];
@@ -755,26 +804,12 @@ function dailyChecksPage(){
   const contractorCard=asset=>{
     const record=contractorCheckRecord(s.contractorControlMonth,factory,asset.id);
     const done=record?.status==="done";
-    const canEdit=canRecordContractorCheck(asset);
-    const photoKey=contractorCheckKey(s.contractorControlMonth,factory,asset.id);
-
     return `<article class="contractor-check-card ${done?"done":"pending"}" data-daily-detail-kind="contractor" data-daily-detail-asset-id="${esc(asset.id)}" role="button" tabindex="0" aria-label="${esc(asset.name)} kontrol detayını aç">
       <div class="contractor-check-head">
         <div class="daily-check-icon">${dailyAssetIcon(asset.type)}</div>
-        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>Aylık periyodik tesis kontrolü</p></div>
+        <div><small>${esc(dailyAssetTypeLabel(asset.type))}</small><h3>${esc(asset.name)}</h3><p>${done?`${esc(record?.company||"")} · ${esc(record?.performedDate||s.contractorControlMonth)}`:"Detayları görüntülemek veya kayıt girmek için tıklayın"}</p></div>
         <span class="daily-check-status ${done?"done":"pending"}">${done?"Yapıldı":"Yapılmadı"}</span>
       </div>
-      <form class="contractor-check-form" data-asset-id="${esc(asset.id)}">
-        <div class="field"><label>Kontrol firması / sorumlu *</label><input class="contractor-company" value="${esc(record?.company||"")}" placeholder="Firma veya sorumlu kişi" ${canEdit?"":"disabled"} required></div>
-        <div class="field"><label>Rapor / form numarası *</label><input class="contractor-report-no" value="${esc(record?.reportNo||"")}" placeholder="Rapor no" ${canEdit?"":"disabled"} required></div>
-        <div class="field"><label>Kontrol sonucu *</label><select class="contractor-result" ${canEdit?"":"disabled"}>${resultOptions(record)}</select></div>
-        <div class="field"><label>Rapor / kontrol fotoğrafı ${record?.photoStored?"(değiştirmek için seçin)":"*"}</label><input class="contractor-photo" type="file" accept="image/*" capture="environment" ${canEdit&&!record?.photoStored?"required":""} ${canEdit?"":"disabled"}></div>
-        <div class="field contractor-note"><label>Periyodik kontrol açıklaması</label><input class="contractor-note-input" value="${esc(record?.note||"")}" placeholder="Yapılan kontroller ve tespitler" ${canEdit?"":"disabled"}></div>
-        <div class="contractor-actions">
-          ${canEdit?`<button type="submit" class="primary">${done?"Kaydı Güncelle":"Aylık Kontrolü Kaydet"}</button>${done?`<button type="button" class="secondary undo-contractor-check" data-asset-id="${esc(asset.id)}">Kaydı Geri Al</button>`:""}`:""}
-        </div>
-      </form>
-      ${done?`<div class="contractor-record-meta"><span><b>${esc(record.company)}</b> · ${esc(record.reportNo)}</span><span>${fmtDate(record.checkedAt)} · ${esc(record.checkedBy)}</span></div>${photoButton(photoKey,asset.name)}`:""}
     </article>`;
   };
 
@@ -787,8 +822,12 @@ function dailyChecksPage(){
 
   const utilityOutput=`<section class="utility-output-card">
     <div class="section-modern-head">
-      <div><h2>Günlük Su ve Gaz Tüketim Çıktısı</h2><p>Sayaçların önceki gün değerleriyle farkı otomatik hesaplanır.</p></div>
-      <button type="button" class="secondary" id="printUtilityOutput">Yazdır / PDF</button>
+      <div><h2>Su ve Gaz Tüketim Çıktıları</h2><p>Su ve gazı ayrı ayrı; günlük, haftalık veya aylık tek sayfa raporlayın.</p></div>
+      <div class="utility-print-controls">
+        <select id="utilityPrintPeriod" aria-label="Çıktı dönemi"><option value="daily">Günlük</option><option value="weekly">Haftalık</option><option value="monthly">Aylık</option></select>
+        <button type="button" class="secondary utility-print-button water" data-print-utility="water">Su Çıktısı</button>
+        <button type="button" class="secondary utility-print-button gas" data-print-utility="gas">Gaz Çıktısı</button>
+      </div>
     </div>
     <div class="utility-output-grid">
       <article><small>İŞLETMEYE GELEN SU</small><b>${waterUse?.incoming??"-"} m³</b><span>${waterUse?"günlük fark":"Önceki gün kaydı gerekli"}</span></article>
@@ -906,6 +945,18 @@ function dailyChecksPage(){
     <p>Silinen kontroller yeni günlük listelerden kaldırılır; daha önce alınmış kontrol kayıtları korunur.</p>
   </details>`:""}
 
+  ${activeTab==="contractor"&&canManageDailyControlCatalog()?`<details class="daily-control-management-panel periodic-management-panel">
+    <summary><span>＋</span><div><b>Periyodik Kontrol Listesini Yönet</b><small>Yeni kontrol noktası ekleyin; silme işlemini kontrol detayından yapın.</small></div><i>⌄</i></summary>
+    <form id="periodicControlCatalogForm" class="daily-control-management-form">
+      <label>Fabrika<select id="newPeriodicControlFactory">${factories.map(item=>`<option ${item===factory?"selected":""}>${esc(item)}</option>`).join("")}</select></label>
+      <label class="daily-control-name-field">Kontrol / Ekipman Adı<input id="newPeriodicControlName" maxlength="120" placeholder="Örn. Ana Yangın Pompası Testi" required></label>
+      <label>Kontrol Türü<select id="newPeriodicControlType"><option value="transformer">Trafo</option><option value="breakerRoom">Kesici Odası</option><option value="breakerPanel">Kesici Panosu</option><option value="gasStation">Gaz İstasyonu</option><option value="fireSystem">Yangın Sistemi</option><option value="generator">Jeneratör</option><option value="ups">UPS</option><option value="other" selected>Diğer</option></select></label>
+      <label>Sorumlu<select id="newPeriodicControlTeam"><option>Periyodik Kontrol</option><option>Taşeron</option><option>Elektrik Bakım</option><option>Mekanik Bakım</option></select></label>
+      <button type="submit" class="primary">Periyodik Kontrol Ekle</button>
+    </form>
+    <p>Silinen kontrol noktaları yeni aylık listelerden kaldırılır; geçmiş kontrol kayıtları korunur.</p>
+  </details>`:""}
+
   ${activeTab==="daily"?`
     <section class="daily-control-kpis daily-control-kpis-compact">
       <article><small>GÜNLÜK KONTROL</small><b>${stats.total}</b><span>trafo ve kesici hariç</span></article>
@@ -958,9 +1009,10 @@ function dailyChecksPage(){
       <div class="daily-secondary-content">
         <div class="table-wrap">
           <table class="daily-history-table">
-            <thead><tr><th>Tarih</th><th>Yapıldı</th><th>Yapılmadı</th><th>Toplam</th><th>Tamamlanma</th></tr></thead>
+            <thead><tr><th>Tarih</th><th>Vardiyadaki Personeller (08:00–16:00)</th><th>Yapıldı</th><th>Yapılmadı</th><th>Toplam</th><th>Tamamlanma</th></tr></thead>
             <tbody>${history.map(row=>`<tr>
               <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("tr-TR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}</td>
+              <td><div class="daily-history-duty"><span><b>Elektrik:</b> ${esc(row.electricalDuty.join(", ")||"Atanmış personel yok")}</span><span><b>Mekanik:</b> ${esc(row.mechanicalDuty.join(", ")||"Atanmış personel yok")}</span></div></td>
               <td><b class="daily-history-done">${row.done}</b></td>
               <td><b class="daily-history-pending">${row.pending}</b></td>
               <td>${row.total}</td>

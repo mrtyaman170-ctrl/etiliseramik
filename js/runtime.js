@@ -288,6 +288,18 @@ function bind(){
     s.dailyControlFactory=result.asset.factory;
     render();
   };
+  const periodicControlCatalogForm=document.getElementById("periodicControlCatalogForm");
+  if(periodicControlCatalogForm)periodicControlCatalogForm.onsubmit=e=>{
+    e.preventDefault();
+    const result=addPeriodicControlToCatalog({
+      factory:document.getElementById("newPeriodicControlFactory")?.value||s.dailyControlFactory,
+      name:document.getElementById("newPeriodicControlName")?.value||"",
+      type:document.getElementById("newPeriodicControlType")?.value||"other",
+      team:document.getElementById("newPeriodicControlTeam")?.value||"Periyodik Kontrol"
+    });
+    if(!result.ok){alert(result.message);return}
+    s.dailyControlFactory=result.asset.factory;render();
+  };
 
   document.querySelectorAll("[data-delete-daily-control]").forEach(button=>button.onclick=()=>{
     if(!canManageDailyControlCatalog())return;
@@ -466,12 +478,18 @@ function bind(){
     const reportNo=form.querySelector(".contractor-report-no")?.value.trim()||"";
     const result=form.querySelector(".contractor-result")?.value||"";
     const note=form.querySelector(".contractor-note-input")?.value.trim()||"";
+    const performedDate=form.querySelector(".contractor-performed-date")?.value||dateOnly(new Date());
+    const nextDueDate=form.querySelector(".contractor-next-date")?.value||"";
+    const standard=form.querySelector(".contractor-standard")?.value.trim()||"";
+    const findings=form.querySelector(".contractor-findings")?.value.trim()||"";
+    const actionRequired=form.querySelector(".contractor-action")?.value.trim()||"";
     const photo=form.querySelector(".contractor-photo")?.files?.[0];
 
-    if(!company||!reportNo||!result){
-      alert("Kontrol firması veya sorumlu, rapor numarası ve kontrol sonucunu giriniz.");
+    if(!company||!reportNo||!performedDate||!result){
+      alert("Firma/sorumlu, rapor numarası, kontrol tarihi ve kontrol sonucunu giriniz.");
       return;
     }
+    if(nextDueDate&&nextDueDate<performedDate){alert("Sonraki kontrol tarihi, kontrol tarihinden önce olamaz.");return}
     if(!photo&&!existing?.photoStored){
       alert("Periyodik kontrol fotoğrafı veya rapor fotoğrafı zorunludur.");
       return;
@@ -489,6 +507,7 @@ function bind(){
         reportNo,
         result,
         note,
+        performedDate,nextDueDate,standard,findings,actionRequired,
         checkedBy:s.user?.name||"Bilinmeyen Kullanıcı",
         checkedAt:new Date().toISOString(),
         photoStored:!!photo||!!existing?.photoStored
@@ -498,7 +517,7 @@ function bind(){
     }catch(error){
       console.error(error);
       alert("Periyodik kontrol kaydı kaydedilemedi.");
-      if(submit){submit.disabled=false;submit.textContent=existing?"Kaydı Güncelle":"Aylık Kontrolü Kaydet"}
+      if(submit){submit.disabled=false;submit.textContent=existing?"Değişiklikleri Kaydet":"Periyodik Kontrolü Kaydet"}
     }
   });
 
@@ -549,37 +568,51 @@ function bind(){
     showControlPhoto(btn.dataset.photoKey,btn.dataset.photoTitle||"Kontrol Fotoğrafı");
   });
 
-  const printUtilityOutput=document.getElementById("printUtilityOutput");
-  if(printUtilityOutput)printUtilityOutput.onclick=()=>{
+  document.querySelectorAll("[data-print-utility]").forEach(printButton=>printButton.onclick=()=>{
     const factory=s.dailyControlFactory;
     const date=s.dailyControlDate;
-    const waterAsset=dailyAssetsForFactory(factory).find(asset=>asset.type==="water");
-    const gasAsset=dailyAssetsForFactory(factory).find(asset=>asset.type==="gas");
-    const waterRecord=waterAsset?dailyCheckRecord(date,factory,waterAsset.id):null;
-    const gasRecord=gasAsset?dailyCheckRecord(date,factory,gasAsset.id):null;
-    const waterUse=waterAsset?utilityConsumption(waterAsset,date,waterRecord):null;
-    const gasUse=gasAsset?utilityConsumption(gasAsset,date,gasRecord):null;
+    const type=printButton.dataset.printUtility==="gas"?"gas":"water";
+    const period=document.getElementById("utilityPrintPeriod")?.value||"daily";
+    const selected=new Date(`${date}T12:00:00`);
+    let endDate=date,days=1,periodLabel="Günlük";
+    if(period==="weekly"){days=7;periodLabel="Haftalık"}
+    if(period==="monthly"){
+      const today=new Date();const sameCurrentMonth=selected.getFullYear()===today.getFullYear()&&selected.getMonth()===today.getMonth();
+      const lastDay=sameCurrentMonth?today.getDate():new Date(selected.getFullYear(),selected.getMonth()+1,0).getDate();
+      endDate=dateKeyLocal(new Date(selected.getFullYear(),selected.getMonth(),lastDay));days=lastDay;periodLabel="Aylık";
+    }
+    const rows=utilityStatisticsRows(factory,endDate,days);
+    const firstDate=rows[0]?.date||endDate;const lastDate=rows.at(-1)?.date||endDate;
+    const validRows=rows.filter(row=>type==="water"?row.water:row.gas);
+    const totalIncoming=utilityTotal(utilityValues(validRows,row=>type==="water"?row.water?.incoming:row.gas?.incoming));
+    const totalA=type==="water"?utilityTotal(utilityValues(validRows,row=>row.water?.aBlock)):null;
+    const totalB=type==="water"?utilityTotal(utilityValues(validRows,row=>row.water?.bBlock)):null;
+    const title=type==="water"?"Su Tüketim Çıktısı":"Gaz Tüketim Çıktısı";
+    const tableHead=type==="water"
+      ?"<th>Tarih</th><th>Gelen Su</th><th>A Blok</th><th>B Blok</th><th>Denge</th><th>Durum</th>"
+      :"<th>Tarih</th><th>Gelen Gaz</th><th>Durum</th>";
+    const tableRows=rows.map(row=>type==="water"
+      ?`<tr><td>${esc(row.date)}</td><td>${utilityNumber(row.water?.incoming)} m³</td><td>${utilityNumber(row.water?.aBlock)} m³</td><td>${utilityNumber(row.water?.bBlock)} m³</td><td>${utilityNumber(row.water?.balance)} m³</td><td>${esc(utilityStateLabel(row.waterState))}</td></tr>`
+      :`<tr><td>${esc(row.date)}</td><td>${utilityNumber(row.gas?.incoming)} m³</td><td>${esc(utilityStateLabel(row.gasState))}</td></tr>`).join("");
+    const summary=type==="water"
+      ?`<div><small>TOPLAM GELEN SU</small><b>${utilityNumber(totalIncoming)} m³</b></div><div><small>A BLOK TOPLAM</small><b>${utilityNumber(totalA)} m³</b></div><div><small>B BLOK TOPLAM</small><b>${utilityNumber(totalB)} m³</b></div>`
+      :`<div><small>TOPLAM GAZ</small><b>${utilityNumber(totalIncoming)} m³</b></div><div><small>GEÇERLİ GÜN</small><b>${validRows.length}</b></div>`;
     const popup=window.open("","_blank","width=900,height=700");
     if(!popup){
       alert("Yazdırma penceresi engellendi. Açılır pencereye izin verin.");
       return;
     }
-    popup.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Su ve Gaz Tüketim Çıktısı</title>
-      <style>body{font-family:Arial,sans-serif;padding:30px;color:#263746}h1{font-size:22px}p{color:#66737e}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #ccd5dc;padding:12px;text-align:left}th{background:#edf3f7}.meta{display:flex;gap:30px;margin:15px 0}.footer{margin-top:50px;display:flex;justify-content:space-between}.sign{width:220px;border-top:1px solid #333;padding-top:8px;text-align:center}@media print{button{display:none}}</style>
+    popup.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>${title}</title>
+      <style>@page{size:A4 landscape;margin:7mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#263746;font-size:9px}header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid ${type==="water"?"#2f75b5":"#d08a2e"};padding-bottom:7px}h1{font-size:18px;margin:0 0 4px}p{color:#66737e;margin:3px 0}.meta{text-align:right;line-height:1.6}.summary{display:grid;grid-template-columns:repeat(${type==="water"?3:2},1fr);gap:7px;margin:8px 0}.summary div{padding:7px 9px;border:1px solid #d7e0e7;border-radius:6px;background:#f5f8fa}.summary small,.summary b{display:block}.summary b{font-size:13px;margin-top:2px}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{border:1px solid #ccd5dc;padding:${days>14?"2.5px 5px":"5px 7px"};text-align:left;line-height:1.15}th{background:#edf3f7;font-size:8px}.note{font-size:7.5px}.footer{margin-top:16px;display:flex;justify-content:space-between}.sign{width:180px;border-top:1px solid #333;padding-top:5px;text-align:center}@media print{html,body{width:100%;height:100%;overflow:hidden}}</style>
       </head><body>
-      <h1>ETİLİSMART – Günlük Su ve Gaz Tüketim Çıktısı</h1>
-      <div class="meta"><b>Fabrika: ${esc(factory)}</b><b>Tarih: ${esc(date)}</b></div>
-      <table><thead><tr><th>Değer</th><th>Güncel Sayaç</th><th>Günlük Tüketim</th></tr></thead><tbody>
-      <tr><td>İşletmeye Gelen Su</td><td>${waterRecord?.readings?.incoming??"-"} m³</td><td>${waterUse?.incoming??"-"} m³</td></tr>
-      <tr><td>A Blok Kullanılan Su</td><td>${waterRecord?.readings?.aBlock??"-"} m³</td><td>${waterUse?.aBlock??"-"} m³</td></tr>
-      <tr><td>B Blok Kullanılan Su</td><td>${waterRecord?.readings?.bBlock??"-"} m³</td><td>${waterUse?.bBlock??"-"} m³</td></tr>
-      <tr><td>İşletmeye Gelen Gaz</td><td>${gasRecord?.readings?.incoming??"-"} m³</td><td>${gasUse?.incoming??"-"} m³</td></tr>
-      </tbody></table>
-      <p>Günlük tüketim, seçilen günün kümülatif sayaç değeri ile önceki günün kümülatif sayaç değeri arasındaki farktır.</p>
+      <header><div><h1>ETİLİSMART – ${periodLabel} ${title}</h1><p>Dönem: ${esc(firstDate)} – ${esc(lastDate)}</p></div><div class="meta"><b>${esc(factory)}</b><br>Oluşturan: ${esc(s.user?.name||"-")}<br>${new Date().toLocaleString("tr-TR")}</div></header>
+      <section class="summary">${summary}</section>
+      <table><thead><tr>${tableHead}</tr></thead><tbody>${tableRows}</tbody></table>
+      <p class="note">Tüketimler, ardışık günlerin kümülatif sayaç değerleri arasındaki farktan hesaplanır. Eksik veya sıfırlanmış sayaçlar toplam hesabına katılmaz.</p>
       <div class="footer"><div class="sign">Kontrol Eden</div><div class="sign">Bakım Formeni</div></div>
       <script>window.onload=()=>window.print()<\/script></body></html>`);
     popup.document.close();
-  };
+  });
 
 
   document.querySelectorAll("[data-work-detail-id][role=\"button\"]").forEach(card=>{
@@ -913,18 +946,20 @@ function bind(){
   document.querySelectorAll("[data-work-request-action]").forEach(btn=>btn.onclick=()=>{
     const item=findWorkItemById(btn.dataset.workId);if(!item)return;
     const action=btn.dataset.workRequestAction;
-    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","purchase","cancelled"].includes(action))return;
+    if(item.kind!=="request"||!["reviewing","approved","rejected","convert","purchase","outsource","cancelled"].includes(action))return;
     const actor=s.user?.name||"Bilinmeyen Kullanıcı";
     const at=new Date().toISOString();
     if(action==="cancelled"&&permissions().createRequest&&item.createdBy===s.user?.name){item.status="cancelled";item.cancelledBy=actor;item.cancelledAt=at;saveWorkItems();render();return}
     if(!canManageWorkRequest(item))return;
-    if(action==="convert"||action==="purchase"){
+    if(action==="convert"||action==="purchase"||action==="outsource"){
       const linked=s.workItems.find(x=>x.kind==="workorder"&&String(x.sourceRequestId)===String(item.id));
       if(linked){item.status="converted";saveWorkItems();s.workTab="orders";render();return}
       const team=item.assignedTeam||workTeamForCategory(item.category);const people=workMaintenanceOptions(item.factory,team);const assignedTo=people[0]||"";
       const procurementRequired=action==="purchase";
-      s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:procurementRequired?`SATIN ALINACAK\n\n${item.description}`:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:procurementRequired?"material":(assignedTo?"assigned":"open"),createdBy:actor,createdAt:at,assignedTeam:team,assignedTo,sourceRequestId:item.id,procurementRequired,workDescription:procurementRequired?"SATIN ALINACAK — Satın alma tamamlandıktan sonra iş emri yürütülecek.":"",completedAt:null,usedMaterials:[]});
-      item.status="converted";item.conversionType=procurementRequired?"purchase":"workorder";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
+      const outsourcedRequired=action==="outsource";
+      const prefix=procurementRequired?"SATIN ALINACAK":outsourcedRequired?"TAŞERONA VERİLECEK":"";
+      s.workItems.push({id:nextWorkId("workorder"),kind:"workorder",factory:item.factory,department:item.department,location:item.location,title:item.title,category:item.category,priority:item.priority,description:prefix?`${prefix}\n\n${item.description}`:item.description,requestedDate:item.requestedDate||"",planStart:dateOnly(new Date()),planEnd:item.requestedDate||dateOnly(new Date(Date.now()+3*86400000)),status:procurementRequired?"material":outsourcedRequired?"open":(assignedTo?"assigned":"open"),createdBy:actor,createdAt:at,assignedTeam:team,assignedTo:outsourcedRequired?"":assignedTo,sourceRequestId:item.id,procurementRequired,outsourcedRequired,workDescription:procurementRequired?"SATIN ALINACAK — Satın alma tamamlandıktan sonra iş emri yürütülecek.":outsourcedRequired?"TAŞERONA VERİLECEK — Firma ve iş planı bakım yönetimi tarafından belirlenecek.":"",completedAt:null,usedMaterials:[]});
+      item.status="converted";item.conversionType=procurementRequired?"purchase":outsourcedRequired?"outsource":"workorder";item.convertedBy=actor;item.convertedAt=at;if(!item.approvedBy){item.approvedBy=actor;item.approvedAt=at}s.workTab="orders";
     }else{
       item.status=action;
       if(action==="reviewing"){item.reviewedBy=actor;item.reviewedAt=at}
@@ -1362,6 +1397,38 @@ function bind(){
     render();
     const next=document.getElementById("shiftSearch");
     if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length)}
+  };
+  const importShiftExcel=document.getElementById("importShiftExcel");
+  if(importShiftExcel)importShiftExcel.onclick=async()=>{
+    const input=document.getElementById("shiftExcelFile");
+    const file=input?.files?.[0];
+    if(!file){alert("Önce bir Excel vardiya çizelgesi seçin.");return}
+    if(!canManageShiftTeam(s.shiftTeam)){alert("Bu vardiya ekibini düzenleme yetkiniz bulunmuyor.");return}
+    importShiftExcel.disabled=true;importShiftExcel.textContent="Excel okunuyor...";
+    try{
+      const result=await importShiftExcelFile(file,s.shiftFactory,s.shiftTeam);
+      if(!result.added){
+        const details=[...result.errors];
+        if(result.unmatchedNames?.length)details.push(`Eşleşmeyen personel: ${result.unmatchedNames.slice(0,8).join(", ")}${result.unmatchedNames.length>8?"…":""}`);
+        throw new Error(details.join("\n")||"Aktarılabilecek geçerli vardiya kaydı bulunamadı.");
+      }
+      if(result.monthDate){
+        const month=new Date(result.monthDate);
+        s.shiftViewMode="monthly";
+        s.shiftMonthDate=new Date(month.getFullYear(),month.getMonth(),1).toISOString();
+      }
+      render();
+      const lines=[`${result.added} vardiya kaydı aktarıldı.`];
+      if(result.sourceSheet&&result.monthDate)lines.push(`Aktarılan sayfa: ${result.sourceSheet} · ${new Date(result.monthDate).toLocaleDateString("tr-TR",{month:"long",year:"numeric"})}`);
+      if(result.skipped)lines.push(`${result.skipped} hücre okunamadığı veya belirsiz olduğu için atlandı.`);
+      if(result.ambiguous)lines.push(`${result.ambiguous} hücrede birden fazla vardiya rengi bulundu; bu hücreler bilinçli olarak aktarılmadı.`);
+      if(result.unmatchedNames?.length)lines.push(`Eşleşmeyen ${result.unmatchedNames.length} personel: ${result.unmatchedNames.slice(0,8).join(", ")}${result.unmatchedNames.length>8?"…":""}`);
+      if(result.errors.length)lines.push(...result.errors);
+      alert(lines.join("\n"));
+    }catch(error){
+      alert(`Excel içe aktarılamadı: ${error.message}`);
+      importShiftExcel.disabled=false;importShiftExcel.textContent="Excel’i Kontrol Et ve Aktar";
+    }
   };
   document.querySelectorAll(".shift-assignment-select").forEach(el=>el.onchange=()=>{
     if(!canManageShiftTeam(s.shiftTeam)){render();return}

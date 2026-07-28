@@ -1,9 +1,23 @@
-# ETİLİSMART Modüler Proje — v1.3.0
+# ETİLİSMART Modüler Proje — v1.4.1
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
 
-## v1.3.0 yenilikleri
+## v1.4.1 yenilikleri
+
+- Vardiyalı Çalışma Çizelgesi Excel şablonu doğrudan tanınır: `AY`, `YIL`, `24/8`, `8/16`, `16/24` başlıkları ve renkli vardiya hücreleri okunur.
+- Aynı çalışma kitabındaki eski çizelgeler yerine en güncel ay otomatik seçilir.
+- `İZİN`, rapor ve tatil kayıtları çizelgede **İzinli** olarak görünür; aktif vardiyadaki bakımcı hesabına dahil edilmez.
+- Eşleşmeyen personel isimleri aktarım sonunda açıkça bildirilir; böylece eksik kullanıcı hesabı nedeniyle veri sessizce kaybolmaz.
+- Bakım formenleri de kendi bakım ekiplerinin vardiya çizelgesinde yer alabilir.
+
+## v1.4.0 yenilikleri
+
+- Vardiya çizelgesine Excel içe aktarma altyapısı eklendi.
+- Periyodik kontroller sade kartlara taşındı; detay ekranından ekleme, kapsamlı kayıt, düzenleme ve silme sağlandı.
+- Su ve gaz için ayrı günlük, haftalık ve aylık tek sayfa çıktılar eklendi.
+- Son 7 günlük kontrol geçmişinde vardiyadaki elektrik ve mekanik bakım personelleri gösterildi.
+- Talepler “Taşerona Verilecek” iş emrine dönüştürülebilir.
 
 - Mekanik atölye talep, onay, tahmini süre, üretim ve arşiv modülü eklendi.
 - İş talepleri normal veya “Satın Alınacak” notlu, Malzeme Bekliyor durumundaki iş emrine dönüştürülebilir.

@@ -26,6 +26,7 @@ html = html.replace(stylesheet[0], `<style>\n${css}\n</style>`);
 
 const scriptPattern = /<script\s+src=["']([^"']+)["']><\/script>/gi;
 html = html.replace(scriptPattern, (_tag, source) => {
+  if (/^https?:\/\//i.test(source)) return _tag;
   const javascript = fs
     .readFileSync(path.join(projectRoot, source), "utf8")
     .replace(/<\/script/gi, "<\\/script");

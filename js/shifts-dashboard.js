@@ -1,4 +1,6 @@
 const SHIFT_LABELS=["00-08","08-16","16-24"];
+const SHIFT_OFF="OFF";
+const SHIFT_ASSIGNMENT_VALUES=[...SHIFT_LABELS,SHIFT_OFF];
 const SHIFT_OVERRIDE_KEY="etilismart_shift_overrides_v1";
 let SHIFT_OVERRIDES=storageJsonRecord(localStorage,SHIFT_OVERRIDE_KEY,{});
 function shiftOverrideKey(factory,team,weekOffset,personId,dayIndex){
@@ -10,6 +12,207 @@ function getShiftOverride(factory,team,weekOffset,personId,dayIndex){
 function setShiftOverride(factory,team,weekOffset,personId,dayIndex,value){
   SHIFT_OVERRIDES[shiftOverrideKey(factory,team,weekOffset,personId,dayIndex)]=value;
   storageSet(localStorage,SHIFT_OVERRIDE_KEY,JSON.stringify(SHIFT_OVERRIDES));
+}
+function shiftDisplayLabel(value){return value===SHIFT_OFF?"İzinli":value||"-"}
+function importedLeaveValue(value){
+  const text=String(value??"").trim().toLocaleUpperCase("tr-TR").replace(/\s+/g,"");
+  return ["İ","IZIN","İZİN","OFF","TATİL","R","RAPOR","İSTİRAHAT"].includes(text);
+}
+function normalizeImportedShift(value){
+  const text=String(value??"").trim().toLocaleUpperCase("tr-TR").replace(/\s+/g,"");
+  if(["00-08","00:00-08:00","0-8","0:00-8:00","24/8","24-8","24:00-08:00","A","1","GECE"].includes(text))return "00-08";
+  if(["08-16","08:00-16:00","8-16","8:00-16:00","8/16","B","2","GÜNDÜZ","SABAH"].includes(text))return "08-16";
+  if(["16-24","16:00-24:00","16-00","16:00-00:00","16/24","C","3","AKŞAM"].includes(text))return "16-24";
+  if(importedLeaveValue(value))return SHIFT_OFF;
+  return null;
+}
+function importedShiftDate(value){
+  if(value instanceof Date&&!Number.isNaN(value.getTime()))return new Date(value.getFullYear(),value.getMonth(),value.getDate());
+  if(typeof value==="number"&&window.XLSX?.SSF?.parse_date_code){
+    const parsed=XLSX.SSF.parse_date_code(value);
+    if(parsed)return new Date(parsed.y,parsed.m-1,parsed.d);
+  }
+  const text=String(value??"").trim();
+  const tr=text.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+  if(tr)return new Date(Number(tr[3]),Number(tr[2])-1,Number(tr[1]));
+  const iso=text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(iso)return new Date(Number(iso[1]),Number(iso[2])-1,Number(iso[3]));
+  const date=new Date(text);
+  return Number.isNaN(date.getTime())?null:new Date(date.getFullYear(),date.getMonth(),date.getDate());
+}
+function normalizeHeader(value){
+  return String(value??"").trim().toLocaleLowerCase("tr-TR").replace(/[^\p{L}\p{N}]+/gu,"");
+}
+function importNameKey(value){
+  return String(value??"").trim().toLocaleLowerCase("tr-TR")
+    .replace(/ı/g,"i").normalize("NFD").replace(/\p{Diacritic}/gu,"")
+    .replace(/\s+/g," ");
+}
+function findImportPerson(id,name,factory,team){
+  const people=personnelForFactory(factory,team);
+  const cleanId=String(id??"").trim();
+  if(cleanId){
+    const byId=people.find(person=>String(person.id)===cleanId);
+    if(byId)return byId;
+  }
+  const cleanName=importNameKey(name);
+  return cleanName?people.find(person=>importNameKey(person.name)===cleanName):null;
+}
+function applyImportedShift(person,date,shift,factory,team){
+  const weekOffset=weekOffsetForDate(date);
+  const dayIndex=(date.getDay()+6)%7;
+  setShiftOverride(factory,team,weekOffset,person.id,dayIndex,shift);
+}
+function blankShiftImportResult(){
+  return {added:0,skipped:0,errors:[],unmatchedNames:[],ambiguous:0,monthDate:null,sourceSheet:""};
+}
+function templateMonthIndex(value){
+  const name=String(value??"").trim().toLocaleUpperCase("tr-TR");
+  return {"OCAK":0,"ŞUBAT":1,"SUBAT":1,"MART":2,"NİSAN":3,"NISAN":3,"MAYIS":4,"HAZİRAN":5,"HAZIRAN":5,"TEMMUZ":6,"AĞUSTOS":7,"AGUSTOS":7,"EYLÜL":8,"EYLUL":8,"EKİM":9,"EKIM":9,"KASIM":10,"ARALIK":11}[name];
+}
+function valueAfterLabel(row,start){
+  for(let column=start+1;column<Math.min(row.length,start+8);column++){
+    const value=row[column];
+    if(value!==""&&value!==undefined&&value!==null)return value;
+  }
+  return "";
+}
+function templatePeriod(rows,headerRow){
+  let monthValue="",yearValue="";
+  for(let rowIndex=0;rowIndex<=headerRow;rowIndex++){
+    const row=rows[rowIndex]||[];
+    row.forEach((value,column)=>{
+      const label=normalizeHeader(value);
+      if(label==="ay"&&!monthValue)monthValue=valueAfterLabel(row,column);
+      if(["yıl","yil"].includes(label)&&!yearValue)yearValue=valueAfterLabel(row,column);
+    });
+  }
+  const month=templateMonthIndex(monthValue);
+  const year=Number(yearValue);
+  if(Number.isInteger(month)&&year>=2000&&year<=2200)return new Date(year,month,1);
+  return null;
+}
+function templateDayForColumn(rows,headerRow,personColumn,column){
+  for(let rowIndex=headerRow-1;rowIndex>=Math.max(0,headerRow-3);rowIndex--){
+    for(let checkColumn=column;checkColumn>=Math.max(personColumn+1,column-2);checkColumn--){
+      const day=Number(rows[rowIndex]?.[checkColumn]);
+      if(Number.isInteger(day)&&day>=1&&day<=31)return day;
+    }
+  }
+  return null;
+}
+function shiftImportCellIsColored(cell){
+  const fg=cell?.s?.fill?.fgColor||cell?.s?.fgColor;
+  if(!fg)return false;
+  const rgb=String(fg.rgb||"").toUpperCase().replace(/^FF(?=[0-9A-F]{6}$)/,"");
+  if(rgb)return !["FFFFFF","000000"].includes(rgb);
+  return typeof fg.theme==="number"&&fg.theme!==0;
+}
+function templateShiftLayout(sheet){
+  const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:true});
+  const personHeaders=["personeladı","personeladi","adsoyad","personel","isimsoyisim","isim"];
+  const headerRow=rows.findIndex(row=>row.some(value=>personHeaders.includes(normalizeHeader(value))));
+  if(headerRow<0)return null;
+  const personColumn=(rows[headerRow]||[]).findIndex(value=>personHeaders.includes(normalizeHeader(value)));
+  const period=templatePeriod(rows,headerRow);
+  if(!period)return null;
+  const groups=new Map();
+  (rows[headerRow]||[]).forEach((value,column)=>{
+    const shift=normalizeImportedShift(value);
+    const day=templateDayForColumn(rows,headerRow,personColumn,column);
+    if(!SHIFT_LABELS.includes(shift)||!day)return;
+    const date=new Date(period.getFullYear(),period.getMonth(),day);
+    if(date.getMonth()!==period.getMonth())return;
+    const key=dateKeyLocal(date);
+    if(!groups.has(key))groups.set(key,{date,columns:[]});
+    groups.get(key).columns.push({column,shift});
+  });
+  if(groups.size<1)return null;
+  return {rows,headerRow,personColumn,period,groups:[...groups.values()]};
+}
+function importTemplateShiftWorksheet(sheet,fallbackFactory,fallbackTeam,layout=templateShiftLayout(sheet)){
+  const result=blankShiftImportResult();
+  if(!layout){result.errors.push("Vardiyalı çalışma çizelgesi şablonu tanınamadı.");return result}
+  const unmatched=new Set();
+  const known=new Set();
+  layout.rows.slice(layout.headerRow+1).forEach(row=>{
+    const rawName=String(row[layout.personColumn]??"").trim();
+    if(!rawName||/^(TOPLAM|HAZIRLAYAN|ONAYLAYAN|NOT)/i.test(rawName))return;
+    const person=findImportPerson("",rawName,fallbackFactory,fallbackTeam);
+    if(!person){unmatched.add(rawName);return}
+    known.add(person.id);
+    layout.groups.forEach(group=>{
+      const cells=group.columns.map(item=>({
+        ...item,
+        cell:sheet[XLSX.utils.encode_cell({r:layout.rows.indexOf(row),c:item.column})]
+      }));
+      if(cells.some(item=>importedLeaveValue(item.cell?.v))){
+        applyImportedShift(person,group.date,SHIFT_OFF,fallbackFactory,fallbackTeam);result.added++;return;
+      }
+      const active=cells.filter(item=>shiftImportCellIsColored(item.cell));
+      if(active.length===1){
+        applyImportedShift(person,group.date,active[0].shift,fallbackFactory,fallbackTeam);result.added++;
+      }else if(active.length>1){
+        result.ambiguous++;result.skipped++;
+      }else result.skipped++;
+    });
+  });
+  result.unmatchedNames=[...unmatched].sort((a,b)=>a.localeCompare(b,"tr-TR"));
+  result.monthDate=layout.period;
+  if(!known.size)result.errors.push("Seçili fabrika ve ekipte çizelgedeki personellerle eşleşen kayıt bulunamadı.");
+  return result;
+}
+function importShiftWorksheet(sheet,fallbackFactory,fallbackTeam){
+  const template=templateShiftLayout(sheet);
+  if(template)return importTemplateShiftWorksheet(sheet,fallbackFactory,fallbackTeam,template);
+  const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:true});
+  if(rows.length<2)return {...blankShiftImportResult(),errors:["Çalışma sayfasında veri bulunamadı."]};
+  const headers=rows[0].map(normalizeHeader);
+  const findHeader=(names)=>headers.findIndex(header=>names.includes(header));
+  const idCol=findHeader(["personelid","sicilno","sicil","id"]);
+  const nameCol=findHeader(["adsoyad","personel","personeladı","personeladi","isimsoyisim","isim"]);
+  const dateCol=findHeader(["tarih","gün","gun"]);
+  const shiftCol=findHeader(["vardiya","vardiyaadi","vardiyakodu"]);
+  const factoryCol=findHeader(["fabrika","tesis"]);
+  const teamCol=findHeader(["ekip","bakımekibi","bakimekibi","birim"]);
+  let added=0,skipped=0;const errors=[];
+  const add=(row,dateValue,shiftValue)=>{
+    const factory=shiftFactoryName(factoryCol>=0?row[factoryCol]:fallbackFactory);
+    const team=teamCol>=0?String(row[teamCol]).trim():fallbackTeam;
+    const date=importedShiftDate(dateValue);const shift=normalizeImportedShift(shiftValue);
+    const person=findImportPerson(idCol>=0?row[idCol]:"",nameCol>=0?row[nameCol]:"",factory,team);
+    if(!date||shift===null||!person||!["1. Fabrika","2. Fabrika"].includes(factory)||!["Elektrik Bakım","Mekanik Bakım"].includes(team)){skipped++;return}
+    applyImportedShift(person,date,shift,factory,team);added++;
+  };
+  if((idCol>=0||nameCol>=0)&&dateCol>=0&&shiftCol>=0){
+    rows.slice(1).forEach(row=>add(row,row[dateCol],row[shiftCol]));
+  }else if(idCol>=0||nameCol>=0){
+    const dateColumns=rows[0].map((header,index)=>({index,date:importedShiftDate(header)})).filter(item=>item.date);
+    if(!dateColumns.length)return {...blankShiftImportResult(),skipped:rows.length-1,errors:["Tarih veya vardiya sütunları tanınamadı."]};
+    rows.slice(1).forEach(row=>dateColumns.forEach(column=>add(row,column.date,row[column.index])));
+  }else errors.push("Personel ID veya Ad Soyad sütunu bulunamadı.");
+  return {...blankShiftImportResult(),added,skipped,errors};
+}
+async function importShiftExcelFile(file,factory,team){
+  if(!window.XLSX)throw new Error("Excel okuma bileşeni yüklenemedi. İnternet bağlantısını kontrol edip tekrar deneyin.");
+  const workbook=XLSX.read(await file.arrayBuffer(),{type:"array",cellDates:true,cellStyles:true});
+  const totals=blankShiftImportResult();
+  const templates=workbook.SheetNames.map(name=>({name,layout:templateShiftLayout(workbook.Sheets[name])})).filter(item=>item.layout);
+  const sheets=templates.length
+    ?[...templates].sort((a,b)=>b.layout.period-a.layout.period).slice(0,1)
+    :workbook.SheetNames.map(name=>({name,layout:null}));
+  const unmatched=new Set();
+  sheets.forEach(({name,layout})=>{
+    const result=layout
+      ?importTemplateShiftWorksheet(workbook.Sheets[name],factory,team,layout)
+      :importShiftWorksheet(workbook.Sheets[name],factory,team);
+    totals.added+=result.added;totals.skipped+=result.skipped;totals.ambiguous+=result.ambiguous||0;
+    result.unmatchedNames.forEach(person=>unmatched.add(person));
+    totals.errors.push(...result.errors.map(error=>`${name}: ${error}`));
+    if(result.monthDate){totals.monthDate=result.monthDate;totals.sourceSheet=name}
+  });
+  totals.unmatchedNames=[...unmatched].sort((a,b)=>a.localeCompare(b,"tr-TR"));
+  return totals;
 }
 const SHIFT_DAY_NAMES=["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
 
@@ -57,7 +260,7 @@ function shiftFactoryMatches(personFactories,shiftFactory){
 
 function allMaintenanceAccounts(){
   return appUserEntries()
-    .filter(([,u])=>u.role==="Bakım Personeli"&&u.team)
+    .filter(([,u])=>["Bakım Personeli","Elektrik Bakım Formeni","Mekanik Bakım Formeni","Bakım Formeni"].includes(u.role)&&u.team)
     .map(([id,u])=>({id,name:u.name,team:u.team,factories:u.factories}));
 }
 function personnelForFactory(factory,team){
@@ -73,6 +276,7 @@ function currentShiftLabel(date=new Date()){
   return shiftLabelForDate(date);
 }
 function shiftClass(value){
+  if(value===SHIFT_OFF)return "off";
   if(value==="00-08")return "night";
   if(value==="08-16")return "morning";
   return "evening";
@@ -188,12 +392,12 @@ function shiftSchedulePage(){
   const shiftTable=monthly?`<section class="shift-table-wrap monthly-shift-wrap">
     <table class="shift-table monthly-shift-table">
       <thead><tr><th>Personel</th>${monthSchedule.dates.map(date=>`<th class="${dateKeyLocal(date)===dateKeyLocal(new Date())?"today":""}"><span>${date.getDate()}</span><small>${SHIFT_DAY_NAMES[(date.getDay()+6)%7]}</small></th>`).join("")}</tr></thead>
-      <tbody>${monthRows.map(row=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(row.id)}"><i>${esc(row.name.charAt(0))}</i><span><b>${esc(row.name)}</b><small>ID: ${esc(row.id)}</small></span></button></td>${row.days.map(day=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select monthly ${shiftClass(day.shift)} ${dateKeyLocal(day.date)===dateKeyLocal(new Date())?"today":""}" data-shift-person-id="${esc(row.id)}" data-shift-day="${day.dayIndex}" data-shift-week-offset="${day.weekOffset}">${SHIFT_LABELS.map(label=>`<option value="${label}" ${day.shift===label?"selected":""}>${label}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(day.shift)}">${esc(day.shift)}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="${monthSchedule.dates.length+1}"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
+      <tbody>${monthRows.map(row=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(row.id)}"><i>${esc(row.name.charAt(0))}</i><span><b>${esc(row.name)}</b><small>ID: ${esc(row.id)}</small></span></button></td>${row.days.map(day=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select monthly ${shiftClass(day.shift)} ${dateKeyLocal(day.date)===dateKeyLocal(new Date())?"today":""}" data-shift-person-id="${esc(row.id)}" data-shift-day="${day.dayIndex}" data-shift-week-offset="${day.weekOffset}">${SHIFT_ASSIGNMENT_VALUES.map(label=>`<option value="${label}" ${day.shift===label?"selected":""}>${shiftDisplayLabel(label)}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(day.shift)}">${esc(shiftDisplayLabel(day.shift))}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="${monthSchedule.dates.length+1}"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
     </table>
   </section>`:`<section class="shift-table-wrap">
     <table class="shift-table">
       <thead><tr><th>Personel</th>${dates.map((d,i)=>`<th><span>${SHIFT_DAY_NAMES[i]}</span><small>${d.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</small></th>`).join("")}</tr></thead>
-      <tbody>${rows.map(r=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(r.id)}"><i>${esc(r.name.charAt(0))}</i><span><b>${esc(r.name)}</b><small>ID: ${esc(r.id)}</small></span></button></td>${r.days.map((d,i)=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}" data-shift-person-id="${esc(r.id)}" data-shift-day="${i}" data-shift-week-offset="${s.shiftWeekOffset}">${SHIFT_LABELS.map(sh=>`<option value="${sh}" ${d.shift===sh?"selected":""}>${sh}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(d.shift)}">${esc(d.shift)}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="8"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
+      <tbody>${rows.map(r=>`<tr><td><button class="shift-person-button" data-shift-person="${esc(r.id)}"><i>${esc(r.name.charAt(0))}</i><span><b>${esc(r.name)}</b><small>ID: ${esc(r.id)}</small></span></button></td>${r.days.map((d,i)=>`<td>${canManageShiftTeam(s.shiftTeam)?`<select class="shift-assignment-select ${shiftClass(d.shift)} ${s.shiftWeekOffset===0&&i===(new Date().getDay()+6)%7?"today":""}" data-shift-person-id="${esc(r.id)}" data-shift-day="${i}" data-shift-week-offset="${s.shiftWeekOffset}">${SHIFT_ASSIGNMENT_VALUES.map(sh=>`<option value="${sh}" ${d.shift===sh?"selected":""}>${shiftDisplayLabel(sh)}</option>`).join("")}</select>`:`<span class="shift-cell ${shiftClass(d.shift)}">${esc(shiftDisplayLabel(d.shift))}</span>`}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="8"><div class="compact-empty"><p>Bu ekipte personel bulunamadı.</p></div></td></tr>`}</tbody>
     </table>
   </section>`;
 
@@ -227,6 +431,15 @@ function shiftSchedulePage(){
     </label>
   </section>
 
+  ${canManageShiftTeam(s.shiftTeam)?`<details class="shift-import-panel">
+    <summary><span>⇩</span><div><b>Excel Vardiya Çizelgesini İçe Aktar</b><small>.xlsx veya .xls dosyasındaki personel ve vardiya bilgilerini sisteme işleyin.</small></div><i>⌄</i></summary>
+    <div class="shift-import-content">
+      <input id="shiftExcelFile" type="file" accept=".xlsx,.xls">
+      <button type="button" class="primary" id="importShiftExcel">Excel’i Kontrol Et ve Aktar</button>
+      <p>Personel eşlemesi ID veya Ad Soyad ile yapılır. Vardiyalı Çalışma Çizelgesi şablonunda ay/yıl, 24/8–8/16–16/24 başlıkları, renkli vardiya hücreleri ve İZİN kayıtları otomatik okunur. Aynı dosyada eski aylar varsa en güncel ay aktarılır.</p>
+    </div>
+  </details>`:""}
+
   <section class="shift-summary">
     <div><small>TOPLAM PERSONEL</small><b>${monthly?monthRows.length:rows.length}</b></div>
     <div><small>ÇİZELGE GÖRÜNÜMÜ</small><b>${monthly?"Aylık":"Haftalık"}</b></div>
@@ -249,6 +462,7 @@ function shiftSchedulePage(){
     <span><i class="night"></i>00-08</span>
     <span><i class="morning"></i>08-16</span>
     <span><i class="evening"></i>16-24</span>
+    <span><i class="off"></i>İzinli</span>
   </div>`;
 }
 function shiftPersonModal(){
@@ -271,7 +485,7 @@ function shiftPersonModal(){
       <div><small>HAFTA</small><b>${weekRangeText(s.shiftWeekOffset)}</b></div>
     </div>
     <div class="shift-person-week">
-      ${row.days.map((d,i)=>`<div><span>${SHIFT_DAY_NAMES[i]} · ${d.date.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</span><b class="${shiftClass(d.shift)}">${esc(d.shift)}</b></div>`).join("")}
+      ${row.days.map((d,i)=>`<div><span>${SHIFT_DAY_NAMES[i]} · ${d.date.toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"})}</span><b class="${shiftClass(d.shift)}">${esc(shiftDisplayLabel(d.shift))}</b></div>`).join("")}
     </div>
   </div></div>`;
 }
