@@ -1084,9 +1084,10 @@ function bind(){
   if(materialEditorBackdrop)materialEditorBackdrop.onclick=e=>{if(e.target===materialEditorBackdrop)closeMaterialEditor()};
   const materialEditorForm=document.getElementById("materialEditorForm");
   if(materialEditorForm)materialEditorForm.onsubmit=e=>{
-    e.preventDefault();if(!canManageMaterialCatalog())return;
+    e.preventDefault();
     const id=document.getElementById("materialEditorId").value;
     const material=materialById(id);if(!material)return;
+    if(!canManageMaterialCatalog(material))return;
     const code=document.getElementById("materialEditCode").value.trim().toLocaleUpperCase("tr-TR");
     const name=document.getElementById("materialEditName").value.trim();
     const category=(document.getElementById("materialEditCategory")?.value||"").trim();
@@ -1104,16 +1105,19 @@ function bind(){
     const duplicate=MATERIALS.find(x=>String(x.id)!==String(id)&&String(x.code||"").trim().toLocaleUpperCase("tr-TR")===code);
     if(duplicate){alert(`Bu malzeme kodu zaten kullanılıyor: ${duplicate.name}`);return}
     Object.assign(material,{code,name,category,unit,stock:Number(stock.toFixed(2)),minStock:Number(minStock.toFixed(2)),warehouseLocation:document.getElementById("materialEditLocation").value.trim(),description:document.getElementById("materialEditDescription").value.trim(),updatedBy:s.user?.name||"",updatedAt:new Date().toISOString()});
+    if(material.workshopJobId)syncWorkshopPartFromMaterial(material);
     saveMaterials();s.materialEditId=null;render();
   };
   function deleteMaterialByButton(btn){
-    if(!btn||!canManageMaterialCatalog())return;
+    if(!btn)return;
     const id=btn.dataset.materialDelete||btn.dataset.materialId;
     const material=materialById(id);if(!material)return;
+    if(!canDeleteMaterialCatalog(material))return;
     if(btn.dataset.confirmDelete!=="yes"){
       btn.dataset.confirmDelete="yes";btn.textContent="Tekrar Tıkla: Kalıcı Sil";
       setTimeout(()=>{if(document.body.contains(btn)){btn.dataset.confirmDelete="";btn.textContent=btn.id==="deleteMaterialFromEditor"?"Malzemeyi Sil":"Sil"}},5000);return;
     }
+    if(material.workshopJobId)unlinkWorkshopMaterial(id);
     DELETED_MATERIAL_IDS.add(id);saveDeletedMaterialIds();
     MATERIALS=MATERIALS.filter(x=>x.id!==id);saveMaterials();s.materialEditId=null;render();
   }

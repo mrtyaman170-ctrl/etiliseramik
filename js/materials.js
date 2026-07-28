@@ -51,8 +51,13 @@ function faultUsedMaterials(fault){
 function canManageFaultMaterials(){
   return !!permissions().manageFaultMaterials;
 }
-function canManageMaterialCatalog(){
-  return !!permissions().manageMaterials;
+function canManageMaterialCatalog(material=null){
+  if(permissions().manageMaterials)return true;
+  return !!material?.workshopJobId&&!!permissions().manageWorkshopJobs;
+}
+function canDeleteMaterialCatalog(material=null){
+  if(permissions().manageMaterials)return true;
+  return !!material?.workshopJobId&&!!permissions().manageWorkshopJobs;
 }
 const MATERIAL_SORT_LABELS={code:"Kod",name:"Malzeme",category:"Kategori",unit:"Birim",stock:"Stok",minStock:"Minimum Stok",warehouseLocation:"Depo Konumu",faultCount:"Arıza Sayısı",usage:"Kullanım"};
 function materialSortValue(material,key,usage){

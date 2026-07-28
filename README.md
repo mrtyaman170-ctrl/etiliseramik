@@ -1,7 +1,17 @@
-# ETİLİSMART Modüler Proje — v1.4.3
+# ETİLİSMART Modüler Proje — v1.4.4
 
 Bu klasör, ETİLİSMART arayüzünün geliştirme için parçalara ayrılmış sürümüdür.
 Mevcut görünüm, kayıt yapısı ve yetkiler korunmuştur.
+
+## v1.4.4 yenilikleri
+
+- Mekanik atölye kullanıcıları talep olmadan kendi yaptıkları üretim, revizyon ve tamamlama işlerini doğrudan kaydedebilir.
+- Mekanik üretim parçalarına minimum stok adedi girilir; tamamlanan üretim otomatik olarak malzeme stok kartına bağlanır.
+- Atölye işi detayından parça adı, kodu, tipi, miktarı, konumu, teknik bilgileri, minimum stok eşiği ve üretim bilgileri düzenlenebilir.
+- Teknik resim ilk kayıtta eklenebilir; sonradan parça detayından değiştirilebilir veya kaldırılabilir.
+- Atölye kullanıcıları kendi üretim kartlarını; Bakım Müdürü ise malzeme yetkisiyle tüm ilgili kartları düzenleyip silebilir. Silinen kartların kullanım geçmişi korunur.
+- Mekanik Atölye ekranına arama ve sıralamalı **Parça Kullanım Geçmişi** sekmesi eklendi; arıza ve iş emrindeki kullanım kayıtları parça bazında izlenir.
+- Atölye ve Depo Sorumlusu için arıza içermeyen, görev odaklı ana paneller eklendi; arıza menüsü ve arıza listeleri bu kullanıcılar için gösterilmez.
 
 ## v1.4.3 yenilikleri
 

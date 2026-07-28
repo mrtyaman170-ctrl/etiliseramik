@@ -509,7 +509,37 @@ function onDutyDashboardCard(factory){
   </section>`;
 }
 
+function noFaultAccessDashboard(){
+  if(permissions().faults)return "";
+  if(s.user?.role==="Atölye Personeli"){
+    const jobs=workshopVisibleJobs();
+    const active=jobs.filter(job=>!["Tamamlandı","Reddedildi"].includes(job.status));
+    const completed=jobs.filter(job=>job.status==="Tamamlandı");
+    const produced=[...new Map(completed.map(job=>{const material=workshopMaterialForJob(job);return material?[material.id,material]:null}).filter(Boolean)).values()];
+    const critical=produced.filter(material=>Number(material.stock)<=Number(material.minStock));
+    const usage=workshopPartUsageHistory();
+    return `${clockBlock()}
+    <section class="app-hero"><div class="hero-copy"><span class="hero-version">MEKANİK ATÖLYE</span><h1>Atölye Paneli</h1><p>Üretim kayıtlarını, minimum stokları ve üretilen parçaların kullanım geçmişini yönetin.</p><div class="hero-meta">${new Date().toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric",weekday:"long"})}</div></div><button type="button" class="hero-qr" data-p="workshop"><b>Atölyeyi Aç</b></button></section>
+    <section class="quick-actions dashboard-primary-actions"><button data-p="workshop"><span>＋</span><div><b>Kendi Yaptığım İşi Ekle</b><small>Talep olmadan üretimi kaydet</small></div></button><button data-p="materials"><span>□</span><div><b>Parça Stoklarını Yönet</b><small>Üretilen kartları düzenle veya sil</small></div></button></section>
+    <section class="kpi-title"><h2>Atölye Göstergeleri</h2><span>Canlı</span></section><section class="pro-kpi-grid"><article class="pro-kpi blue"><div><small>AKTİF ÜRETİM</small><strong>${active.length}</strong><p>iş takipte</p></div><i>⚙</i></article><article class="pro-kpi amber"><div><small>KONTROL BEKLEYEN</small><strong>${active.filter(job=>job.status==="Kontrol Bekliyor").length}</strong><p>son kontrol gerekli</p></div><i>◷</i></article><article class="pro-kpi green"><div><small>ÜRETİLEN PARÇA</small><strong>${produced.length}</strong><p>stok kartı bağlı</p></div><i>✓</i></article><article class="pro-kpi ${critical.length?"red":"blue"}"><div><small>MİNİMUM STOK ALTI</small><strong>${critical.length}</strong><p>stok uyarısı</p></div><i>!</i></article></section>
+    <section class="dashboard-maintenance-log-card"><div class="section-modern-head"><div><h2>Son Atölye İşleri</h2><p>Talep olmadan girilen işler ve devam eden üretimler</p></div><button class="secondary" data-p="workshop">Tümünü Gör</button></div><div class="dashboard-maintenance-log-list">${[...jobs].sort((a,b)=>new Date(b.updatedAt||b.completedAt||b.requestedAt)-new Date(a.updatedAt||a.completedAt||a.requestedAt)).slice(0,6).map(job=>`<article><div><small>${esc(job.factory)} · ${fmtDate(job.updatedAt||job.completedAt||job.requestedAt)}</small><b>${esc(job.partName)}</b><span>${esc(job.machine)} · ${Number(job.quantity)||0} adet</span></div><p>${esc(job.workNotes||job.description||"Üretim kaydı")}</p><strong><span class="workshop-status ${workshopStatusClass(job.status)}">${esc(job.status)}</span></strong></article>`).join("")||'<div class="compact-empty"><span>⚙</span><p>Henüz atölye işi bulunmuyor.</p></div>'}</div></section>
+    <section class="dashboard-maintenance-log-card"><div class="section-modern-head"><div><h2>Parça Kullanım Geçmişi</h2><p>Üretilen parçaların bakım işlemlerindeki kullanım kayıtları</p></div><button class="secondary" data-p="workshop">Geçmişi Aç</button></div><div class="dashboard-maintenance-log-list">${usage.slice(0,5).map(row=>`<article><div><small>${fmtDate(row.date)} · ${esc(row.source)}</small><b>${esc(row.partName)}</b><span>${esc(row.machine)} · ${Number(row.quantity)||0} ${esc(row.unit)}</span></div><p>${esc(row.sourceTitle)}</p><strong>${esc(row.usedBy)}</strong></article>`).join("")||'<div class="compact-empty"><span>⌕</span><p>Henüz parça kullanım kaydı bulunmuyor.</p></div>'}</div></section>`;
+  }
+  if(s.user?.role==="Depo Sorumlusu"){
+    const critical=MATERIALS.filter(material=>Number(material.stock)<=Number(material.minStock));
+    const workshopParts=MATERIALS.filter(material=>!!material.workshopJobId);
+    const stockTotal=MATERIALS.reduce((sum,material)=>sum+(Number(material.stock)||0),0);
+    return `${clockBlock()}
+    <section class="app-hero"><div class="hero-copy"><span class="hero-version">DEPO YÖNETİMİ</span><h1>Depo Paneli</h1><p>Malzeme kartlarını, minimum stok uyarılarını ve atölye üretim parçalarını yönetin.</p><div class="hero-meta">${new Date().toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric",weekday:"long"})}</div></div><button type="button" class="hero-qr" data-p="materials"><b>Malzemeleri Aç</b></button></section>
+    <section class="quick-actions dashboard-primary-actions"><button data-p="materials"><span>□</span><div><b>Malzeme Yönetimi</b><small>Stok ve kart bilgilerini güncelle</small></div></button></section>
+    <section class="kpi-title"><h2>Depo Göstergeleri</h2><span>Canlı</span></section><section class="pro-kpi-grid"><article class="pro-kpi blue"><div><small>MALZEME ÇEŞİDİ</small><strong>${MATERIALS.length}</strong><p>aktif kart</p></div><i>□</i></article><article class="pro-kpi ${critical.length?"red":"green"}"><div><small>MİNİMUM STOK ALTI</small><strong>${critical.length}</strong><p>tedarik kontrolü</p></div><i>!</i></article><article class="pro-kpi green"><div><small>ATÖLYE ÜRETİM PARÇASI</small><strong>${workshopParts.length}</strong><p>stok kartı bağlı</p></div><i>⚙</i></article><article class="pro-kpi amber"><div><small>TOPLAM STOK</small><strong>${Number(stockTotal.toFixed(2))}</strong><p>birim toplamı</p></div><i>▤</i></article></section>
+    <section class="dashboard-maintenance-log-card"><div class="section-modern-head"><div><h2>Öncelikli Stok Uyarıları</h2><p>Minimum stok seviyesine ulaşan veya altına inen malzemeler</p></div><button class="secondary" data-p="materials">Tüm Malzemeler</button></div><div class="dashboard-maintenance-log-list">${critical.slice(0,8).map(material=>`<article><div><small>${esc(material.category)} · ${esc(material.warehouseLocation||"Konum girilmedi")}</small><b>${esc(material.code)} · ${esc(material.name)}</b><span>Mevcut: ${Number(material.stock)||0} ${esc(material.unit)} · Minimum: ${Number(material.minStock)||0}</span></div><p>${esc(material.description||"Stok kontrolü gerekli.")}</p><strong>Stok uyarısı</strong></article>`).join("")||'<div class="compact-empty"><span>✓</span><p>Minimum stok altında malzeme bulunmuyor.</p></div>'}</div></section>`;
+  }
+  return `${clockBlock()}<section class="app-hero"><div class="hero-copy"><span class="hero-version">ETİLİSMART</span><h1>Ana Panel</h1><p>Bu kullanıcı için arıza kayıtları gösterilmez.</p></div></section>`;
+}
 function dashboard(){
+  const restrictedDashboard=noFaultAccessDashboard();
+  if(restrictedDashboard)return restrictedDashboard;
   let all=visibleFaults();
   if(s.dashboardFactory!=="Tümü")all=all.filter(x=>x.factory===s.dashboardFactory);
 
